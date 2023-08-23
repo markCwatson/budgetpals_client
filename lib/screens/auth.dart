@@ -8,20 +8,30 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: const Center(
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      body: const Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SignInText('email'),
-            SignInText('password'),
-            SignInButton(),
+          children: [
+            Card(
+              margin: EdgeInsets.all(24.0),
+              child: SingleChildScrollView(
+                child: Form(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      EmailField(),
+                      PasswordField(),
+                      Buttons(),
+                    ],
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -29,40 +39,77 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 }
 
-class SignInText extends StatelessWidget {
-  const SignInText(this.text, {Key? key}) : super(key: key);
-
-  final String text;
+class EmailField extends StatelessWidget {
+  const EmailField({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: TextFormField(
-        decoration: InputDecoration(
-          hintText: 'Enter your $text',
+        decoration: const InputDecoration(
+          labelText: 'Enter Email',
         ),
-        validator: (String? value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter some text';
-          }
-          return null;
-        },
+        keyboardType: TextInputType.emailAddress,
+        autocorrect: false,
+        textCapitalization: TextCapitalization.none,
       ),
     );
   }
 }
 
-class SignInButton extends StatelessWidget {
-  const SignInButton({Key? key}) : super(key: key);
+class PasswordField extends StatelessWidget {
+  const PasswordField({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: ElevatedButton(
-        onPressed: () {},
-        child: const Text('Sign in'),
+      padding: const EdgeInsets.all(16.0),
+      child: TextFormField(
+        decoration: const InputDecoration(
+          labelText: 'Enter Password',
+        ),
+        obscureText: true,
+      ),
+    );
+  }
+}
+
+class Buttons extends StatefulWidget {
+  const Buttons({super.key});
+
+  @override
+  State<Buttons> createState() => _ButtonState();
+}
+
+class _ButtonState extends State<Buttons> {
+  var _isLogin = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {},
+            child: Text(_isLogin ? 'Log in' : 'Sign up'),
+          ),
+          const SizedBox(height: 8.0),
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _isLogin = !_isLogin;
+              });
+            },
+            child: Text(
+                _isLogin ? 'Create an account' : 'I already have an account'),
+          ),
+        ],
       ),
     );
   }
