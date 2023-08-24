@@ -1,6 +1,6 @@
-# budgetpals_client
+# budgetpals_client (WIP)
 
-A (WIP) mobile client for budgetpals. 
+A mobile client for budgetpals. 
 
 Uses the [budgetpals API](https://github.com/markCwatson/budgetpals) (which is WIP).
 
