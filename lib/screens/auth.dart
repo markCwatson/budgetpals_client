@@ -9,6 +9,18 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
+  var _enteredEmail = '';
+  var _enteredPassword = '';
+
+  void _saveEmail(String email) {
+    _enteredEmail = email;
+    print(_enteredEmail);
+  }
+
+  void _savePassword(String password) {
+    _enteredPassword = password;
+    print(_enteredPassword);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +39,8 @@ class _AuthScreenState extends State<AuthScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const EmailField(),
-                      const PasswordField(),
+                      EmailField(onSavedEmail: _saveEmail),
+                      PasswordField(onSavedPassword: _savePassword),
                       Buttons(formKey: _formKey),
                     ],
                   ),
@@ -43,7 +55,9 @@ class _AuthScreenState extends State<AuthScreen> {
 }
 
 class EmailField extends StatelessWidget {
-  const EmailField({super.key});
+  const EmailField({super.key, required this.onSavedEmail});
+
+  final Function(String) onSavedEmail;
 
   @override
   Widget build(BuildContext context) {
@@ -62,13 +76,18 @@ class EmailField extends StatelessWidget {
           }
           return null;
         },
+        onSaved: (value) {
+          onSavedEmail(value ?? '');
+        },
       ),
     );
   }
 }
 
 class PasswordField extends StatelessWidget {
-  const PasswordField({super.key});
+  const PasswordField({super.key, required this.onSavedPassword});
+
+  final Function(String) onSavedPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +103,9 @@ class PasswordField extends StatelessWidget {
             return 'Please enter a password with at least 6 characters.';
           }
           return null;
+        },
+        onSaved: (value) {
+          onSavedPassword(value ?? '');
         },
       ),
     );
@@ -103,7 +125,11 @@ class _ButtonState extends State<Buttons> {
   var _isLogin = false;
 
   void _onSubmit() {
-    widget.formKey.currentState!.validate();
+    final isValid = widget.formKey.currentState!.validate();
+
+    if (isValid) {
+      widget.formKey.currentState!.save();
+    }
   }
 
   @override
