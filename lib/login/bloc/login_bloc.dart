@@ -1,7 +1,7 @@
 import 'package:auth_repository/auth_repository.dart';
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:budgetpals_client/login/login.dart';
+import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 
 part 'login_event.dart';

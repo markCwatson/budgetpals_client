@@ -1,6 +1,6 @@
+import 'package:budgetpals_client/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:budgetpals_client/login/login.dart';
 import 'package:formz/formz.dart';
 
 class LoginForm extends StatelessWidget {
