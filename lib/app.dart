@@ -1,3 +1,4 @@
+import 'package:api/api.dart';
 import 'package:auth_repository/auth_repository.dart';
 import 'package:budgetpals_client/auth/auth.dart';
 import 'package:budgetpals_client/home/home.dart';
@@ -17,12 +18,21 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   late final AuthenticationRepository _authenticationRepository;
   late final UserRepository _userRepository;
+  late final UserDataProvider _userDataProvider;
+  late final AuthDataProvider _authDataProvider;
 
   @override
   void initState() {
+    const url = 'http://localhost:3333';
+
     super.initState();
-    _authenticationRepository = AuthenticationRepository();
-    _userRepository = UserRepository();
+
+    _authDataProvider = AuthDataProvider(baseUrl: url);
+    _authenticationRepository =
+        AuthenticationRepository(dataProvider: _authDataProvider);
+
+    _userDataProvider = UserDataProvider(baseUrl: url);
+    _userRepository = UserRepository(dataProvider: _userDataProvider);
   }
 
   @override
@@ -65,7 +75,8 @@ class _AppViewState extends State<AppView> {
       theme: ThemeData().copyWith(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 36, 36, 36)),
+          seedColor: const Color.fromARGB(255, 36, 36, 36),
+        ),
       ),
       navigatorKey: _navigatorKey,
       builder: (context, child) {
