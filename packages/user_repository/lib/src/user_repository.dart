@@ -1,17 +1,23 @@
 import 'dart:async';
 
+import 'package:api/api.dart';
 import 'package:user_repository/src/models/models.dart';
-import 'package:uuid/uuid.dart';
 
 class UserRepository {
+  UserRepository({required this.dataProvider});
+
+  final UserDataProvider dataProvider;
   User? _user;
 
-  // \todo implement getUser
   Future<User?> getUser() async {
     if (_user != null) return _user;
-    return Future.delayed(
-      const Duration(milliseconds: 300),
-      () => _user = User(const Uuid().v4()),
-    );
+
+    try {
+      final data = await dataProvider.getUser();
+      return _user = User(data['_id'] as String);
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 }
