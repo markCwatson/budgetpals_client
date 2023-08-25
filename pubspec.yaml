@@ -13,6 +13,8 @@ dependencies:
     path: packages/auth_repository
   bloc: ^8.1.0
   equatable: ^2.0.3
+  expenses_repository:
+    path: packages/expenses_repository
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.1

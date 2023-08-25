@@ -99,7 +99,6 @@ class CreateAccountBloc extends Bloc<CreateAccountEvent, CreateAccountState> {
   ) async {
     if (state.isValid) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-      emit(state.copyWith());
       try {
         await _userRepository.createAccount(
           email: state.username.value,
