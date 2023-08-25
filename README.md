@@ -10,6 +10,8 @@ This app is my first ever attempt at creating a mobile application, and my first
 
 Here is the app running in an iOS simulator connected to the budgetpals backend. Only the add account, sign in, and fetch expenses is working so far.
 
+The app architecture uses the BLoC pattern using `flutter_bloc` ^v8.1.1.
+
 ![alt-text][1]
 
 [1]: gif/2023.08.25_budgetpals_app.gif "The budgetpals app running"

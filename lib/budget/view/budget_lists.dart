@@ -1,6 +1,5 @@
 import 'package:budgetpals_client/auth/bloc/auth_bloc.dart';
 import 'package:budgetpals_client/budget/bloc/budgets_bloc.dart';
-import 'package:expenses_repository/src/models/expense.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
