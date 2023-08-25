@@ -81,19 +81,17 @@ class _AppViewState extends State<AppView> {
       builder: (context, child) {
         return BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
-            switch (state.status) {
-              case AuthStatus.authenticated:
-                _navigator.pushAndRemoveUntil<void>(
-                  HomePage.route(),
-                  (route) => false,
-                );
-              case AuthStatus.unauthenticated:
+            switch (state.token) {
+              case '':
                 _navigator.pushAndRemoveUntil<void>(
                   LoginPage.route(),
                   (route) => false,
                 );
-              case AuthStatus.unknown:
-                break;
+              default:
+                _navigator.pushAndRemoveUntil<void>(
+                  HomePage.route(),
+                  (route) => false,
+                );
             }
           },
           child: child,

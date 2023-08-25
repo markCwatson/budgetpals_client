@@ -15,9 +15,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   })  : _authRepository = authRepository,
         _userRepository = userRepository,
         super(const AuthState.unknown()) {
+    // register event handlers
     on<_AuthStatusChanged>(_onAuthStatusChanged);
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
 
+    // listen to (internal) auth status changes
     _authStatusSubscription = _authRepository.status.listen(
       (status) => add(_AuthStatusChanged(status)),
     );
@@ -25,7 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   final AuthRepository _authRepository;
   final UserRepository _userRepository;
-  late StreamSubscription<AuthStatus> _authStatusSubscription;
+  late StreamSubscription<AuthToken> _authStatusSubscription;
 
   @override
   Future<void> close() {
@@ -33,25 +35,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     return super.close();
   }
 
+  // event handler for _AuthStatusChanged event
   Future<void> _onAuthStatusChanged(
     _AuthStatusChanged event,
     Emitter<AuthState> emit,
   ) async {
-    switch (event.status) {
-      case AuthStatus.unauthenticated:
+    switch (event.authToken.token) {
+      case '':
         return emit(const AuthState.unauthenticated());
-      case AuthStatus.authenticated:
-        final user = await _tryGetUser();
+      default:
+        final user = await _tryGetUser(event.authToken.token);
         return emit(
           user != null
-              ? AuthState.authenticated(user)
+              ? AuthState.authenticated(event.authToken.token, user)
               : const AuthState.unauthenticated(),
         );
-      case AuthStatus.unknown:
-        return emit(const AuthState.unknown());
     }
   }
 
+  // event handler for AuthLogoutRequested event
   void _onAuthLogoutRequested(
     AuthLogoutRequested event,
     Emitter<AuthState> emit,
@@ -59,9 +61,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _authRepository.logOut();
   }
 
-  Future<User?> _tryGetUser() async {
+  Future<User?> _tryGetUser(String token) async {
     try {
-      final user = await _userRepository.getUser();
+      final user = await _userRepository.getUser(token);
       return user;
     } catch (_) {
       return null;

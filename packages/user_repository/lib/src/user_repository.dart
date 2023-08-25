@@ -9,14 +9,18 @@ class UserRepository {
   final UserDataProvider dataProvider;
   User? _user;
 
-  Future<User?> getUser() async {
+  Future<User?> getUser(String token) async {
     if (_user != null) return _user;
 
     try {
-      final data = await dataProvider.getUser();
-      return _user = User(data['_id'] as String);
+      final data = await dataProvider.getUser(token);
+      return _user = User(
+        data['_id'] as String,
+        data['firstName'] as String,
+        data['lastName'] as String,
+        data['email'] as String,
+      );
     } catch (e) {
-      print(e);
       return null;
     }
   }

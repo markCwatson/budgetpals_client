@@ -19,12 +19,20 @@ class HomePage extends StatelessWidget {
           children: <Widget>[
             Builder(
               builder: (context) {
-                final userId = context.select(
-                  (AuthBloc bloc) => bloc.state.user.id,
+                final user = context.select(
+                  (AuthBloc bloc) => bloc.state.user,
                 );
-                return Text('UserID: $userId');
+                return Card(
+                  margin: const EdgeInsets.all(24),
+                  child: ListTile(
+                    leading: const Icon(Icons.person),
+                    title: Text('Email: ${user.email}'),
+                    subtitle: Text('Name: ${user.firstName} ${user.lastName}'),
+                  ),
+                );
               },
             ),
+            const SizedBox(height: 8),
             ElevatedButton(
               child: const Text('Logout'),
               onPressed: () {
