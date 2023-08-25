@@ -10,7 +10,7 @@ class _MockAuthRepository extends Mock implements AuthRepository {}
 class _MockUserRepository extends Mock implements UserRepository {}
 
 void main() {
-  const user = User('id');
+  const user = User('id', 'username', 'firstName', 'lastName');
   late AuthRepository authRepository;
   late UserRepository userRepository;
 
@@ -36,7 +36,7 @@ void main() {
       'emits [unauthenticated] when status is unauthenticated',
       setUp: () {
         when(() => authRepository.status).thenAnswer(
-          (_) => Stream.value(AuthStatus.unauthenticated),
+          (_) => Stream.value(AuthToken(token: '')),
         );
       },
       build: () => AuthBloc(
@@ -52,35 +52,37 @@ void main() {
       'emits [authenticated] when status is authenticated',
       setUp: () {
         when(() => authRepository.status).thenAnswer(
-          (_) => Stream.value(AuthStatus.authenticated),
+          (_) => Stream.value(AuthToken(token: 'token')),
         );
-        when(() => userRepository.getUser()).thenAnswer((_) async => user);
+        when(() => userRepository.getUser('token'))
+            .thenAnswer((_) async => user);
       },
       build: () => AuthBloc(
         authRepository: authRepository,
         userRepository: userRepository,
       ),
       expect: () => const <AuthState>[
-        AuthState.authenticated(user),
+        AuthState.authenticated('token', user),
       ],
     );
   });
 
-  group('AuthStatusChanged', () {
+  group('AuthStateChanged', () {
     blocTest<AuthBloc, AuthState>(
       'emits [authenticated] when status is authenticated',
       setUp: () {
         when(
           () => authRepository.status,
-        ).thenAnswer((_) => Stream.value(AuthStatus.authenticated));
-        when(() => userRepository.getUser()).thenAnswer((_) async => user);
+        ).thenAnswer((_) => Stream.value(AuthToken(token: 'token')));
+        when(() => userRepository.getUser('token'))
+            .thenAnswer((_) async => user);
       },
       build: () => AuthBloc(
         authRepository: authRepository,
         userRepository: userRepository,
       ),
       expect: () => const <AuthState>[
-        AuthState.authenticated(user),
+        AuthState.authenticated('token', user),
       ],
     );
 
@@ -89,7 +91,7 @@ void main() {
       setUp: () {
         when(
           () => authRepository.status,
-        ).thenAnswer((_) => Stream.value(AuthStatus.unauthenticated));
+        ).thenAnswer((_) => Stream.value(AuthToken(token: 'token')));
       },
       build: () => AuthBloc(
         authRepository: authRepository,
@@ -105,8 +107,9 @@ void main() {
       setUp: () {
         when(
           () => authRepository.status,
-        ).thenAnswer((_) => Stream.value(AuthStatus.authenticated));
-        when(() => userRepository.getUser()).thenThrow(Exception('oops'));
+        ).thenAnswer((_) => Stream.value(AuthToken(token: 'token')));
+        when(() => userRepository.getUser('token'))
+            .thenThrow(Exception('oops'));
       },
       build: () => AuthBloc(
         authRepository: authRepository,
@@ -123,8 +126,9 @@ void main() {
       setUp: () {
         when(
           () => authRepository.status,
-        ).thenAnswer((_) => Stream.value(AuthStatus.authenticated));
-        when(() => userRepository.getUser()).thenAnswer((_) async => null);
+        ).thenAnswer((_) => Stream.value(AuthToken(token: 'token')));
+        when(() => userRepository.getUser('token'))
+            .thenAnswer((_) async => null);
       },
       build: () => AuthBloc(
         authRepository: authRepository,
@@ -140,7 +144,7 @@ void main() {
       setUp: () {
         when(
           () => authRepository.status,
-        ).thenAnswer((_) => Stream.value(AuthStatus.unknown));
+        ).thenAnswer((_) => Stream.value(AuthToken(token: '')));
       },
       build: () => AuthBloc(
         authRepository: authRepository,

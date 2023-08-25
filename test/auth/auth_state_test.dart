@@ -21,8 +21,8 @@ void main() {
       test('supports value comparisons', () {
         final user = MockUser();
         expect(
-          AuthState.authenticated(user),
-          AuthState.authenticated(user),
+          AuthState.authenticated('token', user),
+          AuthState.authenticated('token', user),
         );
       });
     });
