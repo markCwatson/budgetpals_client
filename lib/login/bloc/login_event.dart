@@ -28,3 +28,11 @@ final class LoginPasswordChanged extends LoginEvent {
 final class LoginSubmitted extends LoginEvent {
   const LoginSubmitted();
 }
+
+final class LoginGoToCreateAccount extends LoginEvent {
+  const LoginGoToCreateAccount();
+}
+
+final class LoginResetGoToCreateAccount extends LoginEvent {
+  const LoginResetGoToCreateAccount();
+}

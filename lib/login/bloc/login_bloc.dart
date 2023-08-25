@@ -15,6 +15,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginUsernameChanged>(_onUsernameChanged);
     on<LoginPasswordChanged>(_onPasswordChanged);
     on<LoginSubmitted>(_onSubmitted);
+    on<LoginGoToCreateAccount>(_onGoToCreateAccount);
+    on<LoginResetGoToCreateAccount>(_onResetGoToCreateAccount);
   }
 
   final AuthRepository _authRepository;
@@ -61,5 +63,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(state.copyWith(status: FormzSubmissionStatus.failure));
       }
     }
+  }
+
+  Future<void> _onGoToCreateAccount(
+    LoginGoToCreateAccount event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(state.copyWith(goToCreateAccount: true));
+  }
+
+  Future<void> _onResetGoToCreateAccount(
+    LoginResetGoToCreateAccount event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(state.copyWith(goToCreateAccount: false));
   }
 }

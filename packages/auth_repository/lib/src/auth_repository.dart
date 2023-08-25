@@ -13,7 +13,7 @@ class AuthRepository {
   final AuthDataProvider dataProvider;
   final _controller = StreamController<AuthToken>();
 
-  // expose Stream of AuthStatus updates to notify when user signs in/out
+  // expose Stream of AuthToken updates to pass token around
   Stream<AuthToken> get status async* {
     await Future<void>.delayed(const Duration(seconds: 1));
     yield AuthToken(token: '');

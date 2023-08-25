@@ -21,4 +21,28 @@ class UserDataProvider {
       throw Exception('Failed to load user');
     }
   }
+
+  Future<void> createAccount({
+    required String email,
+    required String firstName,
+    required String lastName,
+    required String password,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/users'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<dynamic, dynamic>{
+        'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to create account');
+    }
+  }
 }

@@ -44,12 +44,16 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: _authRepository,
-      child: BlocProvider(
-        create: (_) => AuthBloc(
-          authRepository: _authRepository,
-          userRepository: _userRepository,
+      child: RepositoryProvider(
+        // provide _userRepository to widget tree
+        create: (context) => _userRepository,
+        child: BlocProvider(
+          create: (_) => AuthBloc(
+            authRepository: _authRepository,
+            userRepository: _userRepository,
+          ),
+          child: const AppView(),
         ),
-        child: const AppView(),
       ),
     );
   }

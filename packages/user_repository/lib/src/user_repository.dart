@@ -24,4 +24,18 @@ class UserRepository {
       return null;
     }
   }
+
+  Future<void> createAccount({
+    required String email,
+    required String firstName,
+    required String lastName,
+    required String password,
+  }) async {
+    await dataProvider.createAccount(
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      password: password,
+    );
+  }
 }
