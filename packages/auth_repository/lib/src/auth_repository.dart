@@ -2,17 +2,17 @@ import 'dart:async';
 
 import 'package:api/api.dart';
 
-enum AuthenticationStatus { unknown, authenticated, unauthenticated }
+enum AuthStatus { unknown, authenticated, unauthenticated }
 
-class AuthenticationRepository {
-  AuthenticationRepository({required this.dataProvider});
+class AuthRepository {
+  AuthRepository({required this.dataProvider});
 
   final AuthDataProvider dataProvider;
-  final _controller = StreamController<AuthenticationStatus>();
+  final _controller = StreamController<AuthStatus>();
 
-  Stream<AuthenticationStatus> get status async* {
+  Stream<AuthStatus> get status async* {
     await Future<void>.delayed(const Duration(seconds: 1));
-    yield AuthenticationStatus.unauthenticated;
+    yield AuthStatus.unauthenticated;
     yield* _controller.stream;
   }
 
@@ -27,15 +27,15 @@ class AuthenticationRepository {
 
     // \todo: do a better check
     if (data['access_token'] != null) {
-      _controller.add(AuthenticationStatus.authenticated);
+      _controller.add(AuthStatus.authenticated);
     } else {
-      _controller.add(AuthenticationStatus.unauthenticated);
+      _controller.add(AuthStatus.unauthenticated);
     }
   }
 
   // \todo: implement logout
   void logOut() {
-    _controller.add(AuthenticationStatus.unauthenticated);
+    _controller.add(AuthStatus.unauthenticated);
   }
 
   void dispose() => _controller.close();

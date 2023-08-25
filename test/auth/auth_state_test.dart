@@ -7,31 +7,31 @@ import 'package:user_repository/user_repository.dart';
 class MockUser extends Mock implements User {}
 
 void main() {
-  group('AuthenticationState', () {
-    group('AuthenticationState.unknown', () {
+  group('AuthState', () {
+    group('AuthState.unknown', () {
       test('supports value comparisons', () {
         expect(
-          AuthenticationState.unknown(),
-          AuthenticationState.unknown(),
+          AuthState.unknown(),
+          AuthState.unknown(),
         );
       });
     });
 
-    group('AuthenticationState.authenticated', () {
+    group('AuthState.authenticated', () {
       test('supports value comparisons', () {
         final user = MockUser();
         expect(
-          AuthenticationState.authenticated(user),
-          AuthenticationState.authenticated(user),
+          AuthState.authenticated(user),
+          AuthState.authenticated(user),
         );
       });
     });
 
-    group('AuthenticationState.unauthenticated', () {
+    group('AuthState.unauthenticated', () {
       test('supports value comparisons', () {
         expect(
-          AuthenticationState.unauthenticated(),
-          AuthenticationState.unauthenticated(),
+          AuthState.unauthenticated(),
+          AuthState.unauthenticated(),
         );
       });
     });

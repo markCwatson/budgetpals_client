@@ -5,20 +5,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:formz/formz.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockAuthenticationRepository extends Mock
-    implements AuthenticationRepository {}
+class MockAuthRepository extends Mock implements AuthRepository {}
 
 void main() {
-  late AuthenticationRepository authenticationRepository;
+  late AuthRepository authRepository;
 
   setUp(() {
-    authenticationRepository = MockAuthenticationRepository();
+    authRepository = MockAuthRepository();
   });
 
   group('LoginBloc', () {
     test('initial state is LoginState', () {
       final loginBloc = LoginBloc(
-        authenticationRepository: authenticationRepository,
+        authRepository: authRepository,
       );
       expect(loginBloc.state, const LoginState());
     });
@@ -29,14 +28,14 @@ void main() {
         'when login succeeds',
         setUp: () {
           when(
-            () => authenticationRepository.logIn(
+            () => authRepository.logIn(
               username: 'username',
               password: 'password',
             ),
           ).thenAnswer((_) => Future<String>.value('user'));
         },
         build: () => LoginBloc(
-          authenticationRepository: authenticationRepository,
+          authRepository: authRepository,
         ),
         act: (bloc) {
           bloc
@@ -70,14 +69,14 @@ void main() {
         'emits [LoginInProgress, LoginFailure] when logIn fails',
         setUp: () {
           when(
-            () => authenticationRepository.logIn(
+            () => authRepository.logIn(
               username: 'username',
               password: 'password',
             ),
           ).thenThrow(Exception('oops'));
         },
         build: () => LoginBloc(
-          authenticationRepository: authenticationRepository,
+          authRepository: authRepository,
         ),
         act: (bloc) {
           bloc

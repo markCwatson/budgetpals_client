@@ -7,15 +7,14 @@ import 'package:budgetpals_client/login/login.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockAuthenticationRepository extends Mock
-    implements AuthenticationRepository {}
+class MockAuthRepository extends Mock implements AuthRepository {}
 
 void main() {
   group('LoginPage', () {
-    late AuthenticationRepository authenticationRepository;
+    late AuthRepository authRepository;
 
     setUp(() {
-      authenticationRepository = MockAuthenticationRepository();
+      authRepository = MockAuthRepository();
     });
 
     test('is routable', () {
@@ -25,7 +24,7 @@ void main() {
     testWidgets('renders a LoginForm', (tester) async {
       await tester.pumpWidget(
         RepositoryProvider.value(
-          value: authenticationRepository,
+          value: authRepository,
           child: MaterialApp(
             home: Scaffold(body: LoginPage()),
           ),

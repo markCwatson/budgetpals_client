@@ -1,5 +1,5 @@
 name: auth_repository
-description: Dart package which manages the authentication domain.
+description: Dart package which manages the auth domain.
 publish_to: none
 
 environment:
