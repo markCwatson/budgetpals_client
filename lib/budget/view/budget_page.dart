@@ -10,8 +10,9 @@ class BudgetPage extends StatelessWidget {
 
   static const url = String.fromEnvironment('API_URL');
 
-  final ExpensesRepository _expensesRepository =
-      ExpensesRepository(dataProvider: ExpensesDataProvider(baseUrl: url));
+  final ExpensesRepository _expensesRepository = ExpensesRepository(
+    dataProvider: ExpensesDataProvider(baseUrl: url),
+  );
 
   static Route<void> route() {
     return MaterialPageRoute<void>(builder: (_) => BudgetPage());

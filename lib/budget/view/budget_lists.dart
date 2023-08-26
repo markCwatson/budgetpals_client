@@ -148,6 +148,7 @@ class ExpenseCard extends StatelessWidget {
     required this.isEnding,
     required this.endDate,
     required this.isFixed,
+    super.key,
   });
 
   final int amount;

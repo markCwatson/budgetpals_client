@@ -4,7 +4,6 @@ import 'package:budgetpals_client/auth/auth.dart';
 import 'package:budgetpals_client/budget/view/budget_page.dart';
 import 'package:budgetpals_client/login/login.dart';
 import 'package:budgetpals_client/splash/splash.dart';
-import 'package:expenses_repository/expenses_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_repository/user_repository.dart';
