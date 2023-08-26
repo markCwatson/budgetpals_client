@@ -21,12 +21,8 @@ class AddExpensePage extends StatelessWidget {
         child: BlocProvider(
           create: (context) {
             return AddExpenseBloc(
-              categoryRepository:
-                  RepositoryProvider.of<CategoryRepository>(context),
               expensesRepository:
                   RepositoryProvider.of<ExpensesRepository>(context),
-              frequencyRepository:
-                  RepositoryProvider.of<FrequencyRepository>(context),
               userRepository: RepositoryProvider.of<UserRepository>(context),
             );
           },

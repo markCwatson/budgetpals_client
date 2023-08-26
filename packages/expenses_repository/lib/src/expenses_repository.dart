@@ -31,4 +31,27 @@ class ExpensesRepository {
       return List.empty();
     }
   }
+
+  Future<List<Category?>> getExpenseCategories(String token) async {
+    try {
+      final data = await dataProvider.getExpenseCategories(token);
+
+      // ignore: unnecessary_lambdas
+      return data.map((str) => Category(str)).toList();
+    } catch (e) {
+      print(e);
+      return List.empty();
+    }
+  }
+
+  Future<List<Frequency?>> getExpenseFrequencies(String token) async {
+    try {
+      final data = await dataProvider.getExpenseFrequencies(token);
+      // ignore: unnecessary_lambdas
+      return data.map((str) => Frequency(str)).toList();
+    } catch (e) {
+      print(e);
+      return List.empty();
+    }
+  }
 }

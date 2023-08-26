@@ -26,4 +26,44 @@ class ExpensesDataProvider {
       throw Exception('Failed to load expenses');
     }
   }
+
+  Future<List<String>> getExpenseCategories(String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/expenses/categories'),
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body);
+      if (decoded is List) {
+        return List<String>.from(decoded);
+      } else {
+        throw Exception('Expected a list but got ${decoded.runtimeType}');
+      }
+    } else {
+      throw Exception('Failed to load expenses');
+    }
+  }
+
+  Future<List<String>> getExpenseFrequencies(String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/expenses/frequencies'),
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body);
+      if (decoded is List) {
+        return List<String>.from(decoded);
+      } else {
+        throw Exception('Expected a list but got ${decoded.runtimeType}');
+      }
+    } else {
+      throw Exception('Failed to load expenses');
+    }
+  }
 }
