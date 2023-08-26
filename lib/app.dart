@@ -19,11 +19,9 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   late final AuthRepository _authRepository;
   late final UserRepository _userRepository;
-  late final ExpensesRepository _expensesRepository;
 
   late final UserDataProvider _userDataProvider;
   late final AuthDataProvider _authDataProvider;
-  late final ExpensesDataProvider _expensesDataProvider;
 
   @override
   void initState() {
@@ -39,10 +37,6 @@ class _AppState extends State<App> {
 
     _userDataProvider = UserDataProvider(baseUrl: url);
     _userRepository = UserRepository(dataProvider: _userDataProvider);
-
-    _expensesDataProvider = ExpensesDataProvider(baseUrl: url);
-    _expensesRepository =
-        ExpensesRepository(dataProvider: _expensesDataProvider);
   }
 
   @override
@@ -58,16 +52,12 @@ class _AppState extends State<App> {
       child: RepositoryProvider(
         // provide _userRepository to account creation page
         create: (context) => _userRepository,
-        child: RepositoryProvider(
-          // provide _expensesRepository to budget page
-          create: (context) => _expensesRepository,
-          child: BlocProvider(
-            create: (_) => AuthBloc(
-              authRepository: _authRepository,
-              userRepository: _userRepository,
-            ),
-            child: const AppView(),
+        child: BlocProvider(
+          create: (_) => AuthBloc(
+            authRepository: _authRepository,
+            userRepository: _userRepository,
           ),
+          child: const AppView(),
         ),
       ),
     );
