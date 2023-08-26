@@ -30,6 +30,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     Emitter<BudgetsState> emit,
   ) async {
     try {
+      // \todo: consider using token on event instead of state??
       final expenses = await _expensesRepository.getExpenses(state.authToken);
       emit(BudgetsState.expensesLoaded(expenses));
     } catch (e) {

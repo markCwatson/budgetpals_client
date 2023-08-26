@@ -12,8 +12,23 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
     required UserRepository userRepository,
   })  : _expensesRepository = expensesRepository,
         _userRepository = userRepository,
-        super(AddExpenseInitial()) {}
+        super(const AddExpenseState()) {
+    on<FetchCategoriesEvent>(_onFetchCategoriesEvent);
+  }
 
   final ExpensesRepository _expensesRepository;
   final UserRepository _userRepository;
+
+  Future<void> _onFetchCategoriesEvent(
+    FetchCategoriesEvent event,
+    Emitter<AddExpenseState> emit,
+  ) async {
+    try {
+      final categories =
+          await _expensesRepository.getExpenseCategories(event.token);
+      emit(CategoriesFetchedState(categories: categories));
+    } catch (e) {
+      print(e);
+    }
+  }
 }
