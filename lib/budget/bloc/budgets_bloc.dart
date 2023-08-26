@@ -14,6 +14,8 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     on<GetExpensesEvent>(_onGetExpensesEvent);
     on<GetIncomesEvent>(_onGetIncomesEvent);
     on<SetTokenEvent>(_onSetTokenEvent);
+    on<AddExpenseRequestEvent>(_onAddExpenseRequestEvent);
+    on<AddIncomeRequestEvent>(_onAddIncomeRequestEvent);
   }
 
   final ExpensesRepository _expensesRepository;
@@ -45,5 +47,19 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     Emitter<BudgetsState> emit,
   ) async {
     emit(BudgetsState.tokenSet(event.token));
+  }
+
+  Future<void> _onAddExpenseRequestEvent(
+    AddExpenseRequestEvent event,
+    Emitter<BudgetsState> emit,
+  ) async {
+    emit(BudgetGoToAddExpense());
+  }
+
+  Future<void> _onAddIncomeRequestEvent(
+    AddIncomeRequestEvent event,
+    Emitter<BudgetsState> emit,
+  ) async {
+    emit(BudgetGoToAddIncome());
   }
 }

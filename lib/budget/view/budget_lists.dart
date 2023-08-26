@@ -1,3 +1,4 @@
+import 'package:budgetpals_client/add_expense/view/add_expense_page.dart';
 import 'package:budgetpals_client/auth/bloc/auth_bloc.dart';
 import 'package:budgetpals_client/budget/bloc/budgets_bloc.dart';
 import 'package:flutter/material.dart';
@@ -46,15 +47,18 @@ class _BudgetsListState extends State<BudgetsList>
     if (_tabController!.indexIsChanging) {
       if (_tabController!.index >= titles.length) return;
 
-      // \todo: find a different way to manage this access token
-      _token = context.read<AuthBloc>().state.token;
-      context.read<BudgetsBloc>().add(SetTokenEvent(token: _token));
-
       // post event to bloc
+      _setToken();
       context
           .read<BudgetsBloc>()
           .add(getEvents[titles[_tabController!.index]]!);
     }
+  }
+
+  void _setToken() {
+    // \todo: find a different way to manage this access token
+    _token = context.read<AuthBloc>().state.token;
+    context.read<BudgetsBloc>().add(SetTokenEvent(token: _token));
   }
 
   @override
@@ -62,7 +66,16 @@ class _BudgetsListState extends State<BudgetsList>
     return BlocListener<BudgetsBloc, BudgetsState>(
       listener: (context, state) {
         if (state is BudgetGoToAddExpense) {
-          Navigator.of(context).push(AddExpensePage.route());
+          Navigator.of(context).push(AddExpensePage.route()).then((value) {
+            // Refresh the data when return to the Expenses page
+            // \todo: use caching or something to avoid api call
+            _setToken();
+            context.read<BudgetsBloc>().add(const GetExpensesEvent());
+          });
+        }
+
+        if (state is BudgetGoToAddIncome) {
+          print('going to add income');
         }
       },
       child: Scaffold(
