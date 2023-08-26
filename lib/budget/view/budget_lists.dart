@@ -9,10 +9,15 @@ List<String> titles = <String>[
   'Income',
 ];
 
-Map<String, BudgetsEvent> events = <String, BudgetsEvent>{
+Map<String, BudgetsEvent> getEvents = <String, BudgetsEvent>{
   titles[0]: const GetBudgetEvent(),
   titles[1]: const GetExpensesEvent(),
   titles[2]: const GetIncomesEvent(),
+};
+
+Map<String, BudgetsEvent> addEvents = <String, BudgetsEvent>{
+  titles[1]: const AddExpenseRequestEvent(),
+  titles[2]: const AddIncomeRequestEvent(),
 };
 
 class BudgetsList extends StatefulWidget {
@@ -46,7 +51,9 @@ class _BudgetsListState extends State<BudgetsList>
       context.read<BudgetsBloc>().add(SetTokenEvent(token: _token));
 
       // post event to bloc
-      context.read<BudgetsBloc>().add(events[titles[_tabController!.index]]!);
+      context
+          .read<BudgetsBloc>()
+          .add(getEvents[titles[_tabController!.index]]!);
     }
   }
 
@@ -54,7 +61,9 @@ class _BudgetsListState extends State<BudgetsList>
   Widget build(BuildContext context) {
     return BlocListener<BudgetsBloc, BudgetsState>(
       listener: (context, state) {
-        // print(state);
+        if (state is BudgetGoToAddExpense) {
+          Navigator.of(context).push(AddExpensePage.route());
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -123,7 +132,10 @@ class _BudgetsListState extends State<BudgetsList>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // Add your action here
+            if (_tabController!.index == 0) return;
+            context.read<BudgetsBloc>().add(
+                  addEvents[titles[_tabController!.index]]!,
+                );
           },
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
