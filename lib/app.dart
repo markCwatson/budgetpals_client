@@ -27,7 +27,10 @@ class _AppState extends State<App> {
 
   @override
   void initState() {
-    const url = 'http://localhost:3333';
+    const url = String.fromEnvironment('API_URL');
+    if (url.isEmpty) {
+      throw Exception('API_URL environment variable is not set');
+    }
 
     super.initState();
 
