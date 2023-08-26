@@ -19,7 +19,7 @@ The app architecture uses the BLoC pattern using `flutter_bloc` ^v8.1.1.
 # Running app on iOS simulator
 First, you need to run the [budgetpals API](https://github.com/markCwatson/budgetpals) on the same network. Instructions can be found there for how to build and run all of the Docker containers. All of the networking is taken care of using Docker's networking functionality.
 
-You can either use VS Vode and the Flutter plugin to manage running the app, but it can also be run in the terminal. Assuming you have Xcode and a simulator installed, run the simulator.
+You can use VS Vode and the Flutter plugin to manage running the app, but it can also be run in the terminal. Assuming you have Xcode and a simulator installed, run the simulator.
 
 ```
 open -a Simulator
