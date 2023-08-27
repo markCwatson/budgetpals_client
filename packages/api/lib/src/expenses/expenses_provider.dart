@@ -66,4 +66,34 @@ class ExpensesDataProvider {
       throw Exception('Failed to load expenses');
     }
   }
+
+  Future<void> addExpense({
+    required String token,
+    required double amount,
+    required String category,
+    required String frequency,
+    required bool isEnding,
+    required String endDate,
+    required bool isFixed,
+  }) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/expenses'),
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<dynamic, dynamic>{
+        'amount': amount,
+        'category': category,
+        'frequency': frequency,
+        'isEnding': isEnding,
+        'endDate': endDate,
+        'isFixed': isFixed,
+      }),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to add expense');
+    }
+  }
 }

@@ -21,7 +21,7 @@ class BudgetPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      initialIndex: 1,
+      initialIndex: 2, // expenses tab
       length: 3,
       child: BlocProvider(
         create: (context) => BudgetsBloc(

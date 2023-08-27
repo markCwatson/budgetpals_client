@@ -176,7 +176,7 @@ class ExpenseCard extends StatelessWidget {
     super.key,
   });
 
-  final int amount;
+  final double amount;
   final String category;
   final String frequency;
   final bool isEnding;

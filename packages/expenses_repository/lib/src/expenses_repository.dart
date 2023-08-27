@@ -16,7 +16,7 @@ class ExpensesRepository {
           .map(
             (e) => Expense(
               e['_id'] as String,
-              e['amount'] as int,
+              e['amount'] as double,
               e['category'] as String,
               e['frequency'] as String,
               e['isEnding'] as bool,
@@ -52,6 +52,30 @@ class ExpensesRepository {
     } catch (e) {
       print(e);
       return List.empty();
+    }
+  }
+
+  Future<void> addExpense({
+    required String token,
+    required double amount,
+    required String category,
+    required String frequency,
+    required bool isEnding,
+    required String endDate,
+    required bool isFixed,
+  }) async {
+    try {
+      await dataProvider.addExpense(
+        token: token,
+        amount: amount,
+        category: category,
+        frequency: frequency,
+        isEnding: isEnding,
+        endDate: endDate,
+        isFixed: isFixed,
+      );
+    } catch (e) {
+      print(e);
     }
   }
 }

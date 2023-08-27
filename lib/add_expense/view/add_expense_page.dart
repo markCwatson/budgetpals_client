@@ -1,12 +1,10 @@
 import 'package:api/api.dart';
-import 'package:auth_repository/auth_repository.dart';
 import 'package:budgetpals_client/add_expense/bloc/add_expense_bloc.dart';
 import 'package:budgetpals_client/add_expense/view/add_expense_form.dart';
 import 'package:budgetpals_client/auth/bloc/auth_bloc.dart';
 import 'package:expenses_repository/expenses_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:user_repository/user_repository.dart';
 
 class AddExpensePage extends StatelessWidget {
   AddExpensePage({super.key});
@@ -15,10 +13,6 @@ class AddExpensePage extends StatelessWidget {
 
   final ExpensesRepository _expensesRepository = ExpensesRepository(
     dataProvider: ExpensesDataProvider(baseUrl: url),
-  );
-
-  final UserRepository _usersRepository = UserRepository(
-    dataProvider: UserDataProvider(baseUrl: url),
   );
 
   static Route<void> route() {
@@ -35,10 +29,10 @@ class AddExpensePage extends StatelessWidget {
           create: (context) {
             final bloc = AddExpenseBloc(
               expensesRepository: _expensesRepository,
-              userRepository: _usersRepository,
-            )..add(
-                // Dispatch an event to fetching the categories/frequencies
-                FetchCategoriesEvent(
+            )
+              // Dispatch an events to fetching the categories/frequencies
+              ..add(
+                FetchCategoriesAndFrequenciesEvent(
                   token: context.read<AuthBloc>().state.token,
                 ),
               );

@@ -13,7 +13,7 @@ class Expense extends Equatable {
   );
 
   final String id;
-  final int amount;
+  final double amount;
   final String category;
   final String frequency;
   final bool isEnding;
