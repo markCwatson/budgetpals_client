@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:budgetpals_client/create_account/create_account.dart';
+import 'package:budgetpals_client/create_account/models/models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:user_repository/user_repository.dart';

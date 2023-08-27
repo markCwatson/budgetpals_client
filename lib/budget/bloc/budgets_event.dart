@@ -29,3 +29,22 @@ class SetTokenEvent extends BudgetsEvent {
   @override
   List<Object> get props => [token];
 }
+
+class AddExpenseRequestEvent extends BudgetsEvent {
+  const AddExpenseRequestEvent();
+}
+
+class AddIncomeRequestEvent extends BudgetsEvent {
+  const AddIncomeRequestEvent();
+}
+
+class AddExpenseDefinedEvent extends BudgetsEvent {
+  const AddExpenseDefinedEvent({
+    required this.expense,
+  });
+
+  final Expense expense;
+
+  @override
+  List<Object> get props => [expense];
+}

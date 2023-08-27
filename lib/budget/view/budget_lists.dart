@@ -1,3 +1,4 @@
+import 'package:budgetpals_client/add_expense/view/add_expense_page.dart';
 import 'package:budgetpals_client/auth/bloc/auth_bloc.dart';
 import 'package:budgetpals_client/budget/bloc/budgets_bloc.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +10,15 @@ List<String> titles = <String>[
   'Income',
 ];
 
-Map<String, BudgetsEvent> events = <String, BudgetsEvent>{
+Map<String, BudgetsEvent> getEvents = <String, BudgetsEvent>{
   titles[0]: const GetBudgetEvent(),
   titles[1]: const GetExpensesEvent(),
   titles[2]: const GetIncomesEvent(),
+};
+
+Map<String, BudgetsEvent> addEvents = <String, BudgetsEvent>{
+  titles[1]: const AddExpenseRequestEvent(),
+  titles[2]: const AddIncomeRequestEvent(),
 };
 
 class BudgetsList extends StatefulWidget {
@@ -41,20 +47,36 @@ class _BudgetsListState extends State<BudgetsList>
     if (_tabController!.indexIsChanging) {
       if (_tabController!.index >= titles.length) return;
 
-      // \todo: find a different way to manage this access token
-      _token = context.read<AuthBloc>().state.token;
-      context.read<BudgetsBloc>().add(SetTokenEvent(token: _token));
-
       // post event to bloc
-      context.read<BudgetsBloc>().add(events[titles[_tabController!.index]]!);
+      _setToken();
+      context
+          .read<BudgetsBloc>()
+          .add(getEvents[titles[_tabController!.index]]!);
     }
+  }
+
+  void _setToken() {
+    // \todo: find a different way to manage this access token
+    _token = context.read<AuthBloc>().state.token;
+    context.read<BudgetsBloc>().add(SetTokenEvent(token: _token));
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<BudgetsBloc, BudgetsState>(
       listener: (context, state) {
-        // print(state);
+        if (state is BudgetGoToAddExpense) {
+          Navigator.of(context).push(AddExpensePage.route()).then((value) {
+            // Refresh the data when return to the Expenses page
+            // \todo: use caching or something to avoid api call
+            _setToken();
+            context.read<BudgetsBloc>().add(const GetExpensesEvent());
+          });
+        }
+
+        if (state is BudgetGoToAddIncome) {
+          print('going to add income');
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -123,7 +145,10 @@ class _BudgetsListState extends State<BudgetsList>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // Add your action here
+            if (_tabController!.index == 0) return;
+            context.read<BudgetsBloc>().add(
+                  addEvents[titles[_tabController!.index]]!,
+                );
           },
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
@@ -151,7 +176,7 @@ class ExpenseCard extends StatelessWidget {
     super.key,
   });
 
-  final int amount;
+  final double amount;
   final String category;
   final String frequency;
   final bool isEnding;

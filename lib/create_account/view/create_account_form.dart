@@ -138,6 +138,7 @@ class _LastNameInput extends StatelessWidget {
   }
 }
 
+// \todo: users should have to enter password twice to confirm
 class _PasswordInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

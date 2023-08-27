@@ -79,10 +79,15 @@ class _AppViewState extends State<AppView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'budgetpals',
-      theme: ThemeData().copyWith(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 36, 36, 36),
+      theme: ThemeData(
+        // \todo: doesn't seem to be working properly? Why is it blue?
+        brightness: Brightness.light,
+        primaryColor: Colors.black45,
+        fontFamily: 'Georgia',
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          titleLarge: TextStyle(fontSize: 18, fontStyle: FontStyle.normal),
+          bodyMedium: TextStyle(fontSize: 10, fontFamily: 'Hind'),
         ),
       ),
       navigatorKey: _navigatorKey,
