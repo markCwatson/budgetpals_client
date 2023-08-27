@@ -19,6 +19,8 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.1
   formz: ^0.6.0
+  incomes_repository:
+    path: packages/incomes_repository
   user_repository:
     path: packages/user_repository
 

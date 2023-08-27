@@ -224,6 +224,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  incomes_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/incomes_repository"
+      relative: true
+    source: path
+    version: "0.0.0"
   io:
     dependency: transitive
     description:
