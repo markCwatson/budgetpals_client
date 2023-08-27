@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:expenses_repository/expenses_repository.dart';
+import 'package:incomes_repository/incomes_repository.dart';
 
 part 'budgets_event.dart';
 part 'budgets_state.dart';
@@ -8,7 +9,9 @@ part 'budgets_state.dart';
 class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
   BudgetsBloc({
     required ExpensesRepository expensesRepository,
+    required IncomesRepository incomesRepository,
   })  : _expensesRepository = expensesRepository,
+        _incomesRepository = incomesRepository,
         super(BudgetsInitial()) {
     on<GetBudgetEvent>(_onGetBudgetEvent);
     on<GetExpensesEvent>(_onGetExpensesEvent);
@@ -17,9 +20,11 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     on<AddExpenseRequestEvent>(_onAddExpenseRequestEvent);
     on<AddIncomeRequestEvent>(_onAddIncomeRequestEvent);
     on<DeleteExpenseRequestEvent>(_onDeleteExpenseEvent);
+    on<DeleteIncomeRequestEvent>(_onDeleteIncomeEvent);
   }
 
   final ExpensesRepository _expensesRepository;
+  final IncomesRepository _incomesRepository;
 
   Future<void> _onGetBudgetEvent(
     GetBudgetEvent event,
@@ -42,7 +47,14 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
   Future<void> _onGetIncomesEvent(
     GetIncomesEvent event,
     Emitter<BudgetsState> emit,
-  ) async {}
+  ) async {
+    try {
+      final incomes = await _incomesRepository.getIncomes(state.authToken);
+      emit(BudgetsState.incomesLoaded(incomes));
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Future<void> _onSetTokenEvent(
     SetTokenEvent event,
@@ -76,6 +88,22 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
       );
       final expenses = await _expensesRepository.getExpenses(event.token);
       emit(BudgetsState.expensesLoaded(expenses));
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _onDeleteIncomeEvent(
+    DeleteIncomeRequestEvent event,
+    Emitter<BudgetsState> emit,
+  ) async {
+    try {
+      await _incomesRepository.deleteIncome(
+        token: event.token,
+        id: event.id,
+      );
+      final incomes = await _incomesRepository.getIncomes(event.token);
+      emit(BudgetsState.incomesLoaded(incomes));
     } catch (e) {
       print(e);
     }

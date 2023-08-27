@@ -4,6 +4,7 @@ import 'package:budgetpals_client/budget/view/budget_lists.dart';
 import 'package:expenses_repository/expenses_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incomes_repository/incomes_repository.dart';
 
 class BudgetPage extends StatelessWidget {
   BudgetPage({super.key});
@@ -14,6 +15,10 @@ class BudgetPage extends StatelessWidget {
     dataProvider: ExpensesDataProvider(baseUrl: url),
   );
 
+  final IncomesRepository _incomesRepository = IncomesRepository(
+    dataProvider: IncomesDataProvider(baseUrl: url),
+  );
+
   static Route<void> route() {
     return MaterialPageRoute<void>(builder: (_) => BudgetPage());
   }
@@ -21,11 +26,11 @@ class BudgetPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      initialIndex: 2, // expenses tab
       length: 3,
       child: BlocProvider(
         create: (context) => BudgetsBloc(
           expensesRepository: _expensesRepository,
+          incomesRepository: _incomesRepository,
         ),
         child: const BudgetsList(),
       ),

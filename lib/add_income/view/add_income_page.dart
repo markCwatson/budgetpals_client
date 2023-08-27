@@ -1,34 +1,34 @@
 import 'package:api/api.dart';
-import 'package:budgetpals_client/add_expense/bloc/add_expense_bloc.dart';
-import 'package:budgetpals_client/add_expense/view/add_expense_form.dart';
+import 'package:budgetpals_client/add_income/bloc/add_income_bloc.dart';
+import 'package:budgetpals_client/add_income/view/add_income_form.dart';
 import 'package:budgetpals_client/auth/bloc/auth_bloc.dart';
-import 'package:expenses_repository/expenses_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incomes_repository/incomes_repository.dart';
 
-class AddExpensePage extends StatelessWidget {
-  AddExpensePage({super.key});
+class AddIncomePage extends StatelessWidget {
+  AddIncomePage({super.key});
 
   static const url = String.fromEnvironment('API_URL');
 
-  final ExpensesRepository _expensesRepository = ExpensesRepository(
-    dataProvider: ExpensesDataProvider(baseUrl: url),
+  final IncomesRepository _incomesRepository = IncomesRepository(
+    dataProvider: IncomesDataProvider(baseUrl: url),
   );
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => AddExpensePage());
+    return MaterialPageRoute<void>(builder: (_) => AddIncomePage());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add an expense')),
+      appBar: AppBar(title: const Text('Add an income')),
       body: Padding(
         padding: EdgeInsets.zero,
         child: BlocProvider(
           create: (context) {
-            final bloc = AddExpenseBloc(
-              expensesRepository: _expensesRepository,
+            final bloc = AddIncomeBloc(
+              incomesRepository: _incomesRepository,
             )
               // Dispatch an events to fetching the categories/frequencies
               ..add(
@@ -38,7 +38,7 @@ class AddExpensePage extends StatelessWidget {
               );
             return bloc;
           },
-          child: const AddExpenseForm(),
+          child: const AddIncomeForm(),
         ),
       ),
     );

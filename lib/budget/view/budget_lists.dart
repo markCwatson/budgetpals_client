@@ -1,4 +1,5 @@
 import 'package:budgetpals_client/add_expense/view/add_expense_page.dart';
+import 'package:budgetpals_client/add_income/view/add_income_page.dart';
 import 'package:budgetpals_client/auth/bloc/auth_bloc.dart';
 import 'package:budgetpals_client/budget/bloc/budgets_bloc.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +39,16 @@ class _BudgetsListState extends State<BudgetsList>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(
+      length: 3,
+      vsync: this,
+      initialIndex: 1, // default to expenses tab
+    );
     _tabController!.addListener(_handleTabSelection);
+
+    // Do initial load of expenses
+    _setToken();
+    context.read<BudgetsBloc>().add(const GetExpensesEvent());
   }
 
   void _handleTabSelection() {
@@ -75,7 +84,12 @@ class _BudgetsListState extends State<BudgetsList>
         }
 
         if (state is BudgetGoToAddIncome) {
-          print('going to add income');
+          Navigator.of(context).push(AddIncomePage.route()).then((value) {
+            // Refresh the data when return to the Incomes page
+            // \todo: use caching or something to avoid api call
+            _setToken();
+            context.read<BudgetsBloc>().add(const GetIncomesEvent());
+          });
         }
       },
       child: Scaffold(
@@ -140,6 +154,24 @@ class _BudgetsListState extends State<BudgetsList>
             ),
             BlocBuilder<BudgetsBloc, BudgetsState>(
               builder: (context, state) {
+                if (state.incomes.isNotEmpty) {
+                  return ListView.builder(
+                    itemCount: state.incomes.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final income = state.incomes[index];
+                      return IncomeCard(
+                        id: income?.id ?? '',
+                        amount: income?.amount ?? 0,
+                        date: income?.date ?? '',
+                        category: income?.category ?? '',
+                        frequency: income?.frequency ?? '',
+                        isEnding: income?.isEnding ?? false,
+                        endDate: income?.endDate ?? '',
+                        isFixed: income?.isFixed ?? false,
+                      );
+                    },
+                  );
+                }
                 return const LoadingIndicator();
               },
             ),
@@ -205,6 +237,102 @@ class ExpenseCard extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Deleted $category Expense'),
+          ),
+        );
+      },
+      background: Container(
+        color: Colors.red,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.all(16),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      child: Card(
+        elevation: 4,
+        margin: const EdgeInsets.all(8),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Category: $category',
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Amount: \$${amount.toStringAsFixed(2)}',
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Date: ${date.replaceAll(RegExp('T.*'), '')}',
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Frequency: $frequency',
+                style: const TextStyle(fontSize: 16),
+              ),
+              if (isEnding) const SizedBox(height: 8),
+              if (isEnding)
+                Text(
+                  'End Date: ${endDate.replaceAll(RegExp('T.*'), '')}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              if (frequency != 'Once') const SizedBox(height: 8),
+              if (frequency != 'Once')
+                Text(
+                  'Fixed amount: ${isFixed ? 'Yes' : 'No'}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class IncomeCard extends StatelessWidget {
+  const IncomeCard({
+    required this.id,
+    required this.amount,
+    required this.date,
+    required this.category,
+    required this.frequency,
+    required this.isEnding,
+    required this.endDate,
+    required this.isFixed,
+    super.key,
+  });
+
+  final String id;
+  final double amount;
+  final String date;
+  final String category;
+  final String frequency;
+  final bool isEnding;
+  final String endDate;
+  final bool isFixed;
+
+  @override
+  Widget build(BuildContext context) {
+    // \todo: consider different way to render if frequency is Once, etc.
+    return Dismissible(
+      key: Key('dissmissibleIncomeCard-$id'),
+      onDismissed: (direction) {
+        context.read<BudgetsBloc>().add(
+              DeleteIncomeRequestEvent(
+                token: context.read<AuthBloc>().state.token,
+                id: id,
+              ),
+            );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Deleted $category Income'),
           ),
         );
       },

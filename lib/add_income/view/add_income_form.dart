@@ -1,0 +1,415 @@
+import 'package:budgetpals_client/add_income/bloc/add_income_bloc.dart';
+import 'package:budgetpals_client/auth/bloc/auth_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
+
+class AddIncomeForm extends StatelessWidget {
+  const AddIncomeForm({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<AddIncomeBloc, AddIncomeState>(
+      listener: (context, state) {
+        if (state.status.isSuccess) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(content: Text('Income Added')),
+            );
+          Future.delayed(const Duration(seconds: 1), () {
+            Navigator.of(context).pop();
+          });
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        body: const Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Card(
+                  margin: EdgeInsets.all(32),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _AmountInput(),
+                        _SetDate(),
+                        _CategoryAndFrequency(),
+                        _IsEndingAndEndDateInput(),
+                        _IsFixedInput(),
+                        _SubmitButton(),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AmountInput extends StatelessWidget {
+  const _AmountInput();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddIncomeBloc, AddIncomeState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 64, right: 64, top: 16),
+          child: TextField(
+            key: const Key('addIncomeForm_amountInput_textField'),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            onChanged: (value) {
+              // Forcing it to be a double:
+              // I noticed in database, if no decimal, stored as Int32
+              final amount =
+                  double.parse(value.contains('.') ? value : '$value.0001');
+              context
+                  .read<AddIncomeBloc>()
+                  .add(AddIncomeAmountChanged(amount: amount));
+            },
+            decoration: const InputDecoration(
+              labelText: r'Enter amount ($)',
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SetDate extends StatefulWidget {
+  const _SetDate();
+
+  @override
+  State<_SetDate> createState() => _SetDateState();
+}
+
+class _SetDateState extends State<_SetDate> {
+  DateTime? selectedDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32, right: 64),
+      child: GestureDetector(
+        onTap: () async {
+          final pickedDate = await showDatePicker(
+            context: context,
+            initialDate: selectedDate ?? DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2101),
+          );
+
+          if (pickedDate != null && pickedDate != selectedDate) {
+            setState(() {
+              selectedDate = pickedDate;
+              final formattedDate = selectedDate!.toIso8601String();
+              context.read<AddIncomeBloc>().add(
+                    AddIncomeDateChanged(
+                      date: formattedDate,
+                    ),
+                  );
+            });
+          }
+        },
+        child: AbsorbPointer(
+          child: TextField(
+            key: const Key('addIncomeForm_endDateInput_textField'),
+            controller: TextEditingController(
+              text: selectedDate != null
+                  ? '${selectedDate!.toLocal()}'.split(' ')[0]
+                  : '',
+            ),
+            decoration: const InputDecoration(
+              labelText: 'Set date of income',
+              icon: Icon(Icons.calendar_today),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CategoryAndFrequency extends StatefulWidget {
+  const _CategoryAndFrequency();
+
+  @override
+  State<_CategoryAndFrequency> createState() => _CategoryAndFrequencyState();
+}
+
+class _CategoryAndFrequencyState extends State<_CategoryAndFrequency> {
+  final List<String> _categories = ['None Selected'];
+  final List<String> _frequencies = ['None Selected'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      // \todo: consder changing to ListView.builder
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            BlocBuilder<AddIncomeBloc, AddIncomeState>(
+              builder: (context, state) {
+                if (state is CategoriesAndFrequenciesFetchedState &&
+                    _categories.length == 1 &&
+                    _frequencies.length == 1) {
+                  state.categories
+                      .map(
+                        (e) => _categories.add(
+                          e?.name ?? '',
+                        ),
+                      )
+                      .toList();
+
+                  state.frequencies
+                      .map(
+                        (e) => _frequencies.add(
+                          e?.name ?? '',
+                        ),
+                      )
+                      .toList();
+                }
+
+                if (_categories.isNotEmpty && _frequencies.isNotEmpty) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const Text('Category: '),
+                            DropdownButton<String>(
+                              items: _categories
+                                  .map(
+                                    (category) => DropdownMenuItem<String>(
+                                      value: category,
+                                      child: Text(category),
+                                    ),
+                                  )
+                                  .toList(),
+                              value: state.category.value,
+                              onChanged: (value) =>
+                                  context.read<AddIncomeBloc>().add(
+                                        AddIncomeCategoryChanged(
+                                          category: value ?? '',
+                                        ),
+                                      ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const Text('Frequency: '),
+                            DropdownButton<String>(
+                              items: _frequencies
+                                  .map(
+                                    (frequency) => DropdownMenuItem<String>(
+                                      value: frequency,
+                                      child: Text(frequency),
+                                    ),
+                                  )
+                                  .toList(),
+                              value: state.frequency.value,
+                              onChanged: (value) =>
+                                  context.read<AddIncomeBloc>().add(
+                                        AddIncomeFrequencyChanged(
+                                          frequency: value ?? '',
+                                        ),
+                                      ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return const Text('Fetching categories...');
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _IsEndingAndEndDateInput extends StatefulWidget {
+  const _IsEndingAndEndDateInput();
+
+  @override
+  _IsEndingAndEndDateInputState createState() =>
+      _IsEndingAndEndDateInputState();
+}
+
+class _IsEndingAndEndDateInputState extends State<_IsEndingAndEndDateInput> {
+  DateTime? selectedDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddIncomeBloc, AddIncomeState>(
+      builder: (context, state) {
+        if (state.frequency.value != 'Once') {
+          return Padding(
+            padding: const EdgeInsets.all(4),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text('Does it End? '),
+                    DropdownButton<bool>(
+                      items: const [
+                        DropdownMenuItem(
+                          value: true,
+                          child: Text('Yes'),
+                        ),
+                        DropdownMenuItem(
+                          value: false,
+                          child: Text('No'),
+                        ),
+                      ],
+                      value: state.isEnding,
+                      onChanged: (value) => context
+                          .read<AddIncomeBloc>()
+                          .add(AddIncomeIsEndingChanged(isEnding: value!)),
+                    ),
+                  ],
+                ),
+                if (state.isEnding)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32, right: 64),
+                    child: GestureDetector(
+                      onTap: () async {
+                        final pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: selectedDate ?? DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2101),
+                        );
+
+                        if (pickedDate != null && pickedDate != selectedDate) {
+                          setState(() {
+                            selectedDate = pickedDate;
+                            final formattedDate =
+                                selectedDate!.toIso8601String();
+                            context.read<AddIncomeBloc>().add(
+                                  AddIncomeEndDateChanged(
+                                    endDate: formattedDate,
+                                  ),
+                                );
+                          });
+                        }
+                      },
+                      child: AbsorbPointer(
+                        child: TextField(
+                          key:
+                              const Key('addIncomeForm_endDateInput_textField'),
+                          controller: TextEditingController(
+                            text: selectedDate != null
+                                ? '${selectedDate!.toLocal()}'.split(' ')[0]
+                                : '',
+                          ),
+                          decoration: const InputDecoration(
+                            labelText: 'Select an end date',
+                            icon: Icon(Icons.calendar_today),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+}
+
+class _IsFixedInput extends StatelessWidget {
+  const _IsFixedInput();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddIncomeBloc, AddIncomeState>(
+      builder: (context, state) {
+        if (state.frequency.value != 'Once') {
+          return Padding(
+            padding: const EdgeInsets.all(4),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text('Is this amount fixed? '),
+                    DropdownButton<bool>(
+                      items: const [
+                        DropdownMenuItem(
+                          value: true,
+                          child: Text('Yes'),
+                        ),
+                        DropdownMenuItem(
+                          value: false,
+                          child: Text('No'),
+                        ),
+                      ],
+                      value: state.isFixed,
+                      onChanged: (value) => context
+                          .read<AddIncomeBloc>()
+                          .add(AddIncomeIsFixedChanged(isFixed: value!)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+}
+
+class _SubmitButton extends StatelessWidget {
+  const _SubmitButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddIncomeBloc, AddIncomeState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.all(4),
+          child: ElevatedButton(
+            key: const Key('accountCreateForm_continue_raisedButton'),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.secondary,
+              backgroundColor: Colors.white,
+            ),
+            onPressed: state.isValid
+                ? () {
+                    context.read<AddIncomeBloc>().add(
+                          AddIncomeSubmitted(
+                            token: context.read<AuthBloc>().state.token,
+                          ),
+                        );
+                  }
+                : null,
+            child: const Text('Submit'),
+          ),
+        );
+      },
+    );
+  }
+}
