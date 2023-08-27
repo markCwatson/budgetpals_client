@@ -70,6 +70,7 @@ class ExpensesDataProvider {
   Future<void> addExpense({
     required String token,
     required double amount,
+    required String date,
     required String category,
     required String frequency,
     required bool isEnding,
@@ -84,6 +85,7 @@ class ExpensesDataProvider {
       },
       body: jsonEncode(<dynamic, dynamic>{
         'amount': amount,
+        'date': date,
         'category': category,
         'frequency': frequency,
         'isEnding': isEnding,

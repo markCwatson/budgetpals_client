@@ -124,6 +124,7 @@ class _BudgetsListState extends State<BudgetsList>
                       final expense = state.expenses[index];
                       return ExpenseCard(
                         amount: expense?.amount ?? 0,
+                        date: expense?.date ?? '',
                         category: expense?.category ?? '',
                         frequency: expense?.frequency ?? '',
                         isEnding: expense?.isEnding ?? false,
@@ -168,6 +169,7 @@ class _BudgetsListState extends State<BudgetsList>
 class ExpenseCard extends StatelessWidget {
   const ExpenseCard({
     required this.amount,
+    required this.date,
     required this.category,
     required this.frequency,
     required this.isEnding,
@@ -177,6 +179,7 @@ class ExpenseCard extends StatelessWidget {
   });
 
   final double amount;
+  final String date;
   final String category;
   final String frequency;
   final bool isEnding;
@@ -185,6 +188,7 @@ class ExpenseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // \todo: consider different way to render if frequency is Once, etc.
     return Card(
       elevation: 4,
       margin: const EdgeInsets.all(8),
@@ -195,11 +199,16 @@ class ExpenseCard extends StatelessWidget {
           children: [
             Text(
               'Category: $category',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               'Amount: \$${amount.toStringAsFixed(2)}',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Date: ${date.replaceAll(RegExp('T.*'), '')}',
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 8),
@@ -207,22 +216,18 @@ class ExpenseCard extends StatelessWidget {
               'Frequency: $frequency',
               style: const TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Is Ending: ${isEnding ? 'Yes' : 'No'}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 8),
+            if (isEnding) const SizedBox(height: 8),
             if (isEnding)
               Text(
-                'End Date: $endDate',
+                'End Date: ${endDate.replaceAll(RegExp('T.*'), '')}',
                 style: const TextStyle(fontSize: 16),
               ),
-            const SizedBox(height: 8),
-            Text(
-              'Is Fixed: ${isFixed ? 'Yes' : 'No'}',
-              style: const TextStyle(fontSize: 16),
-            ),
+            if (frequency != 'Once') const SizedBox(height: 8),
+            if (frequency != 'Once')
+              Text(
+                'Fixed amount: ${isFixed ? 'Yes' : 'No'}',
+                style: const TextStyle(fontSize: 16),
+              ),
           ],
         ),
       ),

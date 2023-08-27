@@ -36,6 +36,7 @@ class AddExpenseForm extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         _AmountInput(),
+                        _SetDate(),
                         _CategoryAndFrequency(),
                         _IsEndingAndEndDateInput(),
                         _IsFixedInput(),
@@ -84,6 +85,60 @@ class _AmountInput extends StatelessWidget {
   }
 }
 
+class _SetDate extends StatefulWidget {
+  const _SetDate();
+
+  @override
+  State<_SetDate> createState() => _SetDateState();
+}
+
+class _SetDateState extends State<_SetDate> {
+  DateTime? selectedDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32, right: 64),
+      child: GestureDetector(
+        onTap: () async {
+          final pickedDate = await showDatePicker(
+            context: context,
+            initialDate: selectedDate ?? DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2101),
+          );
+
+          if (pickedDate != null && pickedDate != selectedDate) {
+            setState(() {
+              selectedDate = pickedDate;
+              final formattedDate = selectedDate!.toIso8601String();
+              context.read<AddExpenseBloc>().add(
+                    AddExpenseDateChanged(
+                      date: formattedDate,
+                    ),
+                  );
+            });
+          }
+        },
+        child: AbsorbPointer(
+          child: TextField(
+            key: const Key('addExpenseForm_endDateInput_textField'),
+            controller: TextEditingController(
+              text: selectedDate != null
+                  ? '${selectedDate!.toLocal()}'.split(' ')[0]
+                  : '',
+            ),
+            decoration: const InputDecoration(
+              labelText: 'Set date of expense',
+              icon: Icon(Icons.calendar_today),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _CategoryAndFrequency extends StatefulWidget {
   const _CategoryAndFrequency();
 
@@ -99,6 +154,7 @@ class _CategoryAndFrequencyState extends State<_CategoryAndFrequency> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(4),
+      // \todo: consder changing to ListView.builder
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -203,73 +259,80 @@ class _IsEndingAndEndDateInputState extends State<_IsEndingAndEndDateInput> {
   Widget build(BuildContext context) {
     return BlocBuilder<AddExpenseBloc, AddExpenseState>(
       builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.all(4),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Text('Is Ending: '),
-                  DropdownButton<bool>(
-                    items: const [
-                      DropdownMenuItem(
-                        value: true,
-                        child: Text('Yes'),
-                      ),
-                      DropdownMenuItem(
-                        value: false,
-                        child: Text('No'),
-                      ),
-                    ],
-                    value: state.isEnding,
-                    onChanged: (value) => context
-                        .read<AddExpenseBloc>()
-                        .add(AddExpenseIsEndingChanged(isEnding: value!)),
-                  ),
-                ],
-              ),
-              if (state
-                  .isEnding) // Conditional rendering based on 'Is Ending' value
-                Padding(
-                  padding: const EdgeInsets.only(left: 32, right: 64),
-                  child: GestureDetector(
-                    onTap: () async {
-                      final pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: selectedDate ?? DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2101),
-                      );
-
-                      if (pickedDate != null && pickedDate != selectedDate) {
-                        setState(() {
-                          selectedDate = pickedDate;
-                          final formattedDate = selectedDate!.toIso8601String();
-                          context.read<AddExpenseBloc>().add(
-                              AddExpenseEndDateChanged(endDate: formattedDate));
-                        });
-                      }
-                    },
-                    child: AbsorbPointer(
-                      child: TextField(
-                        key: const Key('addExpenseForm_endDateInput_textField'),
-                        controller: TextEditingController(
-                          text: selectedDate != null
-                              ? '${selectedDate!.toLocal()}'.split(' ')[0]
-                              : '',
+        if (state.frequency.value != 'Once') {
+          return Padding(
+            padding: const EdgeInsets.all(4),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text('Does it End? '),
+                    DropdownButton<bool>(
+                      items: const [
+                        DropdownMenuItem(
+                          value: true,
+                          child: Text('Yes'),
                         ),
-                        decoration: const InputDecoration(
-                          labelText: 'Select an end date',
-                          icon: Icon(Icons.calendar_today),
+                        DropdownMenuItem(
+                          value: false,
+                          child: Text('No'),
+                        ),
+                      ],
+                      value: state.isEnding,
+                      onChanged: (value) => context
+                          .read<AddExpenseBloc>()
+                          .add(AddExpenseIsEndingChanged(isEnding: value!)),
+                    ),
+                  ],
+                ),
+                if (state.isEnding)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32, right: 64),
+                    child: GestureDetector(
+                      onTap: () async {
+                        final pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: selectedDate ?? DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2101),
+                        );
+
+                        if (pickedDate != null && pickedDate != selectedDate) {
+                          setState(() {
+                            selectedDate = pickedDate;
+                            final formattedDate =
+                                selectedDate!.toIso8601String();
+                            context.read<AddExpenseBloc>().add(
+                                  AddExpenseEndDateChanged(
+                                    endDate: formattedDate,
+                                  ),
+                                );
+                          });
+                        }
+                      },
+                      child: AbsorbPointer(
+                        child: TextField(
+                          key: const Key(
+                              'addExpenseForm_endDateInput_textField'),
+                          controller: TextEditingController(
+                            text: selectedDate != null
+                                ? '${selectedDate!.toLocal()}'.split(' ')[0]
+                                : '',
+                          ),
+                          decoration: const InputDecoration(
+                            labelText: 'Select an end date',
+                            icon: Icon(Icons.calendar_today),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
+        }
+        return const SizedBox.shrink();
       },
     );
   }
@@ -282,35 +345,38 @@ class _IsFixedInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AddExpenseBloc, AddExpenseState>(
       builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.all(4),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Text('Is this amount fixed? '),
-                  DropdownButton<bool>(
-                    items: const [
-                      DropdownMenuItem(
-                        value: true,
-                        child: Text('Yes'),
-                      ),
-                      DropdownMenuItem(
-                        value: false,
-                        child: Text('No'),
-                      ),
-                    ],
-                    value: state.isFixed,
-                    onChanged: (value) => context
-                        .read<AddExpenseBloc>()
-                        .add(AddExpenseIsFixedChanged(isFixed: value!)),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
+        if (state.frequency.value != 'Once') {
+          return Padding(
+            padding: const EdgeInsets.all(4),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text('Is this amount fixed? '),
+                    DropdownButton<bool>(
+                      items: const [
+                        DropdownMenuItem(
+                          value: true,
+                          child: Text('Yes'),
+                        ),
+                        DropdownMenuItem(
+                          value: false,
+                          child: Text('No'),
+                        ),
+                      ],
+                      value: state.isFixed,
+                      onChanged: (value) => context
+                          .read<AddExpenseBloc>()
+                          .add(AddExpenseIsFixedChanged(isFixed: value!)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        }
+        return const SizedBox.shrink();
       },
     );
   }

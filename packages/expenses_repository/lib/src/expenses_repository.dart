@@ -12,20 +12,25 @@ class ExpensesRepository {
     try {
       final data = await dataProvider.getExpenses(token);
 
-      return data
-          .map(
-            (e) => Expense(
-              e['_id'] as String,
-              e['amount'] as double,
-              e['category'] as String,
-              e['frequency'] as String,
-              e['isEnding'] as bool,
-              e['endDate'] as String,
-              e['isFixed'] as bool,
-              e['userId'] as String,
-            ),
-          )
-          .toList();
+      return data.map(
+        (e) {
+          // endDate may not exist
+          // \todo: come up with a different approach for this
+          e['endDate'] ??= '';
+
+          return Expense(
+            e['_id'] as String,
+            e['amount'] as double,
+            e['date'] as String,
+            e['category'] as String,
+            e['frequency'] as String,
+            e['isEnding'] as bool,
+            e['endDate'] as String,
+            e['isFixed'] as bool,
+            e['userId'] as String,
+          );
+        },
+      ).toList();
     } catch (e) {
       print(e);
       return List.empty();
@@ -58,6 +63,7 @@ class ExpensesRepository {
   Future<void> addExpense({
     required String token,
     required double amount,
+    required String date,
     required String category,
     required String frequency,
     required bool isEnding,
@@ -68,6 +74,7 @@ class ExpensesRepository {
       await dataProvider.addExpense(
         token: token,
         amount: amount,
+        date: date,
         category: category,
         frequency: frequency,
         isEnding: isEnding,

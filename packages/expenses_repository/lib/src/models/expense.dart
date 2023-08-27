@@ -4,6 +4,7 @@ class Expense extends Equatable {
   const Expense(
     this.id,
     this.amount,
+    this.date,
     this.category,
     this.frequency,
     this.isEnding,
@@ -14,6 +15,7 @@ class Expense extends Equatable {
 
   final String id;
   final double amount;
+  final String date;
   final String category;
   final String frequency;
   final bool isEnding;
@@ -36,6 +38,7 @@ class Expense extends Equatable {
   static const empty = Expense(
     '',
     0,
+    '',
     '',
     '',
     false,

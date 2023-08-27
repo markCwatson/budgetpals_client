@@ -16,6 +16,7 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
       _onFetchCategoriesAndFrequenciesEvent,
     );
     on<AddExpenseAmountChanged>(_onAmountChanged);
+    on<AddExpenseDateChanged>(_onDateChanged);
     on<AddExpenseCategoryChanged>(_onCategoryChanged);
     on<AddExpenseFrequencyChanged>(_onFrequencyChanged);
     on<AddExpenseIsFixedChanged>(_onIsFixedChanged);
@@ -36,6 +37,26 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
         amount: amount,
         isValid: Formz.validate([
           amount,
+          state.date,
+          state.category,
+          state.frequency,
+          state.endDate,
+        ]),
+      ),
+    );
+  }
+
+  void _onDateChanged(
+    AddExpenseDateChanged event,
+    Emitter<AddExpenseState> emit,
+  ) {
+    final date = Date.dirty(event.date);
+    emit(
+      state.copyWith(
+        date: date,
+        isValid: Formz.validate([
+          state.amount,
+          date,
           state.category,
           state.frequency,
           state.endDate,
@@ -54,6 +75,7 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
         category: category,
         isValid: Formz.validate([
           state.amount,
+          state.date,
           category,
           state.frequency,
           state.endDate,
@@ -72,6 +94,7 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
         frequency: frequency,
         isValid: Formz.validate([
           state.amount,
+          state.date,
           state.category,
           frequency,
           state.endDate,
@@ -90,6 +113,7 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
         endDate: endDate,
         isValid: Formz.validate([
           state.amount,
+          state.date,
           state.category,
           state.frequency,
           endDate,
@@ -151,6 +175,7 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
         await _expensesRepository.addExpense(
           token: event.token,
           amount: state.amount.value,
+          date: state.date.value,
           category: state.category.value,
           frequency: state.frequency.value,
           isEnding: state.isEnding,

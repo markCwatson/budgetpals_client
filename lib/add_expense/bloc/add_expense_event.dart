@@ -84,6 +84,17 @@ final class AddExpenseEndDateChanged extends AddExpenseEvent {
   List<Object> get props => [endDate];
 }
 
+final class AddExpenseDateChanged extends AddExpenseEvent {
+  const AddExpenseDateChanged({
+    required this.date,
+  });
+
+  final String date;
+
+  @override
+  List<Object> get props => [date];
+}
+
 final class AddExpenseSubmitted extends AddExpenseEvent {
   const AddExpenseSubmitted({
     required this.token,

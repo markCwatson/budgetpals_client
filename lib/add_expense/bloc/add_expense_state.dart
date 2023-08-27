@@ -4,6 +4,7 @@ final class AddExpenseState extends Equatable {
   const AddExpenseState({
     this.status = FormzSubmissionStatus.initial,
     this.amount = const Amount.pure(),
+    this.date = const Date.pure(),
     this.category = const CategoryForm.pure(),
     this.frequency = const FrequencyForm.pure(),
     this.isEnding = false,
@@ -14,6 +15,7 @@ final class AddExpenseState extends Equatable {
 
   final FormzSubmissionStatus status;
   final Amount amount;
+  final Date date;
   final CategoryForm category;
   final FrequencyForm frequency;
   final bool isEnding;
@@ -24,6 +26,7 @@ final class AddExpenseState extends Equatable {
   AddExpenseState copyWith({
     FormzSubmissionStatus? status,
     Amount? amount,
+    Date? date,
     CategoryForm? category,
     FrequencyForm? frequency,
     bool? isEnding,
@@ -34,6 +37,7 @@ final class AddExpenseState extends Equatable {
     return AddExpenseState(
       status: status ?? this.status,
       amount: amount ?? this.amount,
+      date: date ?? this.date,
       category: category ?? this.category,
       frequency: frequency ?? this.frequency,
       isEnding: isEnding ?? this.isEnding,
@@ -47,6 +51,7 @@ final class AddExpenseState extends Equatable {
   List<Object> get props => [
         status,
         amount,
+        date,
         category,
         frequency,
         isEnding,
