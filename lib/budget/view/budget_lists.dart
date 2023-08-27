@@ -123,6 +123,7 @@ class _BudgetsListState extends State<BudgetsList>
                     itemBuilder: (BuildContext context, int index) {
                       final expense = state.expenses[index];
                       return ExpenseCard(
+                        id: expense?.id ?? '',
                         amount: expense?.amount ?? 0,
                         date: expense?.date ?? '',
                         category: expense?.category ?? '',
@@ -168,6 +169,7 @@ class _BudgetsListState extends State<BudgetsList>
 
 class ExpenseCard extends StatelessWidget {
   const ExpenseCard({
+    required this.id,
     required this.amount,
     required this.date,
     required this.category,
@@ -178,6 +180,7 @@ class ExpenseCard extends StatelessWidget {
     super.key,
   });
 
+  final String id;
   final double amount;
   final String date;
   final String category;
@@ -189,46 +192,71 @@ class ExpenseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // \todo: consider different way to render if frequency is Once, etc.
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.all(8),
-      child: Padding(
+    return Dismissible(
+      key: Key('dissmissibleExpenseCard-$id'),
+      onDismissed: (direction) {
+        context.read<BudgetsBloc>().add(
+              DeleteExpenseRequestEvent(
+                token: context.read<AuthBloc>().state.token,
+                id: id,
+              ),
+            );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Deleted $category Expense'),
+          ),
+        );
+      },
+      background: Container(
+        color: Colors.red,
+        alignment: Alignment.centerRight,
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Category: $category',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Amount: \$${amount.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Date: ${date.replaceAll(RegExp('T.*'), '')}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Frequency: $frequency',
-              style: const TextStyle(fontSize: 16),
-            ),
-            if (isEnding) const SizedBox(height: 8),
-            if (isEnding)
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      child: Card(
+        elevation: 4,
+        margin: const EdgeInsets.all(8),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
               Text(
-                'End Date: ${endDate.replaceAll(RegExp('T.*'), '')}',
+                'Category: $category',
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Amount: \$${amount.toStringAsFixed(2)}',
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Date: ${date.replaceAll(RegExp('T.*'), '')}',
                 style: const TextStyle(fontSize: 16),
               ),
-            if (frequency != 'Once') const SizedBox(height: 8),
-            if (frequency != 'Once')
+              const SizedBox(height: 8),
               Text(
-                'Fixed amount: ${isFixed ? 'Yes' : 'No'}',
+                'Frequency: $frequency',
                 style: const TextStyle(fontSize: 16),
               ),
-          ],
+              if (isEnding) const SizedBox(height: 8),
+              if (isEnding)
+                Text(
+                  'End Date: ${endDate.replaceAll(RegExp('T.*'), '')}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              if (frequency != 'Once') const SizedBox(height: 8),
+              if (frequency != 'Once')
+                Text(
+                  'Fixed amount: ${isFixed ? 'Yes' : 'No'}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+            ],
+          ),
         ),
       ),
     );

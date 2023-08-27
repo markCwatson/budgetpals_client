@@ -85,4 +85,18 @@ class ExpensesRepository {
       print(e);
     }
   }
+
+  Future<void> deleteExpense({
+    required String token,
+    required String id,
+  }) async {
+    try {
+      await dataProvider.deleteExpense(
+        token: token,
+        id: id,
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
 }

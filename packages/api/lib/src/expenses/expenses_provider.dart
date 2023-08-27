@@ -98,4 +98,20 @@ class ExpensesDataProvider {
       throw Exception('Failed to add expense');
     }
   }
+
+  Future<void> deleteExpense({
+    required String token,
+    required String id,
+  }) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/expenses/$id'),
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete expense');
+    }
+  }
 }
