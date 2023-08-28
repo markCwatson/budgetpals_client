@@ -268,11 +268,6 @@ class ExpenseCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Frequency: $frequency',
-                        style: const TextStyle(fontSize: 16),
-                      ),
                       if (isEnding) const SizedBox(height: 8),
                       if (isEnding)
                         Text(
@@ -288,14 +283,23 @@ class ExpenseCard extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  Row(
+                  Column(
                     children: [
+                      Row(
+                        children: [
+                          Text(
+                            date.replaceAll(RegExp('T.*'), ''),
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.date_range_sharp),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
                       Text(
-                        date.replaceAll(RegExp('T.*'), ''),
+                        'Frequency: $frequency',
                         style: const TextStyle(fontSize: 16),
                       ),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.date_range_sharp),
                     ],
                   ),
                 ],
@@ -384,11 +388,6 @@ class IncomeCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Frequency: $frequency',
-                        style: const TextStyle(fontSize: 16),
-                      ),
                       if (isEnding) const SizedBox(height: 8),
                       if (isEnding)
                         Text(
@@ -404,14 +403,23 @@ class IncomeCard extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  Row(
+                  Column(
                     children: [
+                      Row(
+                        children: [
+                          Text(
+                            date.replaceAll(RegExp('T.*'), ''),
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.date_range_sharp),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
                       Text(
-                        date.replaceAll(RegExp('T.*'), ''),
+                        'Frequency: $frequency',
                         style: const TextStyle(fontSize: 16),
                       ),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.date_range_sharp),
                     ],
                   ),
                 ],

@@ -175,20 +175,32 @@ class _SubmitButton extends StatelessWidget {
             ? const CircularProgressIndicator()
             : Padding(
                 padding: const EdgeInsets.all(16),
-                child: ElevatedButton(
-                  key: const Key('accountCreateForm_continue_raisedButton'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    foregroundColor: Colors.white,
-                  ),
-                  onPressed: state.isValid
-                      ? () {
-                          context
-                              .read<CreateAccountBloc>()
-                              .add(const CreateAccountSubmitted());
-                        }
-                      : null,
-                  child: const Text('Submit'),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      key: const Key('accountCreateForm_continue_raisedButton'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.secondary,
+                        foregroundColor: Colors.white,
+                      ),
+                      onPressed: state.isValid
+                          ? () {
+                              context
+                                  .read<CreateAccountBloc>()
+                                  .add(const CreateAccountSubmitted());
+                            }
+                          : null,
+                      child: const Text('Submit'),
+                    ),
+                  ],
                 ),
               );
       },
