@@ -28,13 +28,12 @@ class AddIncomeForm extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Card(
-                margin: EdgeInsets.all(32),
+                margin: EdgeInsets.all(16),
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _AmountInput(),
-                      _SetDate(),
+                      _AmountAndDateInput(),
                       _CategoryAndFrequency(),
                       _IsEndingAndEndDateInput(),
                       _IsFixedInput(),
@@ -51,87 +50,91 @@ class AddIncomeForm extends StatelessWidget {
   }
 }
 
-class _AmountInput extends StatelessWidget {
-  const _AmountInput();
+class _AmountAndDateInput extends StatefulWidget {
+  const _AmountAndDateInput();
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AddIncomeBloc, AddIncomeState>(
-      builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.only(left: 64, right: 64, top: 16),
-          child: TextField(
-            key: const Key('addIncomeForm_amountInput_textField'),
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            onChanged: (value) {
-              // Forcing it to be a double:
-              // I noticed in database, if no decimal, stored as Int32
-              final amount =
-                  double.parse(value.contains('.') ? value : '$value.0001');
-              context
-                  .read<AddIncomeBloc>()
-                  .add(AddIncomeAmountChanged(amount: amount));
-            },
-            decoration: const InputDecoration(
-              labelText: r'Enter amount ($)',
-            ),
-          ),
-        );
-      },
-    );
-  }
+  State<_AmountAndDateInput> createState() => _AmountAndDateInputState();
 }
 
-class _SetDate extends StatefulWidget {
-  const _SetDate();
-
-  @override
-  State<_SetDate> createState() => _SetDateState();
-}
-
-class _SetDateState extends State<_SetDate> {
+class _AmountAndDateInputState extends State<_AmountAndDateInput> {
   DateTime? selectedDate;
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 32, right: 64),
-      child: GestureDetector(
-        onTap: () async {
-          final pickedDate = await showDatePicker(
-            context: context,
-            initialDate: selectedDate ?? DateTime.now(),
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2101),
-          );
-
-          if (pickedDate != null && pickedDate != selectedDate) {
+  void _datePicker() {
+    final now = DateTime.now();
+    showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? now,
+      firstDate: DateTime(now.year - 1, now.month, now.day),
+      lastDate: now,
+    ).then(
+      (value) => {
+        if (value != null && value != selectedDate)
+          {
             setState(() {
-              selectedDate = pickedDate;
+              selectedDate = value;
               final formattedDate = selectedDate!.toIso8601String();
               context.read<AddIncomeBloc>().add(
                     AddIncomeDateChanged(
                       date: formattedDate,
                     ),
                   );
-            });
-          }
-        },
-        child: AbsorbPointer(
-          child: TextField(
-            key: const Key('addIncomeForm_endDateInput_textField'),
-            controller: TextEditingController(
-              text: selectedDate != null
-                  ? '${selectedDate!.toLocal()}'.split(' ')[0]
-                  : '',
-            ),
-            decoration: const InputDecoration(
-              labelText: 'Set date of income',
-              icon: Icon(Icons.calendar_today),
-            ),
+            }),
+          },
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddIncomeBloc, AddIncomeState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  key: const Key('addIncomeForm_amountAndDateInput_textField'),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (value) {
+                    // Forcing it to be a double:
+                    // I noticed in database, if no decimal, stored as Int32
+                    final amount = double.parse(
+                      value.contains('.') ? value : '$value.0001',
+                    );
+                    context
+                        .read<AddIncomeBloc>()
+                        .add(AddIncomeAmountChanged(amount: amount));
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Income Amount',
+                    prefixText: r'$ ',
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      selectedDate != null
+                          ? '${selectedDate!.toLocal()}'.split(' ')[0]
+                          : 'Select a date',
+                    ),
+                    IconButton(
+                      onPressed: _datePicker,
+                      icon: const Icon(Icons.calendar_month),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -150,7 +153,7 @@ class _CategoryAndFrequencyState extends State<_CategoryAndFrequency> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
       // \todo: consder changing to ListView.builder
       child: SingleChildScrollView(
         child: Column(
@@ -182,9 +185,9 @@ class _CategoryAndFrequencyState extends State<_CategoryAndFrequency> {
                     child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             const Text('Category: '),
+                            const SizedBox(width: 16),
                             DropdownButton<String>(
                               items: _categories
                                   .map(
@@ -205,9 +208,9 @@ class _CategoryAndFrequencyState extends State<_CategoryAndFrequency> {
                           ],
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             const Text('Frequency: '),
+                            const SizedBox(width: 16),
                             DropdownButton<String>(
                               items: _frequencies
                                   .map(
@@ -252,77 +255,79 @@ class _IsEndingAndEndDateInput extends StatefulWidget {
 class _IsEndingAndEndDateInputState extends State<_IsEndingAndEndDateInput> {
   DateTime? selectedDate;
 
+  void _datePicker() {
+    final now = DateTime.now();
+    showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? now,
+      firstDate: now,
+      lastDate: DateTime(now.year + 1, now.month, now.day),
+    ).then(
+      (value) => {
+        if (value != null && value != selectedDate)
+          {
+            setState(() {
+              selectedDate = value;
+              final formattedDate = selectedDate!.toIso8601String();
+              context.read<AddIncomeBloc>().add(
+                    AddIncomeDateChanged(
+                      date: formattedDate,
+                    ),
+                  );
+            }),
+          },
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AddIncomeBloc, AddIncomeState>(
       builder: (context, state) {
         if (state.frequency.value != 'Once') {
           return Padding(
-            padding: const EdgeInsets.all(4),
-            child: Column(
+            padding: const EdgeInsets.only(left: 16),
+            child: Row(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const Text('Does it End? '),
-                    DropdownButton<bool>(
-                      items: const [
-                        DropdownMenuItem(
-                          value: true,
-                          child: Text('Yes'),
-                        ),
-                        DropdownMenuItem(
-                          value: false,
-                          child: Text('No'),
-                        ),
-                      ],
-                      value: state.isEnding,
-                      onChanged: (value) => context
-                          .read<AddIncomeBloc>()
-                          .add(AddIncomeIsEndingChanged(isEnding: value!)),
-                    ),
-                  ],
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Text('Does it End? '),
+                      const SizedBox(width: 16),
+                      DropdownButton<bool>(
+                        items: const [
+                          DropdownMenuItem(
+                            value: true,
+                            child: Text('Yes'),
+                          ),
+                          DropdownMenuItem(
+                            value: false,
+                            child: Text('No'),
+                          ),
+                        ],
+                        value: state.isEnding,
+                        onChanged: (value) => context
+                            .read<AddIncomeBloc>()
+                            .add(AddIncomeIsEndingChanged(isEnding: value!)),
+                      ),
+                    ],
+                  ),
                 ),
                 if (state.isEnding)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 32, right: 64),
-                    child: GestureDetector(
-                      onTap: () async {
-                        final pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: selectedDate ?? DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2101),
-                        );
-
-                        if (pickedDate != null && pickedDate != selectedDate) {
-                          setState(() {
-                            selectedDate = pickedDate;
-                            final formattedDate =
-                                selectedDate!.toIso8601String();
-                            context.read<AddIncomeBloc>().add(
-                                  AddIncomeEndDateChanged(
-                                    endDate: formattedDate,
-                                  ),
-                                );
-                          });
-                        }
-                      },
-                      child: AbsorbPointer(
-                        child: TextField(
-                          key:
-                              const Key('addIncomeForm_endDateInput_textField'),
-                          controller: TextEditingController(
-                            text: selectedDate != null
-                                ? '${selectedDate!.toLocal()}'.split(' ')[0]
-                                : '',
-                          ),
-                          decoration: const InputDecoration(
-                            labelText: 'Select an end date',
-                            icon: Icon(Icons.calendar_today),
-                          ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          selectedDate != null
+                              ? '${selectedDate!.toLocal()}'.split(' ')[0]
+                              : 'Select a date',
                         ),
-                      ),
+                        IconButton(
+                          onPressed: _datePicker,
+                          icon: const Icon(Icons.calendar_month),
+                        ),
+                      ],
                     ),
                   ),
               ],
@@ -344,13 +349,13 @@ class _IsFixedInput extends StatelessWidget {
       builder: (context, state) {
         if (state.frequency.value != 'Once') {
           return Padding(
-            padding: const EdgeInsets.all(4),
+            padding: const EdgeInsets.only(left: 16, right: 16),
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const Text('Is this amount fixed? '),
+                    const SizedBox(width: 16),
                     DropdownButton<bool>(
                       items: const [
                         DropdownMenuItem(
@@ -387,7 +392,7 @@ class _SubmitButton extends StatelessWidget {
     return BlocBuilder<AddIncomeBloc, AddIncomeState>(
       builder: (context, state) {
         return Padding(
-          padding: const EdgeInsets.all(4),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Row(
             children: [
               const Spacer(),

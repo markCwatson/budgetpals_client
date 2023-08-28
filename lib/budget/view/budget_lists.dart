@@ -247,21 +247,41 @@ class ExpenseCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Category: $category',
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Amount: \$${amount.toStringAsFixed(2)}',
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Date: ${date.replaceAll(RegExp('T.*'), '')}',
-                style: const TextStyle(fontSize: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        category,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '\$${amount.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Row(
+                    children: [
+                      Text(
+                        date.replaceAll(RegExp('T.*'), ''),
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.date_range_sharp),
+                    ],
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               Text(
@@ -343,21 +363,41 @@ class IncomeCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Category: $category',
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Amount: \$${amount.toStringAsFixed(2)}',
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Date: ${date.replaceAll(RegExp('T.*'), '')}',
-                style: const TextStyle(fontSize: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        category,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '\$${amount.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Row(
+                    children: [
+                      Text(
+                        date.replaceAll(RegExp('T.*'), ''),
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.date_range_sharp),
+                    ],
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               Text(
