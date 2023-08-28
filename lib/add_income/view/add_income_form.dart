@@ -122,9 +122,14 @@ class _AmountAndDateInputState extends State<_AmountAndDateInput> {
                     Text(
                       selectedDate != null
                           ? '${selectedDate!.toLocal()}'.split(' ')[0]
-                          : 'Select a date',
+                          : 'Select Date ',
                     ),
                     IconButton(
+                      style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).colorScheme.primaryContainer,
+                        ),
+                      ),
                       onPressed: _datePicker,
                       icon: const Icon(Icons.calendar_month),
                     ),
@@ -198,6 +203,15 @@ class _CategoryAndFrequencyState extends State<_CategoryAndFrequency> {
                                   )
                                   .toList(),
                               value: state.category.value,
+                              dropdownColor: Theme.of(context)
+                                  .colorScheme
+                                  .onSecondaryContainer,
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
+                              ),
+                              menuMaxHeight: 400,
                               onChanged: (value) =>
                                   context.read<AddIncomeBloc>().add(
                                         AddIncomeCategoryChanged(
@@ -221,6 +235,14 @@ class _CategoryAndFrequencyState extends State<_CategoryAndFrequency> {
                                   )
                                   .toList(),
                               value: state.frequency.value,
+                              dropdownColor: Theme.of(context)
+                                  .colorScheme
+                                  .onSecondaryContainer,
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
+                              ),
                               onChanged: (value) =>
                                   context.read<AddIncomeBloc>().add(
                                         AddIncomeFrequencyChanged(
@@ -306,6 +328,11 @@ class _IsEndingAndEndDateInputState extends State<_IsEndingAndEndDateInput> {
                           ),
                         ],
                         value: state.isEnding,
+                        dropdownColor:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                        ),
                         onChanged: (value) => context
                             .read<AddIncomeBloc>()
                             .add(AddIncomeIsEndingChanged(isEnding: value!)),
@@ -321,9 +348,14 @@ class _IsEndingAndEndDateInputState extends State<_IsEndingAndEndDateInput> {
                         Text(
                           selectedDate != null
                               ? '${selectedDate!.toLocal()}'.split(' ')[0]
-                              : 'Select a date',
+                              : 'Select Date ',
                         ),
                         IconButton(
+                          style: ButtonStyle(
+                            foregroundColor: MaterialStateProperty.all<Color>(
+                              Theme.of(context).colorScheme.primaryContainer,
+                            ),
+                          ),
                           onPressed: _datePicker,
                           icon: const Icon(Icons.calendar_month),
                         ),
@@ -368,6 +400,11 @@ class _IsFixedInput extends StatelessWidget {
                         ),
                       ],
                       value: state.isFixed,
+                      dropdownColor:
+                          Theme.of(context).colorScheme.onSecondaryContainer,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                      ),
                       onChanged: (value) => context
                           .read<AddIncomeBloc>()
                           .add(AddIncomeIsFixedChanged(isFixed: value!)),

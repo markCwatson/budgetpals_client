@@ -21,22 +21,24 @@ class AddExpenseModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 48, 8, 8),
-      child: BlocProvider(
-        create: (context) {
-          final bloc = AddExpenseBloc(
-            expensesRepository: _expensesRepository,
-          )
-            // Dispatch an events to fetching the categories/frequencies
-            ..add(
-              FetchCategoriesAndFrequenciesEvent(
-                token: context.read<AuthBloc>().state.token,
-              ),
-            );
-          return bloc;
-        },
-        child: const AddExpenseForm(),
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 48, 8, 8),
+        child: BlocProvider(
+          create: (context) {
+            final bloc = AddExpenseBloc(
+              expensesRepository: _expensesRepository,
+            )
+              // Dispatch an events to fetching the categories/frequencies
+              ..add(
+                FetchCategoriesAndFrequenciesEvent(
+                  token: context.read<AuthBloc>().state.token,
+                ),
+              );
+            return bloc;
+          },
+          child: const AddExpenseForm(),
+        ),
       ),
     );
   }

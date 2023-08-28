@@ -24,7 +24,6 @@ class LoginForm extends StatelessWidget {
         }
       },
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.primary,
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -115,10 +114,6 @@ class _LoginButton extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 child: ElevatedButton(
                   key: const Key('loginForm_continue_raisedButton'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    foregroundColor: Colors.white,
-                  ),
                   onPressed: state.isValid
                       ? () {
                           context.read<LoginBloc>().add(const LoginSubmitted());

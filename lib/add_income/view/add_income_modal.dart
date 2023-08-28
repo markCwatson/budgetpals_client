@@ -21,22 +21,24 @@ class AddIncomeModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
-      child: BlocProvider(
-        create: (context) {
-          final bloc = AddIncomeBloc(
-            incomesRepository: _incomesRepository,
-          )
-            // Dispatch an events to fetching the categories/frequencies
-            ..add(
-              FetchCategoriesAndFrequenciesEvent(
-                token: context.read<AuthBloc>().state.token,
-              ),
-            );
-          return bloc;
-        },
-        child: const AddIncomeForm(),
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+        child: BlocProvider(
+          create: (context) {
+            final bloc = AddIncomeBloc(
+              incomesRepository: _incomesRepository,
+            )
+              // Dispatch an events to fetching the categories/frequencies
+              ..add(
+                FetchCategoriesAndFrequenciesEvent(
+                  token: context.read<AuthBloc>().state.token,
+                ),
+              );
+            return bloc;
+          },
+          child: const AddIncomeForm(),
+        ),
       ),
     );
   }

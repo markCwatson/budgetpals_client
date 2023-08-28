@@ -4,6 +4,7 @@ import 'package:budgetpals_client/auth/auth.dart';
 import 'package:budgetpals_client/budget/view/budget_page.dart';
 import 'package:budgetpals_client/login/login.dart';
 import 'package:budgetpals_client/splash/splash.dart';
+import 'package:budgetpals_client/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_repository/user_repository.dart';
@@ -79,17 +80,7 @@ class _AppViewState extends State<AppView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'budgetpals',
-      theme: ThemeData(
-        // \todo: doesn't seem to be working properly? Why is it blue?
-        brightness: Brightness.light,
-        primaryColor: Colors.black45,
-        fontFamily: 'Georgia',
-        textTheme: const TextTheme(
-          displayLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          titleLarge: TextStyle(fontSize: 18, fontStyle: FontStyle.normal),
-          bodyMedium: TextStyle(fontSize: 10, fontFamily: 'Hind'),
-        ),
-      ),
+      theme: myTheme,
       navigatorKey: _navigatorKey,
       builder: (context, child) {
         return BlocListener<AuthBloc, AuthState>(

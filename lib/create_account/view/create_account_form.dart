@@ -28,7 +28,6 @@ class CreateAccountForm extends StatelessWidget {
         }
       },
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.primary,
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,

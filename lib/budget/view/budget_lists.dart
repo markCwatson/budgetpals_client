@@ -78,6 +78,10 @@ class _BudgetsListState extends State<BudgetsList>
         appBar: AppBar(
           title: const Text('budgetpals'),
           actions: <Widget>[
+            const Icon(Icons.person),
+            const SizedBox(width: 12),
+            Text('Hi ${context.read<AuthBloc>().state.user.firstName}'),
+            const SizedBox(width: 12),
             IconButton(
               icon: const Icon(Icons.logout_sharp),
               onPressed: () {
@@ -177,8 +181,6 @@ class _BudgetsListState extends State<BudgetsList>
               },
             );
           },
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          foregroundColor: Colors.white,
           child: const Icon(Icons.add),
         ),
       ),
@@ -292,7 +294,11 @@ class ExpenseCard extends StatelessWidget {
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(width: 8),
-                          const Icon(Icons.date_range_sharp),
+                          Icon(
+                            Icons.date_range_sharp,
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -412,7 +418,11 @@ class IncomeCard extends StatelessWidget {
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(width: 8),
-                          const Icon(Icons.date_range_sharp),
+                          Icon(
+                            Icons.date_range_sharp,
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 8),
