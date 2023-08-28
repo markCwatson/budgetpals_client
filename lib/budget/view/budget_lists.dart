@@ -268,6 +268,23 @@ class ExpenseCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Frequency: $frequency',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      if (isEnding) const SizedBox(height: 8),
+                      if (isEnding)
+                        Text(
+                          'End Date: ${endDate.replaceAll(RegExp('T.*'), '')}',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      if (frequency != 'Once') const SizedBox(height: 8),
+                      if (frequency != 'Once')
+                        Text(
+                          'Fixed amount: ${isFixed ? 'Yes' : 'No'}',
+                          style: const TextStyle(fontSize: 16),
+                        ),
                     ],
                   ),
                   const Spacer(),
@@ -283,23 +300,6 @@ class ExpenseCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Frequency: $frequency',
-                style: const TextStyle(fontSize: 16),
-              ),
-              if (isEnding) const SizedBox(height: 8),
-              if (isEnding)
-                Text(
-                  'End Date: ${endDate.replaceAll(RegExp('T.*'), '')}',
-                  style: const TextStyle(fontSize: 16),
-                ),
-              if (frequency != 'Once') const SizedBox(height: 8),
-              if (frequency != 'Once')
-                Text(
-                  'Fixed amount: ${isFixed ? 'Yes' : 'No'}',
-                  style: const TextStyle(fontSize: 16),
-                ),
             ],
           ),
         ),
@@ -384,6 +384,23 @@ class IncomeCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Frequency: $frequency',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      if (isEnding) const SizedBox(height: 8),
+                      if (isEnding)
+                        Text(
+                          'End Date: ${endDate.replaceAll(RegExp('T.*'), '')}',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      if (frequency != 'Once') const SizedBox(height: 8),
+                      if (frequency != 'Once')
+                        Text(
+                          'Fixed amount: ${isFixed ? 'Yes' : 'No'}',
+                          style: const TextStyle(fontSize: 16),
+                        ),
                     ],
                   ),
                   const Spacer(),
@@ -399,23 +416,6 @@ class IncomeCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Frequency: $frequency',
-                style: const TextStyle(fontSize: 16),
-              ),
-              if (isEnding) const SizedBox(height: 8),
-              if (isEnding)
-                Text(
-                  'End Date: ${endDate.replaceAll(RegExp('T.*'), '')}',
-                  style: const TextStyle(fontSize: 16),
-                ),
-              if (frequency != 'Once') const SizedBox(height: 8),
-              if (frequency != 'Once')
-                Text(
-                  'Fixed amount: ${isFixed ? 'Yes' : 'No'}',
-                  style: const TextStyle(fontSize: 16),
-                ),
             ],
           ),
         ),
