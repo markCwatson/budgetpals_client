@@ -14,7 +14,7 @@ The app architecture uses the BLoC pattern using `flutter_bloc` ^v8.1.1.
 
 ![alt-text][1]
 
-[1]: gif/2023.08.27_app_demo.gif "The budgetpals app running"
+[1]: gif/2023.08.28_demo.gif "The budgetpals app running"
 
 # Running app on iOS simulator
 First, you need to run the [budgetpals API](https://github.com/markCwatson/budgetpals) on the same network. Instructions can be found there for how to build and run all of the Docker containers. All of the networking is taken care of using Docker's networking functionality.
