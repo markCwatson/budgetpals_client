@@ -27,7 +27,3 @@ class BudgetsState extends Equatable {
 }
 
 final class BudgetsInitial extends BudgetsState {}
-
-final class BudgetGoToAddExpense extends BudgetsState {}
-
-final class BudgetGoToAddIncome extends BudgetsState {}

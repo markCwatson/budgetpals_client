@@ -1,5 +1,5 @@
-import 'package:budgetpals_client/add_expense/view/add_expense_page.dart';
-import 'package:budgetpals_client/add_income/view/add_income_page.dart';
+import 'package:budgetpals_client/add_expense/view/add_expense_modal.dart';
+import 'package:budgetpals_client/add_income/view/add_income_modal.dart';
 import 'package:budgetpals_client/auth/bloc/auth_bloc.dart';
 import 'package:budgetpals_client/budget/bloc/budgets_bloc.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +17,9 @@ Map<String, BudgetsEvent> getEvents = <String, BudgetsEvent>{
   titles[2]: const GetIncomesEvent(),
 };
 
-Map<String, BudgetsEvent> addEvents = <String, BudgetsEvent>{
-  titles[1]: const AddExpenseRequestEvent(),
-  titles[2]: const AddIncomeRequestEvent(),
+Map<String, Widget> modals = <String, Widget>{
+  titles[1]: AddExpenseModal(),
+  titles[2]: AddIncomeModal(),
 };
 
 class BudgetsList extends StatefulWidget {
@@ -73,25 +73,7 @@ class _BudgetsListState extends State<BudgetsList>
   @override
   Widget build(BuildContext context) {
     return BlocListener<BudgetsBloc, BudgetsState>(
-      listener: (context, state) {
-        if (state is BudgetGoToAddExpense) {
-          Navigator.of(context).push(AddExpensePage.route()).then((value) {
-            // Refresh the data when return to the Expenses page
-            // \todo: use caching or something to avoid api call
-            _setToken();
-            context.read<BudgetsBloc>().add(const GetExpensesEvent());
-          });
-        }
-
-        if (state is BudgetGoToAddIncome) {
-          Navigator.of(context).push(AddIncomePage.route()).then((value) {
-            // Refresh the data when return to the Incomes page
-            // \todo: use caching or something to avoid api call
-            _setToken();
-            context.read<BudgetsBloc>().add(const GetIncomesEvent());
-          });
-        }
-      },
+      listener: (context, state) {},
       child: Scaffold(
         appBar: AppBar(
           title: const Text('budgetpals'),
@@ -180,9 +162,20 @@ class _BudgetsListState extends State<BudgetsList>
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             if (_tabController!.index == 0) return;
-            context.read<BudgetsBloc>().add(
-                  addEvents[titles[_tabController!.index]]!,
-                );
+            showModalBottomSheet<void>(
+              isScrollControlled: true,
+              context: context,
+              builder: (ctx) => modals[titles[_tabController!.index]]!,
+            ).then(
+              (value) {
+                // Refresh the data when return to the Expenses page
+                // \todo: use caching or something to avoid api call
+                _setToken();
+                context.read<BudgetsBloc>().add(
+                      getEvents[titles[_tabController!.index]]!,
+                    );
+              },
+            );
           },
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,

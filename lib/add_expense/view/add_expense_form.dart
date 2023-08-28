@@ -22,31 +22,28 @@ class AddExpenseForm extends StatelessWidget {
           });
         }
       },
-      child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        body: const Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Card(
-                  margin: EdgeInsets.all(32),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _AmountInput(),
-                        _SetDate(),
-                        _CategoryAndFrequency(),
-                        _IsEndingAndEndDateInput(),
-                        _IsFixedInput(),
-                        _SubmitButton(),
-                      ],
-                    ),
+      child: const Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Card(
+                // margin: EdgeInsets.all(32),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _AmountInput(),
+                      _SetDate(),
+                      _CategoryAndFrequency(),
+                      _IsEndingAndEndDateInput(),
+                      _IsFixedInput(),
+                      _SubmitButton(),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -391,22 +388,33 @@ class _SubmitButton extends StatelessWidget {
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.all(4),
-          child: ElevatedButton(
-            key: const Key('accountCreateForm_continue_raisedButton'),
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.secondary,
-              backgroundColor: Colors.white,
-            ),
-            onPressed: state.isValid
-                ? () {
-                    context.read<AddExpenseBloc>().add(
-                          AddExpenseSubmitted(
-                            token: context.read<AuthBloc>().state.token,
-                          ),
-                        );
-                  }
-                : null,
-            child: const Text('Submit'),
+          child: Row(
+            children: [
+              const Spacer(),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                key: const Key('accountCreateForm_continue_raisedButton'),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.secondary,
+                  backgroundColor: Colors.white,
+                ),
+                onPressed: state.isValid
+                    ? () {
+                        context.read<AddExpenseBloc>().add(
+                              AddExpenseSubmitted(
+                                token: context.read<AuthBloc>().state.token,
+                              ),
+                            );
+                      }
+                    : null,
+                child: const Text('Submit'),
+              ),
+            ],
           ),
         );
       },
