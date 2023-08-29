@@ -11,6 +11,7 @@ class Expense extends Equatable {
     this.endDate,
     this.isFixed,
     this.userId,
+    this.isPlanned,
   );
 
   final String id;
@@ -22,6 +23,7 @@ class Expense extends Equatable {
   final String endDate;
   final bool isFixed;
   final String userId;
+  final bool isPlanned;
 
   @override
   List<Object> get props => [
@@ -33,6 +35,7 @@ class Expense extends Equatable {
         endDate,
         isFixed,
         userId,
+        isPlanned,
       ];
 
   static const empty = Expense(
@@ -45,5 +48,6 @@ class Expense extends Equatable {
     '',
     false,
     '',
+    false,
   );
 }
