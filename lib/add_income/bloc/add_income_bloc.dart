@@ -23,6 +23,7 @@ class AddIncomeBloc extends Bloc<AddIncomeEvent, AddIncomeState> {
     on<AddIncomeIsEndingChanged>(_onIsEndingChanged);
     on<AddIncomeEndDateChanged>(_onEndDateChanged);
     on<AddIncomeSubmitted>(_onAddIncomeSubmitted);
+    on<AddPlannedIncomeSubmitted>(_onAddPlannedIncomeSubmitted);
   }
 
   final IncomesRepository _incomesRepository;
@@ -181,6 +182,32 @@ class AddIncomeBloc extends Bloc<AddIncomeEvent, AddIncomeState> {
           isEnding: state.isEnding,
           endDate: state.endDate.value,
           isFixed: state.isFixed,
+          isPlanned: false,
+        );
+        emit(state.copyWith(status: FormzSubmissionStatus.success));
+      } catch (e) {
+        emit(state.copyWith(status: FormzSubmissionStatus.failure));
+      }
+    }
+  }
+
+  Future<void> _onAddPlannedIncomeSubmitted(
+    AddPlannedIncomeSubmitted event,
+    Emitter<AddIncomeState> emit,
+  ) async {
+    if (state.isValid) {
+      emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+      try {
+        await _incomesRepository.addIncome(
+          token: event.token,
+          amount: state.amount.value,
+          date: state.date.value,
+          category: state.category.value,
+          frequency: state.frequency.value,
+          isEnding: state.isEnding,
+          endDate: state.endDate.value,
+          isFixed: state.isFixed,
+          isPlanned: true,
         );
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (e) {

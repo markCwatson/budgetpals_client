@@ -105,3 +105,14 @@ final class AddIncomeSubmitted extends AddIncomeEvent {
   @override
   List<Object> get props => [token];
 }
+
+final class AddPlannedIncomeSubmitted extends AddIncomeEvent {
+  const AddPlannedIncomeSubmitted({
+    required this.token,
+  });
+
+  final String token;
+
+  @override
+  List<Object> get props => [token];
+}

@@ -76,6 +76,7 @@ class IncomesDataProvider {
     required bool isEnding,
     required String endDate,
     required bool isFixed,
+    required bool isPlanned,
   }) async {
     final response = await http.put(
       Uri.parse('$baseUrl/api/incomes'),
@@ -91,6 +92,7 @@ class IncomesDataProvider {
         'isEnding': isEnding,
         'endDate': endDate,
         'isFixed': isFixed,
+        'isPlanned': isPlanned,
       }),
     );
 

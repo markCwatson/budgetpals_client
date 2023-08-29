@@ -28,6 +28,7 @@ class IncomesRepository {
             e['endDate'] as String,
             e['isFixed'] as bool,
             e['userId'] as String,
+            e['isPlanned'] as bool,
           );
         },
       ).toList();
@@ -69,6 +70,7 @@ class IncomesRepository {
     required bool isEnding,
     required String endDate,
     required bool isFixed,
+    required bool isPlanned,
   }) async {
     try {
       await dataProvider.addIncome(
@@ -80,6 +82,7 @@ class IncomesRepository {
         isEnding: isEnding,
         endDate: endDate,
         isFixed: isFixed,
+        isPlanned: isPlanned,
       );
     } catch (e) {
       print(e);
