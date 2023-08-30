@@ -71,6 +71,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  budgets_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/budgets_repository"
+      relative: true
+    source: path
+    version: "0.0.0"
   characters:
     dependency: transitive
     description:
@@ -95,6 +102,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.2"
+  common_models:
+    dependency: "direct main"
+    description:
+      path: "packages/common_models"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   convert:
     dependency: transitive
     description:

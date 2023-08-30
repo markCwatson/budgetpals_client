@@ -1,6 +1,7 @@
 import 'package:api/api.dart';
 import 'package:budgetpals_client/budget/bloc/budgets_bloc.dart';
 import 'package:budgetpals_client/budget/view/budget_lists.dart';
+import 'package:budgets_repository/budgets_repository.dart';
 import 'package:expenses_repository/expenses_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,6 +20,10 @@ class BudgetPage extends StatelessWidget {
     dataProvider: IncomesDataProvider(baseUrl: url),
   );
 
+  final BudgetsRepository _budgetsRepository = BudgetsRepository(
+    dataProvider: BudgetsDataProvider(baseUrl: url),
+  );
+
   static Route<void> route() {
     return MaterialPageRoute<void>(builder: (_) => BudgetPage());
   }
@@ -31,6 +36,7 @@ class BudgetPage extends StatelessWidget {
         create: (context) => BudgetsBloc(
           expensesRepository: _expensesRepository,
           incomesRepository: _incomesRepository,
+          budgetsRepository: _budgetsRepository,
         ),
         child: const BudgetsList(),
       ),

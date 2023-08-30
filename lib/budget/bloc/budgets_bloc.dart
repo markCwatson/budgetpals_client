@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:budgets_repository/budgets_repository.dart';
+import 'package:common_models/common_models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:expenses_repository/expenses_repository.dart';
 import 'package:incomes_repository/incomes_repository.dart';
@@ -10,8 +12,10 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
   BudgetsBloc({
     required ExpensesRepository expensesRepository,
     required IncomesRepository incomesRepository,
+    required BudgetsRepository budgetsRepository,
   })  : _expensesRepository = expensesRepository,
         _incomesRepository = incomesRepository,
+        _budgetsRepository = budgetsRepository,
         super(BudgetsInitial()) {
     on<GetBudgetEvent>(_onGetBudgetEvent);
     on<GetExpensesEvent>(_onGetExpensesEvent);
@@ -23,11 +27,19 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
 
   final ExpensesRepository _expensesRepository;
   final IncomesRepository _incomesRepository;
+  final BudgetsRepository _budgetsRepository;
 
   Future<void> _onGetBudgetEvent(
     GetBudgetEvent event,
     Emitter<BudgetsState> emit,
-  ) async {}
+  ) async {
+    final budget = await _budgetsRepository.getBudget(state.authToken);
+    if (budget == null) return;
+    emit(BudgetsState.budgetLoaded(
+      budget.plannedExpenses,
+      budget.plannedIncomes,
+    ));
+  }
 
   Future<void> _onGetExpensesEvent(
     GetExpensesEvent event,

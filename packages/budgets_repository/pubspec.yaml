@@ -1,5 +1,5 @@
-name: expenses_repository
-description: Dart package which manages the expenses domain.
+name: budgets_repository
+description: Dart package which manages the budget domain.
 publish_to: none
 
 environment:

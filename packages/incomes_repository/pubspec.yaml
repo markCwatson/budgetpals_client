@@ -8,4 +8,6 @@ environment:
 dependencies:
   api:
     path: ../api
+  common_models:
+    path: ../common_models
   equatable: ^2.0.0

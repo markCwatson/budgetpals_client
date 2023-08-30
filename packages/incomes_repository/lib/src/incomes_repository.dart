@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:api/api.dart';
+import 'package:common_models/common_models.dart';
 import 'package:incomes_repository/src/models/models.dart';
 
 class IncomesRepository {
@@ -18,18 +19,7 @@ class IncomesRepository {
           // \todo: come up with a different approach for this
           e['endDate'] ??= '';
 
-          return Income(
-            e['_id'] as String,
-            e['amount'] as double,
-            e['date'] as String,
-            e['category'] as String,
-            e['frequency'] as String,
-            e['isEnding'] as bool,
-            e['endDate'] as String,
-            e['isFixed'] as bool,
-            e['userId'] as String,
-            e['isPlanned'] as bool,
-          );
+          return Income.fromJson(e);
         },
       ).toList();
     } catch (e) {

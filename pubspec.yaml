@@ -12,6 +12,10 @@ dependencies:
   auth_repository:
     path: packages/auth_repository
   bloc: ^8.1.0
+  budgets_repository:
+    path: packages/budgets_repository
+  common_models:
+    path: packages/common_models
   equatable: ^2.0.3
   expenses_repository:
     path: packages/expenses_repository

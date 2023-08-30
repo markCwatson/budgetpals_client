@@ -43,13 +43,12 @@ class _BudgetsListState extends State<BudgetsList>
     _tabController = TabController(
       length: 3,
       vsync: this,
-      initialIndex: 1, // default to expenses tab
     );
     _tabController!.addListener(_handleTabSelection);
 
     // Do initial load of expenses
     _setToken();
-    context.read<BudgetsBloc>().add(const GetExpensesEvent());
+    context.read<BudgetsBloc>().add(const GetBudgetEvent());
   }
 
   void _handleTabSelection() {

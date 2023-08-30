@@ -14,6 +14,18 @@ class Expense extends Equatable {
     this.isPlanned,
   );
 
+  Expense.fromJson(Map<String, dynamic> json)
+      : id = json['_id'] as String,
+        amount = json['amount'] as double,
+        date = json['date'] as String,
+        category = json['category'] as String,
+        frequency = json['frequency'] as String,
+        isEnding = json['isEnding'] as bool,
+        endDate = json['endDate'] as String,
+        isFixed = json['isFixed'] as bool,
+        userId = json['userId'] as String,
+        isPlanned = json['isPlanned'] as bool;
+
   final String id;
   final double amount;
   final String date;
@@ -38,16 +50,5 @@ class Expense extends Equatable {
         isPlanned,
       ];
 
-  static const empty = Expense(
-    '',
-    0,
-    '',
-    '',
-    '',
-    false,
-    '',
-    false,
-    '',
-    false,
-  );
+  static const empty = Expense('', 0, '', '', '', false, '', false, '', false);
 }

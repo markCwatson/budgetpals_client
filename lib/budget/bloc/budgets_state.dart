@@ -5,6 +5,8 @@ class BudgetsState extends Equatable {
     this.token = '',
     this.expenses = const [],
     this.incomes = const [],
+    this.plannedExpenses = const [],
+    this.plannedIncomes = const [],
     // \todo: add loading state
   });
 
@@ -16,12 +18,28 @@ class BudgetsState extends Equatable {
   const BudgetsState.incomesLoaded(List<Income?> incomes)
       : this(incomes: incomes);
 
+  const BudgetsState.budgetLoaded(
+    List<Expense?> expenses,
+    List<Income?> incomes,
+  ) : this(
+          plannedExpenses: expenses,
+          plannedIncomes: incomes,
+        );
+
   final String token;
   final List<Expense?> expenses;
   final List<Income?> incomes;
+  final List<Expense?> plannedExpenses;
+  final List<Income?> plannedIncomes;
 
   @override
-  List<Object> get props => [token, expenses, incomes];
+  List<Object> get props => [
+        token,
+        expenses,
+        incomes,
+        plannedExpenses,
+        plannedIncomes,
+      ];
 
   String get authToken => token;
 }
