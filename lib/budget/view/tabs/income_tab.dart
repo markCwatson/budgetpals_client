@@ -20,16 +20,20 @@ class IncomeTab extends StatelessWidget {
               itemCount: state.incomes.length,
               itemBuilder: (BuildContext context, int index) {
                 final income = state.incomes[index];
-                return IncomeCard(
-                  id: income?.id ?? '',
-                  amount: income?.amount ?? 0,
-                  date: income?.date ?? '',
-                  category: income?.category ?? '',
-                  frequency: income?.frequency ?? '',
-                  isEnding: income?.isEnding ?? false,
-                  endDate: income?.endDate ?? '',
-                  isFixed: income?.isFixed ?? false,
-                );
+                if (income != null && !income.isPlanned) {
+                  return IncomeCard(
+                    id: income.id,
+                    amount: income.amount,
+                    date: income.date,
+                    category: income.category,
+                    frequency: income.frequency,
+                    isEnding: income.isEnding,
+                    endDate: income.endDate,
+                    isFixed: income.isFixed,
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
               },
             );
           }
@@ -128,7 +132,7 @@ class IncomeCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '\$${amount.toStringAsFixed(2)}',
+                        '\$ ${amount.toStringAsFixed(2)}',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

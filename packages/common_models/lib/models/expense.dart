@@ -1,6 +1,7 @@
+import 'package:common_models/common_models.dart';
 import 'package:equatable/equatable.dart';
 
-class Expense extends Equatable {
+class Expense extends Equatable implements FinanceEntry {
   const Expense(
     this.id,
     this.amount,

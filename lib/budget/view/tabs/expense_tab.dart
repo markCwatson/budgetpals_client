@@ -20,16 +20,20 @@ class ExpenseTab extends StatelessWidget {
               itemCount: state.expenses.length,
               itemBuilder: (BuildContext context, int index) {
                 final expense = state.expenses[index];
-                return ExpenseCard(
-                  id: expense?.id ?? '',
-                  amount: expense?.amount ?? 0,
-                  date: expense?.date ?? '',
-                  category: expense?.category ?? '',
-                  frequency: expense?.frequency ?? '',
-                  isEnding: expense?.isEnding ?? false,
-                  endDate: expense?.endDate ?? '',
-                  isFixed: expense?.isFixed ?? false,
-                );
+                if (expense != null && !expense.isPlanned) {
+                  return ExpenseCard(
+                    id: expense.id,
+                    amount: expense.amount,
+                    date: expense.date,
+                    category: expense.category,
+                    frequency: expense.frequency,
+                    isEnding: expense.isEnding,
+                    endDate: expense.endDate,
+                    isFixed: expense.isFixed,
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
               },
             );
           }
@@ -128,7 +132,7 @@ class ExpenseCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '\$${amount.toStringAsFixed(2)}',
+                        '\$ ${amount.toStringAsFixed(2)}',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
