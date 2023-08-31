@@ -15,11 +15,11 @@ class IncomeTab extends StatelessWidget {
     return Scaffold(
       body: BlocBuilder<BudgetsBloc, BudgetsState>(
         builder: (context, state) {
-          if (state.incomes.isNotEmpty) {
+          if (state.unplannedIncomes.isNotEmpty) {
             return ListView.builder(
-              itemCount: state.incomes.length,
+              itemCount: state.unplannedIncomes.length,
               itemBuilder: (BuildContext context, int index) {
-                final income = state.incomes[index];
+                final income = state.unplannedIncomes[index];
                 if (income != null && !income.isPlanned) {
                   return IncomeCard(
                     id: income.id,

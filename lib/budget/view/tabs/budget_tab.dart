@@ -1,9 +1,10 @@
+import 'package:budgetpals_client/add_income/models/date.dart';
 import 'package:budgetpals_client/budget/bloc/budgets_bloc.dart';
+import 'package:budgets_repository/budgets_repository.dart';
 import 'package:common_models/common_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class BudgetTab extends StatelessWidget {
   const BudgetTab({
@@ -16,7 +17,17 @@ class BudgetTab extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const Summary(),
+            BlocBuilder<BudgetsBloc, BudgetsState>(
+              builder: (context, state) {
+                if (state.configuration != Configuration.empty) {
+                  return Summary(
+                    config: state.configuration,
+                    endBalance: state.endAccountBalance,
+                  );
+                }
+                return const Text('Error');
+              },
+            ),
             BlocBuilder<BudgetsBloc, BudgetsState>(
               builder: (context, state) {
                 if (state.plannedExpenses.isNotEmpty) {
@@ -48,8 +59,13 @@ class BudgetTab extends StatelessWidget {
 
 class Summary extends StatelessWidget {
   const Summary({
+    required this.config,
+    required this.endBalance,
     super.key,
   });
+
+  final Configuration config;
+  final double endBalance;
 
   @override
   Widget build(BuildContext context) {
@@ -65,45 +81,121 @@ class Summary extends StatelessWidget {
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Account Summary'), // \todo: get data from bloc
+                Text(
+                  'Summary',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ), // \todo: get data from bloc
               ],
             ),
             const SizedBox(height: 16),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Column(
                   children: [
-                    Text('Now'),
-                    Text('\$ 2567.89'),
+                    const Text(
+                      'Start',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      DateTime(2023, 8, 31)
+                          .toIso8601String()
+                          .replaceAll(RegExp('T.*'), ''),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '\$ ${config.startAccountBalance.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
                   ],
                 ),
                 Column(
                   children: [
-                    Text('EOPP'),
-                    Text('\$ 3760.00'),
+                    const Text(
+                      'End',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      DateTime(2023, 9, 13)
+                          .toIso8601String()
+                          .replaceAll(RegExp('T.*'), ''),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      // \todo: calculate the follwoing dynamcially in bloc
+                      '\$ ${endBalance.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    const Text(
+                      'Now',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      DateTime(2023, 9, 5)
+                          .toIso8601String()
+                          .replaceAll(RegExp('T.*'), ''),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '\$ ${config.runningBalance.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  children: [
-                    Text('SOY'),
-                    Text('\$ 1269.43'),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text('EOY'),
-                    Text('\$ 9760.00'),
-                  ],
-                ),
-              ],
-            ),
+            // \todo: calculate the follwoing dynamcially in bloc
+            // const SizedBox(height: 16),
+            // const Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: [
+            //     Column(
+            //       children: [
+            //         Text(
+            //           'SOY',
+            //           style: TextStyle(
+            //             fontWeight: FontWeight.bold,
+            //           ),
+            //         ), // start of year
+            //         Text('\$ 269.43'),
+            //       ],
+            //     ),
+            //     Column(
+            //       children: [
+            //         Text(
+            //           'EOY',
+            //           style: TextStyle(
+            //             fontWeight: FontWeight.bold,
+            //           ),
+            //         ), // end of year
+            //         Text('\$ 9760.00'),
+            //       ],
+            //     ),
+            //   ],
+            // ),
             SummaryChart(),
           ],
         ),
@@ -188,13 +280,16 @@ class SummaryChart extends StatelessWidget {
     ChartData('Mar', 3400, 3780, 900 + 3780 - 3400),
     ChartData('Apr', 3200, 3100, 1200 + 3100 - 3200),
     ChartData('May', 4000, 4575, 1100 + 4575 - 4000),
+    ChartData('Jun', 3800, 4100, 1200 + 4100 - 3800),
+    ChartData('Jul', 3800, 3900, 1400 + 4100 - 3800),
+    ChartData('Aug', 3860, 4200, 1700 + 4100 - 3800),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
+        padding: const EdgeInsets.all(16),
         child: SfCartesianChart(
           primaryXAxis: CategoryAxis(),
           title: ChartTitle(

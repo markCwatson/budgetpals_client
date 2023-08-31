@@ -35,10 +35,25 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
   ) async {
     final budget = await _budgetsRepository.getBudget(state.authToken);
     if (budget == null) return;
-    emit(BudgetsState.budgetLoaded(
-      budget.plannedExpenses,
-      budget.plannedIncomes,
-    ));
+
+    final endAccountBalance = budget.configuration.startAccountBalance +
+        budget.plannedIncomes.fold<double>(
+          0,
+          (previousValue, element) => previousValue + element.amount,
+        ) -
+        budget.plannedExpenses.fold<double>(
+          0,
+          (previousValue, element) => previousValue + element.amount,
+        );
+
+    emit(
+      BudgetsState.budgetLoaded(
+        endAccountBalance,
+        budget.configuration,
+        budget.plannedExpenses,
+        budget.plannedIncomes,
+      ),
+    );
   }
 
   Future<void> _onGetExpensesEvent(
