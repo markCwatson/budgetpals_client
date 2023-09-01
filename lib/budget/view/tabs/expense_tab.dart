@@ -53,9 +53,11 @@ class ExpenseTab extends StatelessWidget {
             (value) {
               // Refresh the data when return to the Expenses page
               // \todo: use caching or something to avoid api call
-              final token = context.read<AuthBloc>().state.token;
-              context.read<BudgetsBloc>().add(SetTokenEvent(token: token));
-              context.read<BudgetsBloc>().add(const GetExpensesEvent());
+              context.read<BudgetsBloc>().add(
+                    GetExpensesEvent(
+                      token: context.read<AuthBloc>().state.token,
+                    ),
+                  );
             },
           );
         },

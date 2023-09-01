@@ -35,7 +35,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     GetBudgetEvent event,
     Emitter<BudgetsState> emit,
   ) async {
-    final budget = await _budgetsRepository.getBudget(state.authToken);
+    final budget = await _budgetsRepository.getBudget(event.token);
     if (budget == null) return;
 
     final endAccountBalance = _computeEndAccountBalance(budget);
@@ -112,7 +112,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
   ) async {
     try {
       // \todo: consider using token on event instead of state??
-      final expenses = await _expensesRepository.getExpenses(state.authToken);
+      final expenses = await _expensesRepository.getExpenses(event.token);
       emit(BudgetsState.expensesLoaded(expenses));
     } catch (e) {
       print(e);
@@ -124,7 +124,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     Emitter<BudgetsState> emit,
   ) async {
     try {
-      final incomes = await _incomesRepository.getIncomes(state.authToken);
+      final incomes = await _incomesRepository.getIncomes(event.token);
       emit(BudgetsState.incomesLoaded(incomes));
     } catch (e) {
       print(e);

@@ -388,13 +388,11 @@ class _BudgetedListState<T extends FinanceEntry>
                         (value) {
                           // Refresh the data when return to the Expenses page
                           // \todo: use caching or something to avoid api call
-                          final token = context.read<AuthBloc>().state.token;
-                          context
-                              .read<BudgetsBloc>()
-                              .add(SetTokenEvent(token: token));
-                          context
-                              .read<BudgetsBloc>()
-                              .add(const GetBudgetEvent());
+                          context.read<BudgetsBloc>().add(
+                                GetBudgetEvent(
+                                  token: context.read<AuthBloc>().state.token,
+                                ),
+                              );
                         },
                       );
                     }
@@ -410,13 +408,11 @@ class _BudgetedListState<T extends FinanceEntry>
                         (value) {
                           // Refresh the data when return to the Expenses page
                           // \todo: use caching or something to avoid api call
-                          final token = context.read<AuthBloc>().state.token;
-                          context
-                              .read<BudgetsBloc>()
-                              .add(SetTokenEvent(token: token));
-                          context
-                              .read<BudgetsBloc>()
-                              .add(const GetBudgetEvent());
+                          context.read<BudgetsBloc>().add(
+                                GetBudgetEvent(
+                                  token: context.read<AuthBloc>().state.token,
+                                ),
+                              );
                         },
                       );
                     },

@@ -10,12 +10,6 @@ List<String> titles = <String>[
   'Income',
 ];
 
-Map<String, BudgetsEvent> getEvents = <String, BudgetsEvent>{
-  titles[0]: const GetBudgetEvent(),
-  titles[1]: const GetExpensesEvent(),
-  titles[2]: const GetIncomesEvent(),
-};
-
 class BudgetsList extends StatefulWidget {
   const BudgetsList({
     super.key,
@@ -28,7 +22,6 @@ class BudgetsList extends StatefulWidget {
 class _BudgetsListState extends State<BudgetsList>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
-  String _token = '';
 
   @override
   void initState() {
@@ -39,9 +32,28 @@ class _BudgetsListState extends State<BudgetsList>
     );
     _tabController!.addListener(_handleTabSelection);
 
-    // Do initial load of expenses
-    _setToken();
-    context.read<BudgetsBloc>().add(const GetBudgetEvent());
+    // Do initial load of budget info
+    context.read<BudgetsBloc>().add(
+          GetBudgetEvent(
+            token: context.read<AuthBloc>().state.token,
+          ),
+        );
+  }
+
+  void _postEvent({
+    required String token,
+    required int index,
+  }) {
+    // Map <tab index, event>
+    final events = <int, BudgetsEvent>{
+      0: GetBudgetEvent(token: token),
+      1: GetExpensesEvent(token: token),
+      2: GetIncomesEvent(token: token),
+    };
+
+    context.read<BudgetsBloc>().add(
+          events[_tabController!.index]!,
+        );
   }
 
   void _handleTabSelection() {
@@ -50,17 +62,11 @@ class _BudgetsListState extends State<BudgetsList>
       if (_tabController!.index >= titles.length) return;
 
       // post event to bloc
-      _setToken();
-      context
-          .read<BudgetsBloc>()
-          .add(getEvents[titles[_tabController!.index]]!);
+      _postEvent(
+        token: context.read<AuthBloc>().state.token,
+        index: _tabController!.index,
+      );
     }
-  }
-
-  void _setToken() {
-    // \todo: find a different way to manage this access token
-    _token = context.read<AuthBloc>().state.token;
-    context.read<BudgetsBloc>().add(SetTokenEvent(token: _token));
   }
 
   @override

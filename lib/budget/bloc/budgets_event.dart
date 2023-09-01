@@ -8,15 +8,36 @@ sealed class BudgetsEvent extends Equatable {
 }
 
 class GetExpensesEvent extends BudgetsEvent {
-  const GetExpensesEvent();
+  const GetExpensesEvent({
+    required this.token,
+  });
+
+  final String token;
+
+  @override
+  List<Object> get props => [token];
 }
 
 class GetIncomesEvent extends BudgetsEvent {
-  const GetIncomesEvent();
+  const GetIncomesEvent({
+    required this.token,
+  });
+
+  final String token;
+
+  @override
+  List<Object> get props => [token];
 }
 
 class GetBudgetEvent extends BudgetsEvent {
-  const GetBudgetEvent();
+  const GetBudgetEvent({
+    required this.token,
+  });
+
+  final String token;
+
+  @override
+  List<Object> get props => [token];
 }
 
 class SetTokenEvent extends BudgetsEvent {
