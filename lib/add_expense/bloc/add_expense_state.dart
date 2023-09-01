@@ -11,6 +11,7 @@ final class AddExpenseState extends Equatable {
     this.endDate = const EndDate.pure(),
     this.isFixed = false,
     this.isValid = false,
+    this.isPlanned = false,
   });
 
   final FormzSubmissionStatus status;
@@ -22,6 +23,7 @@ final class AddExpenseState extends Equatable {
   final EndDate endDate;
   final bool isFixed;
   final bool isValid;
+  final bool isPlanned;
 
   AddExpenseState copyWith({
     FormzSubmissionStatus? status,
@@ -33,6 +35,7 @@ final class AddExpenseState extends Equatable {
     EndDate? endDate,
     bool? isFixed,
     bool? isValid,
+    bool? isPlanned,
   }) {
     return AddExpenseState(
       status: status ?? this.status,
@@ -44,6 +47,7 @@ final class AddExpenseState extends Equatable {
       endDate: endDate ?? this.endDate,
       isFixed: isFixed ?? this.isFixed,
       isValid: isValid ?? this.isValid,
+      isPlanned: isPlanned ?? this.isPlanned,
     );
   }
 
@@ -57,6 +61,7 @@ final class AddExpenseState extends Equatable {
         isEnding,
         isFixed,
         endDate,
+        isPlanned,
       ];
 }
 

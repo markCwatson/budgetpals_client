@@ -7,7 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddExpenseModal extends StatelessWidget {
-  AddExpenseModal({super.key});
+  AddExpenseModal({
+    required this.title,
+    required this.isPlanned,
+    super.key,
+  });
+
+  final String title;
+  final bool isPlanned;
 
   static const url = String.fromEnvironment('API_URL');
 
@@ -16,7 +23,12 @@ class AddExpenseModal extends StatelessWidget {
   );
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => AddExpenseModal());
+    return MaterialPageRoute<void>(
+      builder: (_) => AddExpenseModal(
+        title: 'Add an expense',
+        isPlanned: false,
+      ),
+    );
   }
 
   @override
@@ -37,7 +49,10 @@ class AddExpenseModal extends StatelessWidget {
               );
             return bloc;
           },
-          child: const AddExpenseForm(),
+          child: AddExpenseForm(
+            title: title,
+            isPlanned: isPlanned,
+          ),
         ),
       ),
     );

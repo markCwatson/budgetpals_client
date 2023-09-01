@@ -23,7 +23,6 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
     on<AddExpenseIsEndingChanged>(_onIsEndingChanged);
     on<AddExpenseEndDateChanged>(_onEndDateChanged);
     on<AddExpenseSubmitted>(_onAddExpenseSubmitted);
-    on<AddPlannedIncomeSubmitted>(_onAddPlannedIncomeSubmitted);
   }
 
   final ExpensesRepository _expensesRepository;
@@ -182,32 +181,7 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
           isEnding: state.isEnding,
           endDate: state.endDate.value,
           isFixed: state.isFixed,
-          isPlanned: false,
-        );
-        emit(state.copyWith(status: FormzSubmissionStatus.success));
-      } catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure));
-      }
-    }
-  }
-
-  Future<void> _onAddPlannedIncomeSubmitted(
-    AddPlannedIncomeSubmitted event,
-    Emitter<AddExpenseState> emit,
-  ) async {
-    if (state.isValid) {
-      emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-      try {
-        await _expensesRepository.addExpense(
-          token: event.token,
-          amount: state.amount.value,
-          date: state.date.value,
-          category: state.category.value,
-          frequency: state.frequency.value,
-          isEnding: state.isEnding,
-          endDate: state.endDate.value,
-          isFixed: state.isFixed,
-          isPlanned: true,
+          isPlanned: event.isPlanned,
         );
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (e) {

@@ -1,4 +1,6 @@
-import 'package:budgetpals_client/add_income/models/date.dart';
+import 'package:budgetpals_client/add_expense/view/view.dart';
+import 'package:budgetpals_client/add_income/view/view.dart';
+import 'package:budgetpals_client/auth/auth.dart';
 import 'package:budgetpals_client/budget/bloc/budgets_bloc.dart';
 import 'package:budgetpals_client/utilities/utilities.dart';
 import 'package:budgets_repository/budgets_repository.dart';
@@ -33,26 +35,26 @@ class BudgetTab extends StatelessWidget {
             ),
             BlocBuilder<BudgetsBloc, BudgetsState>(
               builder: (context, state) {
-                if (state.plannedExpenses.isNotEmpty) {
-                  return BudgetedList<Expense>(
-                    entries: state.plannedExpenses,
-                    title: 'Planned Expenses in this Period',
-                    type: BudgetTabType.expense,
-                  );
+                if (state.plannedExpenses.isEmpty) {
+                  return const Text('Loading planned expenses...');
                 }
-                return const Text('Get started');
+                return BudgetedList<Expense>(
+                  entries: state.plannedExpenses,
+                  title: 'Planned Expenses in this Period',
+                  type: BudgetTabType.expense,
+                );
               },
             ),
             BlocBuilder<BudgetsBloc, BudgetsState>(
               builder: (context, state) {
-                if (state.plannedIncomes.isNotEmpty) {
-                  return BudgetedList<Income>(
-                    entries: state.plannedIncomes,
-                    title: 'Planned Incomes in this Period',
-                    type: BudgetTabType.income,
-                  );
+                if (state.plannedIncomes.isEmpty) {
+                  return const Text('Loading planned income...');
                 }
-                return const Text('Get started');
+                return BudgetedList<Income>(
+                  entries: state.plannedIncomes,
+                  title: 'Planned Incomes in this Period',
+                  type: BudgetTabType.income,
+                );
               },
             ),
           ],
@@ -229,7 +231,7 @@ class _SummaryState extends State<Summary> {
   }
 }
 
-class BudgetedList<T extends FinanceEntry> extends StatelessWidget {
+class BudgetedList<T extends FinanceEntry> extends StatefulWidget {
   const BudgetedList({
     required this.entries,
     required this.title,
@@ -241,9 +243,23 @@ class BudgetedList<T extends FinanceEntry> extends StatelessWidget {
   final String title;
   final BudgetTabType type;
 
+  @override
+  State<BudgetedList<T>> createState() => _BudgetedListState<T>();
+}
+
+class _BudgetedListState<T extends FinanceEntry>
+    extends State<BudgetedList<T>> {
+  late List<T?> _entries;
+
+  @override
+  void initState() {
+    super.initState();
+    _entries = List.from(widget.entries);
+  }
+
   double _computeTotal() {
     var total = 0.0;
-    for (final entry in entries) {
+    for (final entry in widget.entries) {
       total += entry!.amount;
     }
     return total;
@@ -259,26 +275,71 @@ class BudgetedList<T extends FinanceEntry> extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(title),
+            Text(widget.title),
             const SizedBox(height: 16),
             SingleChildScrollView(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(),
                 child: Column(
                   children: List.generate(
-                    entries.length,
+                    _entries.length,
                     (index) {
-                      final entry = entries[index]!;
-                      return Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Row(
-                          children: [
-                            Text(entry.category),
-                            const Spacer(),
-                            Text(entry.date.replaceAll(RegExp('T.*'), '')),
-                            const Spacer(),
-                            Text('\$ ${entry.amount.toStringAsFixed(2)}'),
-                          ],
+                      final entry = _entries[index]!;
+                      return Dismissible(
+                        key: Key('dissmissiblePlanned-${widget.type}-$index'),
+                        onDismissed: (direction) {
+                          setState(() {
+                            _entries.removeAt(index);
+                          });
+
+                          if (widget.type == BudgetTabType.expense) {
+                            context.read<BudgetsBloc>().add(
+                                  DeletePlannedExpenseRequestEvent(
+                                    token: context.read<AuthBloc>().state.token,
+                                    id: entry.id,
+                                  ),
+                                );
+                          } else {
+                            context.read<BudgetsBloc>().add(
+                                  DeletePlannedIncomeRequestEvent(
+                                    token: context.read<AuthBloc>().state.token,
+                                    id: entry.id,
+                                  ),
+                                );
+                          }
+                          final type = widget.type == BudgetTabType.expense
+                              ? 'expense'
+                              : 'income';
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Deleted a planned $type'),
+                            ),
+                          );
+                        },
+                        background: Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.all(16),
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(entry.category),
+                                  Text(
+                                      entry.date.replaceAll(RegExp('T.*'), '')),
+                                ],
+                              ),
+                              Text('\$ ${entry.amount.toStringAsFixed(2)}'),
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -313,16 +374,54 @@ class BudgetedList<T extends FinanceEntry> extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              key: Key('addEntry-$type-Button'),
-              onPressed: type == BudgetTabType.expense
+              key: Key('addEntry-${widget.type}-Button'),
+              onPressed: widget.type == BudgetTabType.expense
                   ? () {
-                      // \todo: post event to bloc
-                      print('edit planned expenses');
+                      showModalBottomSheet<void>(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (ctx) => AddExpenseModal(
+                          title: 'Add a planned expense',
+                          isPlanned: true,
+                        ),
+                      ).then(
+                        (value) {
+                          // Refresh the data when return to the Expenses page
+                          // \todo: use caching or something to avoid api call
+                          final token = context.read<AuthBloc>().state.token;
+                          context
+                              .read<BudgetsBloc>()
+                              .add(SetTokenEvent(token: token));
+                          context
+                              .read<BudgetsBloc>()
+                              .add(const GetBudgetEvent());
+                        },
+                      );
                     }
                   : () {
-                      print('edit planned incomes');
+                      showModalBottomSheet<void>(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (ctx) => AddIncomeModal(
+                          title: 'Add a planned income',
+                          isPlanned: true,
+                        ),
+                      ).then(
+                        (value) {
+                          // Refresh the data when return to the Expenses page
+                          // \todo: use caching or something to avoid api call
+                          final token = context.read<AuthBloc>().state.token;
+                          context
+                              .read<BudgetsBloc>()
+                              .add(SetTokenEvent(token: token));
+                          context
+                              .read<BudgetsBloc>()
+                              .add(const GetBudgetEvent());
+                        },
+                      );
                     },
-              child: const Text('Edit'),
+              // \todo :add ability to edit
+              child: const Text('Add'),
             ),
           ],
         ),

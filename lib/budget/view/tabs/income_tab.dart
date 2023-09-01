@@ -45,7 +45,10 @@ class IncomeTab extends StatelessWidget {
           showModalBottomSheet<void>(
             isScrollControlled: true,
             context: context,
-            builder: (ctx) => AddIncomeModal(),
+            builder: (ctx) => AddIncomeModal(
+              title: 'Add an income',
+              isPlanned: false,
+            ),
           ).then(
             (value) {
               // Refresh the data when return to the Expenses page

@@ -3,10 +3,10 @@ import 'package:equatable/equatable.dart';
 
 class Expense extends Equatable implements FinanceEntry {
   const Expense({
+    required this.id,
     required this.amount,
     required this.date,
     required this.category,
-    this.id = '',
     this.frequency = '',
     this.isEnding = false,
     this.endDate = '',
@@ -27,7 +27,6 @@ class Expense extends Equatable implements FinanceEntry {
         userId = (json['userId'] ?? '') as String,
         isPlanned = (json['isPlanned'] ?? false) as bool;
 
-  final String id;
   final String frequency;
   final bool isEnding;
   final String endDate;
@@ -35,6 +34,8 @@ class Expense extends Equatable implements FinanceEntry {
   final String userId;
   final bool isPlanned;
 
+  @override
+  final String id;
   @override
   final double amount;
   @override

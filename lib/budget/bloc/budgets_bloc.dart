@@ -23,6 +23,8 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     on<SetTokenEvent>(_onSetTokenEvent);
     on<DeleteExpenseRequestEvent>(_onDeleteExpenseEvent);
     on<DeleteIncomeRequestEvent>(_onDeleteIncomeEvent);
+    on<DeletePlannedExpenseRequestEvent>(_onDeletePlannedExpenseEvent);
+    on<DeletePlannedIncomeRequestEvent>(_onDeletePlannedIncomeEvent);
   }
 
   final ExpensesRepository _expensesRepository;
@@ -36,15 +38,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     final budget = await _budgetsRepository.getBudget(state.authToken);
     if (budget == null) return;
 
-    final endAccountBalance = budget.configuration.startAccountBalance +
-        budget.plannedIncomes.fold<double>(
-          0,
-          (previousValue, element) => previousValue + element.amount,
-        ) -
-        budget.plannedExpenses.fold<double>(
-          0,
-          (previousValue, element) => previousValue + element.amount,
-        );
+    final endAccountBalance = _computeEndAccountBalance(budget);
 
     emit(
       BudgetsState.budgetLoaded(
@@ -54,6 +48,62 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
         budget.plannedIncomes,
       ),
     );
+  }
+
+  Future<void> _onDeletePlannedExpenseEvent(
+    DeletePlannedExpenseRequestEvent event,
+    Emitter<BudgetsState> emit,
+  ) async {
+    try {
+      await _expensesRepository.deleteExpense(
+        token: event.token,
+        id: event.id,
+      );
+
+      final budget = await _budgetsRepository.getBudget(event.token);
+      if (budget == null) return;
+
+      final endAccountBalance = _computeEndAccountBalance(budget);
+
+      emit(
+        BudgetsState.budgetLoaded(
+          endAccountBalance,
+          budget.configuration,
+          budget.plannedExpenses,
+          budget.plannedIncomes,
+        ),
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _onDeletePlannedIncomeEvent(
+    DeletePlannedIncomeRequestEvent event,
+    Emitter<BudgetsState> emit,
+  ) async {
+    try {
+      await _incomesRepository.deleteIncome(
+        token: event.token,
+        id: event.id,
+      );
+
+      final budget = await _budgetsRepository.getBudget(event.token);
+      if (budget == null) return;
+
+      final endAccountBalance = _computeEndAccountBalance(budget);
+
+      emit(
+        BudgetsState.budgetLoaded(
+          endAccountBalance,
+          budget.configuration,
+          budget.plannedExpenses,
+          budget.plannedIncomes,
+        ),
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> _onGetExpensesEvent(
@@ -118,5 +168,18 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     } catch (e) {
       print(e);
     }
+  }
+
+  double _computeEndAccountBalance(Budget budget) {
+    final endAccountBalance = budget.configuration.startAccountBalance +
+        budget.plannedIncomes.fold<double>(
+          0,
+          (previousValue, element) => previousValue + element.amount,
+        ) -
+        budget.plannedExpenses.fold<double>(
+          0,
+          (previousValue, element) => previousValue + element.amount,
+        );
+    return endAccountBalance;
   }
 }

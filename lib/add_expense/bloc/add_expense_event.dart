@@ -98,21 +98,12 @@ final class AddExpenseDateChanged extends AddExpenseEvent {
 final class AddExpenseSubmitted extends AddExpenseEvent {
   const AddExpenseSubmitted({
     required this.token,
+    required this.isPlanned,
   });
 
   final String token;
+  final bool isPlanned;
 
   @override
-  List<Object> get props => [token];
-}
-
-final class AddPlannedIncomeSubmitted extends AddExpenseEvent {
-  const AddPlannedIncomeSubmitted({
-    required this.token,
-  });
-
-  final String token;
-
-  @override
-  List<Object> get props => [token];
+  List<Object> get props => [token, isPlanned];
 }

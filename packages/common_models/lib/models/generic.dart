@@ -18,6 +18,7 @@
 /// }
 /// ```
 abstract class FinanceEntry {
+  String get id;
   String get category;
   String get date;
   double get amount;

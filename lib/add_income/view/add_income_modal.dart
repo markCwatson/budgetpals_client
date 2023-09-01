@@ -7,7 +7,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incomes_repository/incomes_repository.dart';
 
 class AddIncomeModal extends StatelessWidget {
-  AddIncomeModal({super.key});
+  AddIncomeModal({
+    required this.title,
+    required this.isPlanned,
+    super.key,
+  });
+
+  final String title;
+  final bool isPlanned;
 
   static const url = String.fromEnvironment('API_URL');
 
@@ -16,7 +23,12 @@ class AddIncomeModal extends StatelessWidget {
   );
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => AddIncomeModal());
+    return MaterialPageRoute<void>(
+      builder: (_) => AddIncomeModal(
+        title: 'Add an income',
+        isPlanned: false,
+      ),
+    );
   }
 
   @override
@@ -37,7 +49,10 @@ class AddIncomeModal extends StatelessWidget {
               );
             return bloc;
           },
-          child: const AddIncomeForm(),
+          child: AddIncomeForm(
+            title: title,
+            isPlanned: isPlanned,
+          ),
         ),
       ),
     );

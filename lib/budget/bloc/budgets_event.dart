@@ -74,3 +74,29 @@ class DeleteIncomeRequestEvent extends BudgetsEvent {
   @override
   List<Object> get props => [token, id];
 }
+
+class DeletePlannedExpenseRequestEvent extends BudgetsEvent {
+  const DeletePlannedExpenseRequestEvent({
+    required this.token,
+    required this.id,
+  });
+
+  final String token;
+  final String id;
+
+  @override
+  List<Object> get props => [token, id];
+}
+
+class DeletePlannedIncomeRequestEvent extends BudgetsEvent {
+  const DeletePlannedIncomeRequestEvent({
+    required this.token,
+    required this.id,
+  });
+
+  final String token;
+  final String id;
+
+  @override
+  List<Object> get props => [token, id];
+}

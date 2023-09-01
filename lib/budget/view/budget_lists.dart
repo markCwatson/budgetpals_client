@@ -1,5 +1,3 @@
-import 'package:budgetpals_client/add_expense/view/add_expense_modal.dart';
-import 'package:budgetpals_client/add_income/view/add_income_modal.dart';
 import 'package:budgetpals_client/auth/bloc/auth_bloc.dart';
 import 'package:budgetpals_client/budget/bloc/budgets_bloc.dart';
 import 'package:budgetpals_client/budget/view/tabs/tabs.dart';
@@ -16,11 +14,6 @@ Map<String, BudgetsEvent> getEvents = <String, BudgetsEvent>{
   titles[0]: const GetBudgetEvent(),
   titles[1]: const GetExpensesEvent(),
   titles[2]: const GetIncomesEvent(),
-};
-
-Map<String, Widget> modals = <String, Widget>{
-  titles[1]: AddExpenseModal(),
-  titles[2]: AddIncomeModal(),
 };
 
 class BudgetsList extends StatefulWidget {

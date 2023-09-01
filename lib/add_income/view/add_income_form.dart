@@ -5,7 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 class AddIncomeForm extends StatelessWidget {
-  const AddIncomeForm({super.key});
+  const AddIncomeForm({
+    required this.title,
+    required this.isPlanned,
+    super.key,
+  });
+
+  final String title;
+  final bool isPlanned;
 
   @override
   Widget build(BuildContext context) {
@@ -22,22 +29,23 @@ class AddIncomeForm extends StatelessWidget {
           });
         }
       },
-      child: const Center(
+      child: Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Card(
-                margin: EdgeInsets.all(16),
+                margin: const EdgeInsets.all(16),
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _AmountAndDateInput(),
-                      _CategoryAndFrequency(),
-                      _IsEndingAndEndDateInput(),
-                      _IsFixedInput(),
-                      _SubmitButton(),
+                      _Title(title: title),
+                      const _AmountAndDateInput(),
+                      const _CategoryAndFrequency(),
+                      const _IsEndingAndEndDateInput(),
+                      const _IsFixedInput(),
+                      _SubmitButton(isPlanned: isPlanned),
                     ],
                   ),
                 ),
@@ -45,6 +53,40 @@ class AddIncomeForm extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _Title extends StatelessWidget {
+  const _Title({
+    required this.title,
+  });
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const Divider(
+            color: Colors.black38,
+            thickness: 1,
+          ),
+        ],
       ),
     );
   }
@@ -422,7 +464,11 @@ class _IsFixedInput extends StatelessWidget {
 }
 
 class _SubmitButton extends StatelessWidget {
-  const _SubmitButton();
+  const _SubmitButton({
+    required this.isPlanned,
+  });
+
+  final bool isPlanned;
 
   @override
   Widget build(BuildContext context) {
@@ -450,6 +496,7 @@ class _SubmitButton extends StatelessWidget {
                         context.read<AddIncomeBloc>().add(
                               AddIncomeSubmitted(
                                 token: context.read<AuthBloc>().state.token,
+                                isPlanned: isPlanned,
                               ),
                             );
                       }

@@ -45,7 +45,10 @@ class ExpenseTab extends StatelessWidget {
           showModalBottomSheet<void>(
             isScrollControlled: true,
             context: context,
-            builder: (ctx) => AddExpenseModal(),
+            builder: (ctx) => AddExpenseModal(
+              title: 'Add an expense',
+              isPlanned: false,
+            ),
           ).then(
             (value) {
               // Refresh the data when return to the Expenses page
