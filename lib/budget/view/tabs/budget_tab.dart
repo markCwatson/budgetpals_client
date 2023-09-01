@@ -119,37 +119,50 @@ class _SummaryState extends State<Summary> {
               ],
             ),
             const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Today's date: ",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black38),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Today's date: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          DateTime.now().toIso8601String().replaceAll(
+                                RegExp('T.*'),
+                                '',
+                              ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Current Account balance: ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '\$ ${widget.config.runningBalance.toStringAsFixed(2)}',
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                Text(
-                  DateTime.now().toIso8601String().replaceAll(
-                        RegExp('T.*'),
-                        '',
-                      ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Current Account balance: ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  '\$ ${widget.config.runningBalance.toStringAsFixed(2)}',
-                ),
-              ],
+              ),
             ),
             const SizedBox(height: 24),
             Row(
@@ -222,6 +235,14 @@ class BudgetedList<T extends FinanceEntry> extends StatelessWidget {
   final List<T?> entries;
   final String title;
 
+  double _computeTotal() {
+    var total = 0.0;
+    for (final entry in entries) {
+      total += entry!.amount;
+    }
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -257,6 +278,31 @@ class BudgetedList<T extends FinanceEntry> extends StatelessWidget {
                     },
                   ),
                 ),
+              ),
+            ),
+            const Divider(
+              color: Colors.black38,
+              thickness: 1,
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Total: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '\$ ${_computeTotal().toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 16),
