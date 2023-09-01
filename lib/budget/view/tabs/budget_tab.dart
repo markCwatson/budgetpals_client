@@ -1,5 +1,6 @@
 import 'package:budgetpals_client/add_income/models/date.dart';
 import 'package:budgetpals_client/budget/bloc/budgets_bloc.dart';
+import 'package:budgetpals_client/utilities/utilities.dart';
 import 'package:budgets_repository/budgets_repository.dart';
 import 'package:common_models/common_models.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class BudgetTab extends StatelessWidget {
   }
 }
 
-class Summary extends StatelessWidget {
+class Summary extends StatefulWidget {
   const Summary({
     required this.config,
     required this.endBalance,
@@ -66,6 +67,33 @@ class Summary extends StatelessWidget {
 
   final Configuration config;
   final double endBalance;
+
+  @override
+  State<Summary> createState() => _SummaryState();
+}
+
+class _SummaryState extends State<Summary> {
+  String _startOfPeriod = '';
+  String _endOfPeriod = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Compute the start and end of the current period
+    final createdAt = DateTime.parse(widget.config.startDate);
+    final today = DateTime.now().toUtc();
+    final currentPeriod = const PeriodCalculator().calculateCurrentPeriod(
+      createdAt,
+      widget.config.period,
+      today,
+    );
+
+    _startOfPeriod =
+        currentPeriod.start.toIso8601String().replaceAll(RegExp('T.*'), '');
+    _endOfPeriod =
+        currentPeriod.end.toIso8601String().replaceAll(RegExp('T.*'), '');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,110 +120,90 @@ class Summary extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  children: [
-                    const Text(
-                      'Start',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                const Text(
+                  "Today's date: ",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  DateTime.now().toIso8601String().replaceAll(
+                        RegExp('T.*'),
+                        '',
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      DateTime(2023, 8, 31)
-                          .toIso8601String()
-                          .replaceAll(RegExp('T.*'), ''),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '\$ ${config.startAccountBalance.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Current Account balance: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '\$ ${widget.config.runningBalance.toStringAsFixed(2)}',
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Start of this ${widget.config.period.toLowerCase()} period: ',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Column(
                   children: [
-                    const Text(
-                      'End',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Text(
+                      _startOfPeriod,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      DateTime(2023, 9, 13)
-                          .toIso8601String()
-                          .replaceAll(RegExp('T.*'), ''),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      // \todo: calculate the follwoing dynamcially in bloc
-                      '\$ ${endBalance.toStringAsFixed(2)}',
+                      '\$ ${widget.config.startAccountBalance.toStringAsFixed(2)}',
                       style: const TextStyle(
                         fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    const Text(
-                      'Now',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      DateTime(2023, 9, 5)
-                          .toIso8601String()
-                          .replaceAll(RegExp('T.*'), ''),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '\$ ${config.runningBalance.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
               ],
             ),
-            // \todo: calculate the follwoing dynamcially in bloc
-            // const SizedBox(height: 16),
-            // const Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //   children: [
-            //     Column(
-            //       children: [
-            //         Text(
-            //           'SOY',
-            //           style: TextStyle(
-            //             fontWeight: FontWeight.bold,
-            //           ),
-            //         ), // start of year
-            //         Text('\$ 269.43'),
-            //       ],
-            //     ),
-            //     Column(
-            //       children: [
-            //         Text(
-            //           'EOY',
-            //           style: TextStyle(
-            //             fontWeight: FontWeight.bold,
-            //           ),
-            //         ), // end of year
-            //         Text('\$ 9760.00'),
-            //       ],
-            //     ),
-            //   ],
-            // ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Projection for end of period: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Column(
+                  children: [
+                    Text(
+                      _endOfPeriod,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '\$ ${widget.endBalance.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             SummaryChart(),
           ],
         ),
@@ -272,7 +280,7 @@ class ChartData {
 class SummaryChart extends StatelessWidget {
   SummaryChart({super.key});
 
-  // ]todo: get data from bloc
+  // \todo: get data from bloc
   // Expense, income, bank bal
   final List<ChartData> chartData = [
     ChartData('Jan', 3500, 3760, 500 + 3760 - 3500),
@@ -293,7 +301,7 @@ class SummaryChart extends StatelessWidget {
         child: SfCartesianChart(
           primaryXAxis: CategoryAxis(),
           title: ChartTitle(
-            text: 'Monthly Summary',
+            text: 'History',
             textStyle: const TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.bold,
