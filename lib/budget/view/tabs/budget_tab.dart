@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+enum BudgetTabType { expense, income }
+
 class BudgetTab extends StatelessWidget {
   const BudgetTab({
     super.key,
@@ -34,7 +36,8 @@ class BudgetTab extends StatelessWidget {
                 if (state.plannedExpenses.isNotEmpty) {
                   return BudgetedList<Expense>(
                     entries: state.plannedExpenses,
-                    title: 'Planned Expenses',
+                    title: 'Planned Expenses in this Period',
+                    type: BudgetTabType.expense,
                   );
                 }
                 return const Text('Get started');
@@ -45,7 +48,8 @@ class BudgetTab extends StatelessWidget {
                 if (state.plannedIncomes.isNotEmpty) {
                   return BudgetedList<Income>(
                     entries: state.plannedIncomes,
-                    title: 'Planned Incomes',
+                    title: 'Planned Incomes in this Period',
+                    type: BudgetTabType.income,
                   );
                 }
                 return const Text('Get started');
@@ -229,11 +233,13 @@ class BudgetedList<T extends FinanceEntry> extends StatelessWidget {
   const BudgetedList({
     required this.entries,
     required this.title,
+    required this.type,
     super.key,
   });
 
   final List<T?> entries;
   final String title;
+  final BudgetTabType type;
 
   double _computeTotal() {
     var total = 0.0;
@@ -306,7 +312,18 @@ class BudgetedList<T extends FinanceEntry> extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const Icon(Icons.add_circle_outline_outlined),
+            ElevatedButton(
+              key: Key('addEntry-$type-Button'),
+              onPressed: type == BudgetTabType.expense
+                  ? () {
+                      // \todo: post event to bloc
+                      print('edit planned expenses');
+                    }
+                  : () {
+                      print('edit planned incomes');
+                    },
+              child: const Text('Edit'),
+            ),
           ],
         ),
       ),
