@@ -1,7 +1,7 @@
 import 'package:api/api.dart';
 import 'package:auth_repository/auth_repository.dart';
+import 'package:budgetpals_client/add_budget/view/add_budget_page.dart';
 import 'package:budgetpals_client/auth/auth.dart';
-import 'package:budgetpals_client/budget/view/budget_page.dart';
 import 'package:budgetpals_client/login/login.dart';
 import 'package:budgetpals_client/splash/splash.dart';
 import 'package:budgetpals_client/theme.dart';
@@ -93,7 +93,7 @@ class _AppViewState extends State<AppView> {
                 );
               default:
                 _navigator.pushAndRemoveUntil<void>(
-                  BudgetPage.route(),
+                  AddBudgetPage.route(),
                   (route) => false,
                 );
             }

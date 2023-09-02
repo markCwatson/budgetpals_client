@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:api/api.dart';
 import 'package:budgets_repository/budgets_repository.dart';
@@ -48,6 +49,34 @@ class BudgetsRepository {
     } catch (e) {
       print(e);
       return null;
+    }
+  }
+
+  Future<List<String>> getPeriods(String token) async {
+    try {
+      return await dataProvider.getPeriods(token);
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  Future<bool> addBudget({
+    required String token,
+    required String start,
+    required String period,
+    required double accountBalance,
+  }) async {
+    try {
+      return await dataProvider.addBudget(
+        token: token,
+        start: start,
+        period: period,
+        accountBalance: accountBalance,
+      );
+    } catch (e) {
+      print(e);
+      return false;
     }
   }
 }

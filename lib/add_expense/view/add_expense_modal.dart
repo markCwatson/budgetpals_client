@@ -41,7 +41,7 @@ class AddExpenseModal extends StatelessWidget {
             final bloc = AddExpenseBloc(
               expensesRepository: _expensesRepository,
             )
-              // Dispatch an events to fetching the categories/frequencies
+              // Dispatch an event to fetch the categories/frequencies
               ..add(
                 FetchCategoriesAndFrequenciesEvent(
                   token: context.read<AuthBloc>().state.token,

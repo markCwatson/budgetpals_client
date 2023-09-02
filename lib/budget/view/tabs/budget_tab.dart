@@ -20,38 +20,32 @@ class BudgetTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            BlocBuilder<BudgetsBloc, BudgetsState>(
-              builder: (context, state) {
-                if (state.configuration != Configuration.empty) {
-                  return Summary(
+        child: BlocBuilder<BudgetsBloc, BudgetsState>(
+          builder: (context, state) {
+            if (state.configuration != Configuration.empty) {
+              return Column(
+                children: [
+                  Summary(
                     config: state.configuration,
                     endBalance: state.endAccountBalance,
-                  );
-                }
-                return const Text('Error');
-              },
-            ),
-            BlocBuilder<BudgetsBloc, BudgetsState>(
-              builder: (context, state) {
-                return BudgetedList<Expense>(
-                  entries: state.plannedExpenses,
-                  title: 'Planned Expenses in this Period',
-                  type: BudgetTabType.expense,
-                );
-              },
-            ),
-            BlocBuilder<BudgetsBloc, BudgetsState>(
-              builder: (context, state) {
-                return BudgetedList<Income>(
-                  entries: state.plannedIncomes,
-                  title: 'Planned Incomes in this Period',
-                  type: BudgetTabType.income,
-                );
-              },
-            ),
-          ],
+                  ),
+                  BudgetedList<Expense>(
+                    entries: state.plannedExpenses,
+                    title: 'Planned Expenses in this Period',
+                    type: BudgetTabType.expense,
+                  ),
+                  BudgetedList<Income>(
+                    entries: state.plannedIncomes,
+                    title: 'Planned Incomes in this Period',
+                    type: BudgetTabType.income,
+                  ),
+                ],
+              );
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
         ),
       ),
     );
