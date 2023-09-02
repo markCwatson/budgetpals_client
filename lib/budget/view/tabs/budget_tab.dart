@@ -35,9 +35,6 @@ class BudgetTab extends StatelessWidget {
             ),
             BlocBuilder<BudgetsBloc, BudgetsState>(
               builder: (context, state) {
-                if (state.plannedExpenses.isEmpty) {
-                  return const Text('Loading planned expenses...');
-                }
                 return BudgetedList<Expense>(
                   entries: state.plannedExpenses,
                   title: 'Planned Expenses in this Period',
@@ -47,9 +44,6 @@ class BudgetTab extends StatelessWidget {
             ),
             BlocBuilder<BudgetsBloc, BudgetsState>(
               builder: (context, state) {
-                if (state.plannedIncomes.isEmpty) {
-                  return const Text('Loading planned income...');
-                }
                 return BudgetedList<Income>(
                   entries: state.plannedIncomes,
                   title: 'Planned Incomes in this Period',
@@ -386,7 +380,7 @@ class _BudgetedListState<T extends FinanceEntry>
                         ),
                       ).then(
                         (value) {
-                          // Refresh the data when return to the Expenses page
+                          // Refresh the data on return
                           // \todo: use caching or something to avoid api call
                           context.read<BudgetsBloc>().add(
                                 GetBudgetEvent(
@@ -406,7 +400,7 @@ class _BudgetedListState<T extends FinanceEntry>
                         ),
                       ).then(
                         (value) {
-                          // Refresh the data when return to the Expenses page
+                          // Refresh the data on return
                           // \todo: use caching or something to avoid api call
                           context.read<BudgetsBloc>().add(
                                 GetBudgetEvent(
