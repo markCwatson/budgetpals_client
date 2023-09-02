@@ -1,6 +1,6 @@
 import 'package:api/api.dart';
 import 'package:budgetpals_client/budget/bloc/budgets_bloc.dart';
-import 'package:budgetpals_client/budget/view/budget_lists.dart';
+import 'package:budgetpals_client/budget/view/budget_tabs.dart';
 import 'package:budgets_repository/budgets_repository.dart';
 import 'package:expenses_repository/expenses_repository.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +38,7 @@ class BudgetPage extends StatelessWidget {
           incomesRepository: _incomesRepository,
           budgetsRepository: _budgetsRepository,
         ),
-        child: const BudgetsList(),
+        child: const BudgetTabs(),
       ),
     );
   }

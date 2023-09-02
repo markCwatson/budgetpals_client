@@ -10,16 +10,16 @@ List<String> titles = <String>[
   'Income',
 ];
 
-class BudgetsList extends StatefulWidget {
-  const BudgetsList({
+class BudgetTabs extends StatefulWidget {
+  const BudgetTabs({
     super.key,
   });
 
   @override
-  State<BudgetsList> createState() => _BudgetsListState();
+  State<BudgetTabs> createState() => _BudgetTabsState();
 }
 
-class _BudgetsListState extends State<BudgetsList>
+class _BudgetTabsState extends State<BudgetTabs>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
 
