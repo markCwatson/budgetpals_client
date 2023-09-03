@@ -3,7 +3,7 @@ import 'package:budgetpals_client/login/login.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const usernameString = 'mock-username';
+  const usernameString = 'email@email.com';
   group('Username', () {
     group('constructors', () {
       test('pure creates correct instance', () {

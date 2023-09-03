@@ -1,3 +1,5 @@
+[![node CI](https://github.com/markCwatson/budgetpals_client/actions/workflows/dart.yml/badge.svg?branch=main)](https://github.com/markCwatson/budgetpals_client/actions/workflows/dart.yml)
+
 # budgetpals_client (WIP)
 
 A mobile client for budgetpals. 

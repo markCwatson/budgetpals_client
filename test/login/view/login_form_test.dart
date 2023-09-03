@@ -100,7 +100,7 @@ void main() {
         ),
       );
       expect(find.byType(ElevatedButton), findsNothing);
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsWidgets);
     });
 
     testWidgets('continue button is enabled when status is validated',

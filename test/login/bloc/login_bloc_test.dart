@@ -29,7 +29,7 @@ void main() {
         setUp: () {
           when(
             () => authRepository.logIn(
-              username: 'username',
+              username: 'email@email.com',
               password: 'password',
             ),
           ).thenAnswer((_) => Future<String>.value('user'));
@@ -39,25 +39,25 @@ void main() {
         ),
         act: (bloc) {
           bloc
-            ..add(const LoginUsernameChanged('username'))
+            ..add(const LoginUsernameChanged('email@email.com'))
             ..add(const LoginPasswordChanged('password'))
             ..add(const LoginSubmitted());
         },
         expect: () => const <LoginState>[
-          LoginState(username: Username.dirty('username')),
+          LoginState(username: Username.dirty('email@email.com')),
           LoginState(
-            username: Username.dirty('username'),
+            username: Username.dirty('email@email.com'),
             password: Password.dirty('password'),
             isValid: true,
           ),
           LoginState(
-            username: Username.dirty('username'),
+            username: Username.dirty('email@email.com'),
             password: Password.dirty('password'),
             isValid: true,
             status: FormzSubmissionStatus.inProgress,
           ),
           LoginState(
-            username: Username.dirty('username'),
+            username: Username.dirty('email@email.com'),
             password: Password.dirty('password'),
             isValid: true,
             status: FormzSubmissionStatus.success,
@@ -70,7 +70,7 @@ void main() {
         setUp: () {
           when(
             () => authRepository.logIn(
-              username: 'username',
+              username: 'email@email.com',
               password: 'password',
             ),
           ).thenThrow(Exception('oops'));
@@ -80,27 +80,27 @@ void main() {
         ),
         act: (bloc) {
           bloc
-            ..add(const LoginUsernameChanged('username'))
+            ..add(const LoginUsernameChanged('email@email.com'))
             ..add(const LoginPasswordChanged('password'))
             ..add(const LoginSubmitted());
         },
         expect: () => const <LoginState>[
           LoginState(
-            username: Username.dirty('username'),
+            username: Username.dirty('email@email.com'),
           ),
           LoginState(
-            username: Username.dirty('username'),
+            username: Username.dirty('email@email.com'),
             password: Password.dirty('password'),
             isValid: true,
           ),
           LoginState(
-            username: Username.dirty('username'),
+            username: Username.dirty('email@email.com'),
             password: Password.dirty('password'),
             isValid: true,
             status: FormzSubmissionStatus.inProgress,
           ),
           LoginState(
-            username: Username.dirty('username'),
+            username: Username.dirty('email@email.com'),
             password: Password.dirty('password'),
             isValid: true,
             status: FormzSubmissionStatus.failure,
