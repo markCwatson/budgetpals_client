@@ -108,5 +108,24 @@ void main() {
         ],
       );
     });
+
+    group('LoginGoToCreateAccount', () {
+      blocTest<LoginBloc, LoginState>(
+        'emits [LoginGoToCreateAccount] '
+        'user clicks create account button',
+        setUp: () {},
+        build: () => LoginBloc(
+          authRepository: authRepository,
+        ),
+        act: (bloc) {
+          bloc.add(const LoginGoToCreateAccount());
+        },
+        expect: () => const <LoginState>[
+          LoginState(
+            goToCreateAccount: true,
+          ),
+        ],
+      );
+    });
   });
 }

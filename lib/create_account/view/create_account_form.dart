@@ -64,7 +64,7 @@ class _UsernameInput extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(16),
           child: TextField(
-            key: const Key('loginForm_usernameInput_textField'),
+            key: const Key('createAccountForm_usernameInput_textField'),
             keyboardType: TextInputType.emailAddress,
             autocorrect: false,
             onChanged: (username) => context
