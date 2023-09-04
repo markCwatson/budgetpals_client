@@ -92,7 +92,7 @@ class _FirstNameInput extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(16),
           child: TextField(
-            key: const Key('loginForm_usernameInput_textField'),
+            key: const Key('createAccountForm_firstNameInput_textField'),
             keyboardType: TextInputType.emailAddress,
             autocorrect: false,
             onChanged: (name) => context
@@ -119,7 +119,7 @@ class _LastNameInput extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(16),
           child: TextField(
-            key: const Key('loginForm_usernameInput_textField'),
+            key: const Key('createAccountForm_lastNameInput_textField'),
             keyboardType: TextInputType.emailAddress,
             autocorrect: false,
             onChanged: (name) => context
@@ -147,7 +147,7 @@ class _PasswordInput extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(16),
           child: TextField(
-            key: const Key('loginForm_passwordInput_textField'),
+            key: const Key('createAccountForm_passwordInput_textField'),
             onChanged: (password) => context
                 .read<CreateAccountBloc>()
                 .add(CreateAccountPasswordChanged(password)),
