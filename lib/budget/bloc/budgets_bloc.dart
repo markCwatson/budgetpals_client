@@ -145,24 +145,6 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     }
   }
 
-  /// Computes the total planned incomes/expenses for the current period
-  double _computeTotalItems({
-    required List<FinanceEntry> items,
-    required BudgetPeriod currentPeriod,
-  }) {
-    return items.fold<double>(
-      0,
-      (previousValue, element) {
-        final date = DateTime.parse(element.date);
-        final later = currentPeriod.end!.add(const Duration(days: 1));
-        if (date.isAfter(currentPeriod.start!) && date.isBefore(later)) {
-          return previousValue + element.amount;
-        }
-        return previousValue;
-      },
-    );
-  }
-
   void _recalculateAndEmit(
     Budget budget,
     Emitter<BudgetsState> emit,
@@ -245,5 +227,22 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
           DateTime.parse(element.date).isAfter(currentPeriod.start!);
     }).toList();
     return itemsInThisPeriod;
+  }
+
+  double _computeTotalItems({
+    required List<FinanceEntry> items,
+    required BudgetPeriod currentPeriod,
+  }) {
+    return items.fold<double>(
+      0,
+      (previousValue, element) {
+        final date = DateTime.parse(element.date);
+        final later = currentPeriod.end!.add(const Duration(days: 1));
+        if (date.isAfter(currentPeriod.start!) && date.isBefore(later)) {
+          return previousValue + element.amount;
+        }
+        return previousValue;
+      },
+    );
   }
 }
