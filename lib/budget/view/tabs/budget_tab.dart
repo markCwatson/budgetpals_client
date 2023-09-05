@@ -2,7 +2,6 @@ import 'package:budgetpals_client/add_expense/view/view.dart';
 import 'package:budgetpals_client/add_income/view/view.dart';
 import 'package:budgetpals_client/auth/auth.dart';
 import 'package:budgetpals_client/budget/bloc/budgets_bloc.dart';
-import 'package:budgetpals_client/utilities/utilities.dart';
 import 'package:budgets_repository/budgets_repository.dart';
 import 'package:common_models/common_models.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +27,13 @@ class BudgetTab extends StatelessWidget {
                   Summary(
                     config: state.configuration,
                     endBalance: state.endAccountBalance,
+                    startOfPeriod: state.currentPeriod.start,
+                    endOfPeriod: state.currentPeriod.end,
+                    totalPlannedExpenses: state.totalPlannedExpenses,
+                    totalPlannedIncomes: state.totalPlannedIncomes,
+                    totalUnplannedExpenses: state.totalUnplannedExpenses,
+                    totalUnplannedIncomes: state.totalUnplannedIncomes,
+                    adjustedEndAccountBalance: state.adjustedEndAccountBalance,
                   ),
                   BudgetedList<Expense>(
                     entries: state.plannedExpenses,
@@ -56,39 +62,31 @@ class Summary extends StatefulWidget {
   const Summary({
     required this.config,
     required this.endBalance,
+    required this.startOfPeriod,
+    required this.endOfPeriod,
+    required this.totalPlannedExpenses,
+    required this.totalPlannedIncomes,
+    required this.totalUnplannedExpenses,
+    required this.totalUnplannedIncomes,
+    required this.adjustedEndAccountBalance,
     super.key,
   });
 
   final Configuration config;
   final double endBalance;
+  final DateTime? startOfPeriod;
+  final DateTime? endOfPeriod;
+  final double totalPlannedExpenses;
+  final double totalPlannedIncomes;
+  final double totalUnplannedExpenses;
+  final double totalUnplannedIncomes;
+  final double adjustedEndAccountBalance;
 
   @override
   State<Summary> createState() => _SummaryState();
 }
 
 class _SummaryState extends State<Summary> {
-  String _startOfPeriod = '';
-  String _endOfPeriod = '';
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Compute the start and end of the current period
-    final createdAt = DateTime.parse(widget.config.startDate);
-    final today = DateTime.now().toUtc();
-    final currentPeriod = const PeriodCalculator().calculateCurrentPeriod(
-      createdAt,
-      widget.config.period,
-      today,
-    );
-
-    _startOfPeriod =
-        currentPeriod.start.toIso8601String().replaceAll(RegExp('T.*'), '');
-    _endOfPeriod =
-        currentPeriod.end.toIso8601String().replaceAll(RegExp('T.*'), '');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -109,7 +107,7 @@ class _SummaryState extends State<Summary> {
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
-                ), // \todo: get data from bloc
+                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -171,7 +169,10 @@ class _SummaryState extends State<Summary> {
                 Column(
                   children: [
                     Text(
-                      _startOfPeriod,
+                      widget.startOfPeriod!.toIso8601String().replaceAll(
+                            RegExp('T.*'),
+                            '',
+                          ),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -197,7 +198,10 @@ class _SummaryState extends State<Summary> {
                 Column(
                   children: [
                     Text(
-                      _endOfPeriod,
+                      widget.endOfPeriod!.toIso8601String().replaceAll(
+                            RegExp('T.*'),
+                            '',
+                          ),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -211,7 +215,14 @@ class _SummaryState extends State<Summary> {
               ],
             ),
             const SizedBox(height: 16),
-            SummaryChart(),
+            SummaryChart(
+              totalPlannedExpenses: widget.totalPlannedExpenses,
+              totalPlannedIncomes: widget.totalPlannedIncomes,
+              endAccountBalance: widget.endBalance,
+              totalUnplannedExpenses: widget.totalUnplannedExpenses,
+              totalUnplannedIncomes: widget.totalUnplannedIncomes,
+              adjustedEndAccountBalance: widget.adjustedEndAccountBalance,
+            ),
           ],
         ),
       ),
@@ -416,28 +427,56 @@ class _BudgetedListState<T extends FinanceEntry>
 
 // \todo: move this to a separate file
 class ChartData {
-  ChartData(this.x, this.y1, this.y2, this.y3);
+  ChartData(this.x, this.y);
+
   final String x;
-  final double y1;
-  final double y2;
-  final double y3;
+  final double y;
 }
 
-class SummaryChart extends StatelessWidget {
-  SummaryChart({super.key});
+class SummaryChart extends StatefulWidget {
+  const SummaryChart({
+    required this.totalPlannedExpenses,
+    required this.totalPlannedIncomes,
+    required this.endAccountBalance,
+    required this.totalUnplannedExpenses,
+    required this.totalUnplannedIncomes,
+    required this.adjustedEndAccountBalance,
+    super.key,
+  });
 
-  // \todo: get data from bloc
-  // Expense, income, bank bal
-  final List<ChartData> chartData = [
-    ChartData('Jan', 3500, 3760, 500 + 3760 - 3500),
-    ChartData('Feb', 2800, 2970, 760 + 2970 - 2800),
-    ChartData('Mar', 3400, 3780, 900 + 3780 - 3400),
-    ChartData('Apr', 3200, 3100, 1200 + 3100 - 3200),
-    ChartData('May', 4000, 4575, 1100 + 4575 - 4000),
-    ChartData('Jun', 3800, 4100, 1200 + 4100 - 3800),
-    ChartData('Jul', 3800, 3900, 1400 + 4100 - 3800),
-    ChartData('Aug', 3860, 4200, 1700 + 4100 - 3800),
-  ];
+  final double totalPlannedExpenses;
+  final double totalPlannedIncomes;
+  final double endAccountBalance;
+  final double totalUnplannedExpenses;
+  final double totalUnplannedIncomes;
+  final double adjustedEndAccountBalance;
+
+  @override
+  State<SummaryChart> createState() => _SummaryChartState();
+}
+
+class _SummaryChartState extends State<SummaryChart> {
+  late List<ChartData> plannedData;
+  late List<ChartData> actualData;
+  late TooltipBehavior _tooltip;
+
+  @override
+  void initState() {
+    plannedData = [
+      ChartData('Expenses', widget.totalPlannedExpenses),
+      ChartData('Income', widget.totalPlannedIncomes),
+      ChartData('Balance', widget.endAccountBalance),
+    ];
+
+    actualData = [
+      ChartData('Expenses', widget.totalUnplannedExpenses),
+      ChartData('Income', widget.totalUnplannedIncomes),
+      ChartData('Balance', widget.adjustedEndAccountBalance),
+    ];
+
+    _tooltip = TooltipBehavior(enable: true);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -446,13 +485,7 @@ class SummaryChart extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: SfCartesianChart(
           primaryXAxis: CategoryAxis(),
-          title: ChartTitle(
-            text: 'History',
-            textStyle: const TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          tooltipBehavior: _tooltip,
           margin: const EdgeInsets.fromLTRB(8, 16, 8, 8),
           backgroundColor: Colors.white,
           legend: const Legend(
@@ -460,24 +493,19 @@ class SummaryChart extends StatelessWidget {
             position: LegendPosition.bottom,
           ),
           series: <ChartSeries<ChartData, String>>[
-            StepLineSeries<ChartData, String>(
-              dataSource: chartData,
+            ColumnSeries<ChartData, String>(
+              dataSource: plannedData,
               xValueMapper: (ChartData data, _) => data.x,
-              yValueMapper: (ChartData data, _) => data.y1,
-              name: 'Exp',
+              yValueMapper: (ChartData data, _) => data.y,
+              name: 'Planned',
+              color: const Color.fromRGBO(8, 142, 255, 1),
             ),
-            StepLineSeries<ChartData, String>(
-              dataSource: chartData,
+            ColumnSeries<ChartData, String>(
+              opacity: 0.9,
+              dataSource: actualData,
               xValueMapper: (ChartData data, _) => data.x,
-              yValueMapper: (ChartData data, _) => data.y2,
-              name: 'Inc',
-            ),
-            StepLineSeries<ChartData, String>(
-              dataSource: chartData,
-              xValueMapper: (ChartData data, _) => data.x,
-              yValueMapper: (ChartData data, _) => data.y3,
-              color: Colors.green,
-              name: 'Bal',
+              yValueMapper: (ChartData data, _) => data.y,
+              name: 'Actual',
             ),
           ],
         ),

@@ -108,7 +108,7 @@ class _AmountAndDateInputState extends State<_AmountAndDateInput> {
       context: context,
       initialDate: selectedDate ?? now,
       firstDate: DateTime(now.year - 1, now.month, now.day),
-      lastDate: now,
+      lastDate: DateTime(now.year + 1, now.month, now.day),
     ).then(
       (value) => {
         if (value != null && value != selectedDate)

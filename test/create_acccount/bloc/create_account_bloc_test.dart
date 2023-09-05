@@ -85,7 +85,7 @@ void main() {
       );
 
       blocTest<CreateAccountBloc, CreateAccountState>(
-        'emits [submissionInProgress, submissionSuccess] '
+        'emits [submissionInProgress, failure] '
         'when create account fails',
         setUp: () {
           when(

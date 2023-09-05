@@ -5,6 +5,8 @@ import 'package:equatable/equatable.dart';
 import 'package:expenses_repository/expenses_repository.dart';
 import 'package:incomes_repository/incomes_repository.dart';
 
+import 'utilities/utilities.dart';
+
 part 'budgets_event.dart';
 part 'budgets_state.dart';
 
@@ -38,16 +40,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     final budget = await _budgetsRepository.getBudget(event.token);
     if (budget == null) return;
 
-    final endAccountBalance = _computeEndAccountBalance(budget);
-
-    emit(
-      BudgetsState.budgetLoaded(
-        endAccountBalance,
-        budget.configuration,
-        budget.plannedExpenses,
-        budget.plannedIncomes,
-      ),
-    );
+    _recalculateAndEmit(budget, emit);
   }
 
   Future<void> _onDeletePlannedExpenseEvent(
@@ -63,16 +56,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
       final budget = await _budgetsRepository.getBudget(event.token);
       if (budget == null) return;
 
-      final endAccountBalance = _computeEndAccountBalance(budget);
-
-      emit(
-        BudgetsState.budgetLoaded(
-          endAccountBalance,
-          budget.configuration,
-          budget.plannedExpenses,
-          budget.plannedIncomes,
-        ),
-      );
+      _recalculateAndEmit(budget, emit);
     } catch (e) {
       print(e);
     }
@@ -91,16 +75,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
       final budget = await _budgetsRepository.getBudget(event.token);
       if (budget == null) return;
 
-      final endAccountBalance = _computeEndAccountBalance(budget);
-
-      emit(
-        BudgetsState.budgetLoaded(
-          endAccountBalance,
-          budget.configuration,
-          budget.plannedExpenses,
-          budget.plannedIncomes,
-        ),
-      );
+      _recalculateAndEmit(budget, emit);
     } catch (e) {
       print(e);
     }
@@ -170,16 +145,123 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     }
   }
 
-  double _computeEndAccountBalance(Budget budget) {
+  /// Computes the total planned expenses for the current period
+  double _computeTotalExpenses({
+    required List<Expense> expenses,
+    required BudgetPeriod currentPeriod,
+  }) {
+    return expenses.fold<double>(
+      0,
+      (previousValue, element) {
+        final date = DateTime.parse(element.date);
+        final later = currentPeriod.end!.add(const Duration(days: 1));
+        if (date.isAfter(currentPeriod.start!) && date.isBefore(later)) {
+          return previousValue + element.amount;
+        }
+        return previousValue;
+      },
+    );
+  }
+
+  /// Computes the total planned incomes for the current period
+  double _computeTotalIncomes({
+    required List<Income> incomes,
+    required BudgetPeriod currentPeriod,
+  }) {
+    return incomes.fold<double>(
+      0,
+      (previousValue, element) {
+        final date = DateTime.parse(element.date);
+        final later = currentPeriod.end!.add(const Duration(days: 1));
+        if (date.isAfter(currentPeriod.start!) && date.isBefore(later)) {
+          return previousValue + element.amount;
+        }
+        return previousValue;
+      },
+    );
+  }
+
+  void _recalculateAndEmit(
+    Budget budget,
+    Emitter<BudgetsState> emit,
+  ) {
+    // Compute the start and end of the current period
+    final createdAt = DateTime.parse(budget.configuration.startDate);
+    final today = DateTime.now().toUtc();
+    final currentPeriod = const PeriodCalculator().calculateCurrentPeriod(
+      createdAt,
+      budget.configuration.period,
+      today,
+    );
+
+    // Compute the total planned expenses and incomes for the current period
+    final totalPlannedExpenses = _computeTotalExpenses(
+      expenses: budget.plannedExpenses,
+      currentPeriod: currentPeriod,
+    );
+
+    final totalPlannedIncomes = _computeTotalIncomes(
+      incomes: budget.plannedIncomes,
+      currentPeriod: currentPeriod,
+    );
+
     final endAccountBalance = budget.configuration.startAccountBalance +
-        budget.plannedIncomes.fold<double>(
-          0,
-          (previousValue, element) => previousValue + element.amount,
-        ) -
-        budget.plannedExpenses.fold<double>(
-          0,
-          (previousValue, element) => previousValue + element.amount,
-        );
-    return endAccountBalance;
+        totalPlannedIncomes -
+        totalPlannedExpenses;
+
+    // compute the actual expenses and incomes for the current period
+    final totalUnplannedExpenses = _computeTotalExpenses(
+      expenses: budget.unplannedExpenses,
+      currentPeriod: currentPeriod,
+    );
+
+    final totalUnplannedIncomes = _computeTotalIncomes(
+      incomes: budget.unplannedIncomes,
+      currentPeriod: currentPeriod,
+    );
+
+    final adjustedEndAccountBalance = endAccountBalance +
+        totalUnplannedIncomes -
+        totalPlannedIncomes +
+        totalPlannedExpenses -
+        totalUnplannedExpenses;
+
+    // limit income/expense to current period
+    final plannedIncomes = _getItemsInThisPeriod(
+      budget.plannedIncomes,
+      currentPeriod,
+    ) as List<Income>;
+
+    final plannedExpenses = _getItemsInThisPeriod(
+      budget.plannedExpenses,
+      currentPeriod,
+    ) as List<Expense>;
+
+    emit(
+      BudgetsState.budgetLoaded(
+        endAccountBalance,
+        budget.configuration,
+        plannedExpenses,
+        plannedIncomes,
+        currentPeriod,
+        totalPlannedExpenses,
+        totalPlannedIncomes,
+        totalUnplannedExpenses,
+        totalUnplannedIncomes,
+        adjustedEndAccountBalance,
+      ),
+    );
+  }
+
+  List<FinanceEntry> _getItemsInThisPeriod(
+    List<FinanceEntry> items,
+    BudgetPeriod currentPeriod,
+  ) {
+    final itemsInThisPeriod = items.where((element) {
+      final later = currentPeriod.end!.add(const Duration(days: 1));
+      return DateTime.parse(element.date).isBefore(later) &&
+          DateTime.parse(element.date).isAfter(currentPeriod.start!);
+    }).toList();
+    return itemsInThisPeriod;
   }
 }

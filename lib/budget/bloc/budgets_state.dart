@@ -8,8 +8,13 @@ class BudgetsState extends Equatable {
     this.plannedIncomes = const [],
     this.unplannedExpenses = const [],
     this.unplannedIncomes = const [],
+    this.currentPeriod = BudgetPeriod.empty,
     this.endAccountBalance = 0,
-    // \todo: add loading state
+    this.totalPlannedExpenses = 0,
+    this.totalPlannedIncomes = 0,
+    this.totalUnplannedExpenses = 0,
+    this.totalUnplannedIncomes = 0,
+    this.adjustedEndAccountBalance = 0,
   });
 
   const BudgetsState.tokenSet(String token) : this(token: token);
@@ -25,11 +30,23 @@ class BudgetsState extends Equatable {
     Configuration configuration,
     List<Expense?> expenses,
     List<Income?> incomes,
+    BudgetPeriod currentPeriod,
+    double totalPlannedExpenses,
+    double totalPlannedIncomes,
+    double totalUnplannedExpenses,
+    double totalUnplannedIncomes,
+    double adjustedEndAccountBalance,
   ) : this(
           endAccountBalance: endAccountBalance,
           configuration: configuration,
           plannedExpenses: expenses,
           plannedIncomes: incomes,
+          currentPeriod: currentPeriod,
+          totalPlannedExpenses: totalPlannedExpenses,
+          totalPlannedIncomes: totalPlannedIncomes,
+          totalUnplannedExpenses: totalUnplannedExpenses,
+          totalUnplannedIncomes: totalUnplannedIncomes,
+          adjustedEndAccountBalance: adjustedEndAccountBalance,
         );
 
   final String token;
@@ -39,6 +56,12 @@ class BudgetsState extends Equatable {
   final List<Expense?> unplannedExpenses;
   final List<Income?> unplannedIncomes;
   final double endAccountBalance;
+  final BudgetPeriod currentPeriod;
+  final double totalPlannedExpenses;
+  final double totalPlannedIncomes;
+  final double totalUnplannedExpenses;
+  final double totalUnplannedIncomes;
+  final double adjustedEndAccountBalance;
 
   @override
   List<Object> get props => [
@@ -48,6 +71,13 @@ class BudgetsState extends Equatable {
         plannedIncomes,
         unplannedExpenses,
         unplannedIncomes,
+        endAccountBalance,
+        currentPeriod,
+        totalPlannedExpenses,
+        totalPlannedIncomes,
+        totalUnplannedExpenses,
+        totalUnplannedIncomes,
+        adjustedEndAccountBalance,
       ];
 
   String get authToken => token;

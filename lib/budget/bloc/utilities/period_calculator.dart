@@ -1,8 +1,12 @@
 class BudgetPeriod {
-  BudgetPeriod(this.start, this.end);
+  const BudgetPeriod(this.start, this.end);
 
-  final DateTime start;
-  final DateTime end;
+  // Note: I had to allow these to be null because DateTime does not have a
+  // const constructor. See dart-sdk issue https://github.com/dart-lang/sdk/issues/17014
+  final DateTime? start;
+  final DateTime? end;
+
+  static const empty = BudgetPeriod(null, null);
 }
 
 class PeriodCalculator {
