@@ -145,30 +145,12 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     }
   }
 
-  /// Computes the total planned expenses for the current period
-  double _computeTotalExpenses({
-    required List<Expense> expenses,
+  /// Computes the total planned incomes/expenses for the current period
+  double _computeTotalItems({
+    required List<FinanceEntry> items,
     required BudgetPeriod currentPeriod,
   }) {
-    return expenses.fold<double>(
-      0,
-      (previousValue, element) {
-        final date = DateTime.parse(element.date);
-        final later = currentPeriod.end!.add(const Duration(days: 1));
-        if (date.isAfter(currentPeriod.start!) && date.isBefore(later)) {
-          return previousValue + element.amount;
-        }
-        return previousValue;
-      },
-    );
-  }
-
-  /// Computes the total planned incomes for the current period
-  double _computeTotalIncomes({
-    required List<Income> incomes,
-    required BudgetPeriod currentPeriod,
-  }) {
-    return incomes.fold<double>(
+    return items.fold<double>(
       0,
       (previousValue, element) {
         final date = DateTime.parse(element.date);
@@ -195,13 +177,13 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     );
 
     // Compute the total planned expenses and incomes for the current period
-    final totalPlannedExpenses = _computeTotalExpenses(
-      expenses: budget.plannedExpenses,
+    final totalPlannedExpenses = _computeTotalItems(
+      items: budget.plannedExpenses,
       currentPeriod: currentPeriod,
     );
 
-    final totalPlannedIncomes = _computeTotalIncomes(
-      incomes: budget.plannedIncomes,
+    final totalPlannedIncomes = _computeTotalItems(
+      items: budget.plannedIncomes,
       currentPeriod: currentPeriod,
     );
 
@@ -210,13 +192,13 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
         totalPlannedExpenses;
 
     // compute the actual expenses and incomes for the current period
-    final totalUnplannedExpenses = _computeTotalExpenses(
-      expenses: budget.unplannedExpenses,
+    final totalUnplannedExpenses = _computeTotalItems(
+      items: budget.unplannedExpenses,
       currentPeriod: currentPeriod,
     );
 
-    final totalUnplannedIncomes = _computeTotalIncomes(
-      incomes: budget.unplannedIncomes,
+    final totalUnplannedIncomes = _computeTotalItems(
+      items: budget.unplannedIncomes,
       currentPeriod: currentPeriod,
     );
 
