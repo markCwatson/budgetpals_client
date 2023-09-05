@@ -221,8 +221,8 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     List<FinanceEntry> items,
     BudgetPeriod currentPeriod,
   ) {
+    final later = currentPeriod.end!.add(const Duration(days: 1));
     final itemsInThisPeriod = items.where((element) {
-      final later = currentPeriod.end!.add(const Duration(days: 1));
       return DateTime.parse(element.date).isBefore(later) &&
           DateTime.parse(element.date).isAfter(currentPeriod.start!);
     }).toList();
@@ -233,11 +233,11 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     required List<FinanceEntry> items,
     required BudgetPeriod currentPeriod,
   }) {
+    final later = currentPeriod.end!.add(const Duration(days: 1));
     return items.fold<double>(
       0,
       (previousValue, element) {
         final date = DateTime.parse(element.date);
-        final later = currentPeriod.end!.add(const Duration(days: 1));
         if (date.isAfter(currentPeriod.start!) && date.isBefore(later)) {
           return previousValue + element.amount;
         }
