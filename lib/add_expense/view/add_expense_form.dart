@@ -48,7 +48,7 @@ class _AddExpenseFormState extends State<AddExpenseForm> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           _Title(title: widget.title),
-                          const _SetIsPlannedExpense(),
+                          if (!widget.isPlanned) const _SetIsPlannedExpense(),
                           if (!state.isPlanned)
                             const Column(
                               children: [
