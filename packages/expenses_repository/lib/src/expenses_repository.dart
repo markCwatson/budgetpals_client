@@ -28,6 +28,17 @@ class ExpensesRepository {
     }
   }
 
+  Future<Expense?> getExpenseById(String token, String id) async {
+    try {
+      final data = await dataProvider.getExpenseById(token, id);
+
+      return Expense.fromJson(data);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   Future<List<Category?>> getExpenseCategories(String token) async {
     try {
       final data = await dataProvider.getExpenseCategories(token);

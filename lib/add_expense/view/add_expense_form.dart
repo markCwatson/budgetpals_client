@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
-class AddExpenseForm extends StatelessWidget {
+class AddExpenseForm extends StatefulWidget {
   const AddExpenseForm({
     required this.title,
     required this.isPlanned,
@@ -14,6 +14,11 @@ class AddExpenseForm extends StatelessWidget {
   final String title;
   final bool isPlanned;
 
+  @override
+  State<AddExpenseForm> createState() => _AddExpenseFormState();
+}
+
+class _AddExpenseFormState extends State<AddExpenseForm> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AddExpenseBloc, AddExpenseState>(
@@ -29,30 +34,47 @@ class AddExpenseForm extends StatelessWidget {
           });
         }
       },
-      child: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Card(
-                margin: const EdgeInsets.all(16),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _Title(title: title),
-                      const _AmountAndDateInput(),
-                      const _CategoryAndFrequency(),
-                      const _IsEndingAndEndDateInput(),
-                      const _IsFixedInput(),
-                      _SubmitButton(isPlanned: isPlanned),
-                    ],
+      child: BlocBuilder<AddExpenseBloc, AddExpenseState>(
+        builder: (context, state) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Card(
+                    margin: const EdgeInsets.all(16),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _Title(title: widget.title),
+                          const _SetIsPlannedExpense(),
+                          if (!state.isPlanned)
+                            const Column(
+                              children: [
+                                _AmountAndDateInput(),
+                                _CategoryAndFrequency(),
+                                _IsEndingAndEndDateInput(),
+                                _IsFixedInput(),
+                              ],
+                            ),
+                          if (state.isPlanned)
+                            const Column(
+                              children: [
+                                _SelectPlannedExpense(),
+                              ],
+                            ),
+                          // \todo: consider changing name to isPlannedBeingAdded
+                          _SubmitButton(isPlanned: widget.isPlanned),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -88,6 +110,143 @@ class _Title extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SetIsPlannedExpense extends StatefulWidget {
+  const _SetIsPlannedExpense();
+
+  @override
+  State<_SetIsPlannedExpense> createState() => _SetIsPlannedExpenseState();
+}
+
+class _SetIsPlannedExpenseState extends State<_SetIsPlannedExpense> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddExpenseBloc, AddExpenseState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
+          child: Row(
+            children: [
+              const Text('Is this a planned expense? '),
+              const SizedBox(width: 16),
+              DropdownButton<bool>(
+                items: const [
+                  DropdownMenuItem(
+                    value: true,
+                    child: Text('Yes'),
+                  ),
+                  DropdownMenuItem(
+                    value: false,
+                    child: Text('No'),
+                  ),
+                ],
+                value: state.isPlanned,
+                dropdownColor:
+                    Theme.of(context).colorScheme.onSecondaryContainer,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                ),
+                onChanged: (value) {
+                  context.read<AddExpenseBloc>().add(
+                        AddExpenseTypeSelected(
+                          isPlanned: value!,
+                        ),
+                      );
+                  if (value) {
+                    context.read<AddExpenseBloc>().add(
+                          FetchPlannedExpensesEvent(
+                            token: context.read<AuthBloc>().state.token,
+                          ),
+                        );
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SelectPlannedExpense extends StatefulWidget {
+  const _SelectPlannedExpense();
+
+  @override
+  State<_SelectPlannedExpense> createState() => _SelectPlannedExpenseState();
+}
+
+class _SelectPlannedExpenseState extends State<_SelectPlannedExpense> {
+  String? _selectedExpenseId = 'default';
+
+  final List<Map<String, String>> _plannedExpenses = [
+    {'id': 'default', 'title': 'None Selected'},
+  ];
+
+  String showAmount(double? amount) => amount?.toStringAsFixed(2) ?? '';
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddExpenseBloc, AddExpenseState>(
+      builder: (context, state) {
+        if (state is PlannedExpensesFetchedState &&
+            _plannedExpenses.length == 1) {
+          state.plannedExpenses
+              .map(
+                (e) => _plannedExpenses.add(
+                  {
+                    'id': e?.id ?? '',
+                    'title': '${e?.category}: \$${showAmount(e?.amount)}',
+                  },
+                ),
+              )
+              .toList();
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
+          child: Row(
+            children: [
+              Row(
+                children: [
+                  const Text('Select Expense: '),
+                  const SizedBox(width: 16),
+                  DropdownButton<String>(
+                      items: _plannedExpenses
+                          .map(
+                            (e) => DropdownMenuItem<String>(
+                              value: e['id'],
+                              child: Text('${e['title']}'),
+                            ),
+                          )
+                          .toList(),
+                      value: _selectedExpenseId,
+                      dropdownColor:
+                          Theme.of(context).colorScheme.onSecondaryContainer,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedExpenseId = value;
+                        });
+
+                        context.read<AddExpenseBloc>().add(
+                              PlannedExpenseSelected(
+                                token: context.read<AuthBloc>().state.token,
+                                plannedExpenseId: value ?? '',
+                              ),
+                            );
+                      }),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

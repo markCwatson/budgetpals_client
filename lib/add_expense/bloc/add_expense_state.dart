@@ -69,11 +69,60 @@ final class CategoriesAndFrequenciesFetchedState extends AddExpenseState {
   const CategoriesAndFrequenciesFetchedState({
     required this.categories,
     required this.frequencies,
-  });
+    FormzSubmissionStatus? status,
+    Amount? amount,
+    Date? date,
+    bool? isEnding,
+    EndDate? endDate,
+    bool? isFixed,
+    bool? isValid,
+    bool? isPlanned,
+  }) : super(
+          status: status ?? FormzSubmissionStatus.initial,
+          amount: amount ?? const Amount.pure(),
+          date: date ?? const Date.pure(),
+          isEnding: isEnding ?? false,
+          endDate: endDate ?? const EndDate.pure(),
+          isFixed: isFixed ?? false,
+          isValid: isValid ?? false,
+          isPlanned: isPlanned ?? false,
+        );
 
   final List<Category?> categories;
   final List<Frequency?> frequencies;
 
   @override
-  List<Object> get props => [categories, frequencies];
+  List<Object> get props => [categories, frequencies, ...super.props];
+}
+
+final class PlannedExpensesFetchedState extends AddExpenseState {
+  const PlannedExpensesFetchedState({
+    required this.plannedExpenses,
+    FormzSubmissionStatus? status,
+    Amount? amount,
+    Date? date,
+    CategoryForm? category,
+    FrequencyForm? frequency,
+    bool? isEnding,
+    EndDate? endDate,
+    bool? isFixed,
+    bool? isValid,
+    bool? isPlanned,
+  }) : super(
+          status: status ?? FormzSubmissionStatus.initial,
+          amount: amount ?? const Amount.pure(),
+          date: date ?? const Date.pure(),
+          category: category ?? const CategoryForm.pure(),
+          frequency: frequency ?? const FrequencyForm.pure(),
+          isEnding: isEnding ?? false,
+          endDate: endDate ?? const EndDate.pure(),
+          isFixed: isFixed ?? false,
+          isValid: isValid ?? false,
+          isPlanned: isPlanned ?? true,
+        );
+
+  final List<Expense?> plannedExpenses;
+
+  @override
+  List<Object> get props => [plannedExpenses, ...super.props];
 }

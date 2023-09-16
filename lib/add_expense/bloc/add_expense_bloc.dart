@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:budgetpals_client/add_expense/models/models.dart';
+import 'package:common_models/common_models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:expenses_repository/expenses_repository.dart';
 import 'package:formz/formz.dart';
@@ -15,6 +16,7 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
     on<FetchCategoriesAndFrequenciesEvent>(
       _onFetchCategoriesAndFrequenciesEvent,
     );
+    on<AddExpenseTypeSelected>(_onAddExpenseTypeSelected);
     on<AddExpenseAmountChanged>(_onAmountChanged);
     on<AddExpenseDateChanged>(_onDateChanged);
     on<AddExpenseCategoryChanged>(_onCategoryChanged);
@@ -23,9 +25,22 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
     on<AddExpenseIsEndingChanged>(_onIsEndingChanged);
     on<AddExpenseEndDateChanged>(_onEndDateChanged);
     on<AddExpenseSubmitted>(_onAddExpenseSubmitted);
+    on<FetchPlannedExpensesEvent>(_onFetchPlannedExpensesEvent);
+    on<PlannedExpenseSelected>(_onPlannedExpenseSelected);
   }
 
   final ExpensesRepository _expensesRepository;
+
+  void _onAddExpenseTypeSelected(
+    AddExpenseTypeSelected event,
+    Emitter<AddExpenseState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        isPlanned: event.isPlanned,
+      ),
+    );
+  }
 
   void _onAmountChanged(
     AddExpenseAmountChanged event,
@@ -142,6 +157,57 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
         isEnding: event.isEnding,
       ),
     );
+  }
+
+  Future<void> _onFetchPlannedExpensesEvent(
+    FetchPlannedExpensesEvent event,
+    Emitter<AddExpenseState> emit,
+  ) async {
+    try {
+      final expenses = await _expensesRepository.getExpenses(event.token);
+      if (expenses.isEmpty) return;
+
+      final plannedExpenses =
+          expenses.where((expense) => expense!.isPlanned).toList();
+
+      // \todo: get items in this period only
+      emit(PlannedExpensesFetchedState(plannedExpenses: plannedExpenses));
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _onPlannedExpenseSelected(
+    PlannedExpenseSelected event,
+    Emitter<AddExpenseState> emit,
+  ) async {
+    try {
+      final expense = await _expensesRepository.getExpenseById(
+        event.token,
+        event.plannedExpenseId,
+      );
+      if (expense == null) return;
+
+      emit(
+        state.copyWith(
+          amount: Amount.dirty(expense.amount),
+          date: Date.dirty(expense.date),
+          category: CategoryForm.dirty(expense.category),
+          frequency: FrequencyForm.dirty(expense.frequency),
+          endDate: EndDate.dirty(expense.endDate),
+          isFixed: expense.isFixed,
+          isValid: Formz.validate([
+            Amount.dirty(expense.amount),
+            Date.dirty(expense.date),
+            CategoryForm.dirty(expense.category),
+            FrequencyForm.dirty(expense.frequency),
+            EndDate.dirty(expense.endDate),
+          ]),
+        ),
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> _onFetchCategoriesAndFrequenciesEvent(

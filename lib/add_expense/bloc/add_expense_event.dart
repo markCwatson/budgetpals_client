@@ -107,3 +107,38 @@ final class AddExpenseSubmitted extends AddExpenseEvent {
   @override
   List<Object> get props => [token, isPlanned];
 }
+
+final class AddExpenseTypeSelected extends AddExpenseEvent {
+  const AddExpenseTypeSelected({
+    required this.isPlanned,
+  });
+
+  final bool isPlanned;
+
+  @override
+  List<Object> get props => [isPlanned];
+}
+
+final class PlannedExpenseSelected extends AddExpenseEvent {
+  const PlannedExpenseSelected({
+    required this.token,
+    required this.plannedExpenseId,
+  });
+
+  final String token;
+  final String plannedExpenseId;
+
+  @override
+  List<Object> get props => [token, plannedExpenseId];
+}
+
+final class FetchPlannedExpensesEvent extends AddExpenseEvent {
+  const FetchPlannedExpensesEvent({
+    required this.token,
+  });
+
+  final String token;
+
+  @override
+  List<Object> get props => [token];
+}
