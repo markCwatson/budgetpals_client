@@ -8,7 +8,7 @@ Uses the [budgetpals API](https://github.com/markCwatson/budgetpals) (which is W
 
 This app is my first ever attempt at creating a mobile application, and my first time using Flutter/Dart.
 
-# Progress (as of Sept 2, 2023)
+# Progress (as of Sept 16, 2023)
 
 Here is the app running in an iOS simulator connected to the budgetpals backend. Only the add account, sign in/authorization, fetching expenses/incomes, and adding/deleting expenses/incomes is working so far.
 
@@ -16,7 +16,7 @@ The app architecture uses the BLoC pattern using `flutter_bloc` ^v8.1.1.
 
 ![alt-text][1]
 
-[1]: gif/2023.09.02-demo.gif "The budgetpals app running"
+[1]: gif/2023.09.16-demo.gif "The budgetpals app running"
 
 # Running app on iOS simulator
 First, you need to run the [budgetpals API](https://github.com/markCwatson/budgetpals) on the same network. Instructions can be found there for how to build and run all of the Docker containers. All of the networking is taken care of using Docker's networking functionality.

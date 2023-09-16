@@ -29,25 +29,27 @@ class CreateAccountForm extends StatelessWidget {
       },
       child: Scaffold(
         body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Card(
-                margin: const EdgeInsets.all(32),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _UsernameInput(),
-                      _FirstNameInput(),
-                      _LastNameInput(),
-                      _PasswordInput(),
-                      _SubmitButton(),
-                    ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Card(
+                  margin: const EdgeInsets.all(32),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _UsernameInput(),
+                        _FirstNameInput(),
+                        _LastNameInput(),
+                        _PasswordInput(),
+                        _SubmitButton(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
