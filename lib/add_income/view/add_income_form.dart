@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
-class AddIncomeForm extends StatelessWidget {
+class AddIncomeForm extends StatefulWidget {
   const AddIncomeForm({
     required this.title,
     required this.isPlanned,
@@ -14,6 +14,11 @@ class AddIncomeForm extends StatelessWidget {
   final String title;
   final bool isPlanned;
 
+  @override
+  State<AddIncomeForm> createState() => _AddIncomeFormState();
+}
+
+class _AddIncomeFormState extends State<AddIncomeForm> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AddIncomeBloc, AddIncomeState>(
@@ -29,30 +34,47 @@ class AddIncomeForm extends StatelessWidget {
           });
         }
       },
-      child: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Card(
-                margin: const EdgeInsets.all(16),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _Title(title: title),
-                      const _AmountAndDateInput(),
-                      const _CategoryAndFrequency(),
-                      const _IsEndingAndEndDateInput(),
-                      const _IsFixedInput(),
-                      _SubmitButton(isPlanned: isPlanned),
-                    ],
+      child: BlocBuilder<AddIncomeBloc, AddIncomeState>(
+        builder: (context, state) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Card(
+                    margin: const EdgeInsets.all(16),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _Title(title: widget.title),
+                          if (!widget.isPlanned) const _SetIsPlannedIncome(),
+                          if (!state.isPlanned)
+                            const Column(
+                              children: [
+                                _AmountAndDateInput(),
+                                _CategoryAndFrequency(),
+                                _IsEndingAndEndDateInput(),
+                                _IsFixedInput(),
+                              ],
+                            ),
+                          if (state.isPlanned)
+                            const Column(
+                              children: [
+                                _SelectPlannedIncome(),
+                              ],
+                            ),
+                          // \todo: consider changing name to isPlannedBeingAdded
+                          _SubmitButton(isPlanned: widget.isPlanned),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -88,6 +110,143 @@ class _Title extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SetIsPlannedIncome extends StatefulWidget {
+  const _SetIsPlannedIncome();
+
+  @override
+  State<_SetIsPlannedIncome> createState() => _SetIsPlannedIncomeState();
+}
+
+class _SetIsPlannedIncomeState extends State<_SetIsPlannedIncome> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddIncomeBloc, AddIncomeState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
+          child: Row(
+            children: [
+              const Text('Is this a planned income? '),
+              const SizedBox(width: 16),
+              DropdownButton<bool>(
+                items: const [
+                  DropdownMenuItem(
+                    value: true,
+                    child: Text('Yes'),
+                  ),
+                  DropdownMenuItem(
+                    value: false,
+                    child: Text('No'),
+                  ),
+                ],
+                value: state.isPlanned,
+                dropdownColor:
+                    Theme.of(context).colorScheme.onSecondaryContainer,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                ),
+                onChanged: (value) {
+                  context.read<AddIncomeBloc>().add(
+                        AddIncomeTypeSelected(
+                          isPlanned: value!,
+                        ),
+                      );
+                  if (value) {
+                    context.read<AddIncomeBloc>().add(
+                          FetchPlannedIncomesEvent(
+                            token: context.read<AuthBloc>().state.token,
+                          ),
+                        );
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SelectPlannedIncome extends StatefulWidget {
+  const _SelectPlannedIncome();
+
+  @override
+  State<_SelectPlannedIncome> createState() => _SelectPlannedIncomeState();
+}
+
+class _SelectPlannedIncomeState extends State<_SelectPlannedIncome> {
+  String? _selectedIncomeId = 'default';
+
+  final List<Map<String, String>> _plannedIncomes = [
+    {'id': 'default', 'title': 'None'},
+  ];
+
+  String showAmount(double? amount) => amount?.toStringAsFixed(2) ?? '';
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddIncomeBloc, AddIncomeState>(
+      builder: (context, state) {
+        if (state is PlannedIncomesFetchedState &&
+            _plannedIncomes.length == 1) {
+          state.plannedIncomes
+              .map(
+                (e) => _plannedIncomes.add(
+                  {
+                    'id': e?.id ?? '',
+                    'title': '${e?.category}: \$${showAmount(e?.amount)}',
+                  },
+                ),
+              )
+              .toList();
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
+          child: Row(
+            children: [
+              Row(
+                children: [
+                  const Text('Selection: '),
+                  const SizedBox(width: 16),
+                  DropdownButton<String>(
+                      items: _plannedIncomes
+                          .map(
+                            (e) => DropdownMenuItem<String>(
+                              value: e['id'],
+                              child: Text('${e['title']}'),
+                            ),
+                          )
+                          .toList(),
+                      value: _selectedIncomeId,
+                      dropdownColor:
+                          Theme.of(context).colorScheme.onSecondaryContainer,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedIncomeId = value;
+                        });
+
+                        context.read<AddIncomeBloc>().add(
+                              PlannedIncomeSelected(
+                                token: context.read<AuthBloc>().state.token,
+                                plannedIncomeId: value ?? '',
+                              ),
+                            );
+                      }),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -151,7 +310,7 @@ class _AmountAndDateInputState extends State<_AmountAndDateInput> {
                         .add(AddIncomeAmountChanged(amount: amount));
                   },
                   decoration: const InputDecoration(
-                    labelText: 'Income Amount',
+                    labelText: 'Amount',
                     prefixText: r'$ ',
                   ),
                 ),

@@ -11,6 +11,7 @@ final class AddIncomeState extends Equatable {
     this.endDate = const EndDate.pure(),
     this.isFixed = false,
     this.isValid = false,
+    this.isPlanned = false,
   });
 
   final FormzSubmissionStatus status;
@@ -22,6 +23,7 @@ final class AddIncomeState extends Equatable {
   final EndDate endDate;
   final bool isFixed;
   final bool isValid;
+  final bool isPlanned;
 
   AddIncomeState copyWith({
     FormzSubmissionStatus? status,
@@ -33,6 +35,7 @@ final class AddIncomeState extends Equatable {
     EndDate? endDate,
     bool? isFixed,
     bool? isValid,
+    bool? isPlanned,
   }) {
     return AddIncomeState(
       status: status ?? this.status,
@@ -44,6 +47,7 @@ final class AddIncomeState extends Equatable {
       endDate: endDate ?? this.endDate,
       isFixed: isFixed ?? this.isFixed,
       isValid: isValid ?? this.isValid,
+      isPlanned: isPlanned ?? this.isPlanned,
     );
   }
 
@@ -57,6 +61,7 @@ final class AddIncomeState extends Equatable {
         isEnding,
         isFixed,
         endDate,
+        isPlanned,
       ];
 }
 
@@ -64,11 +69,60 @@ final class CategoriesAndFrequenciesFetchedState extends AddIncomeState {
   const CategoriesAndFrequenciesFetchedState({
     required this.categories,
     required this.frequencies,
-  });
+    FormzSubmissionStatus? status,
+    Amount? amount,
+    Date? date,
+    bool? isEnding,
+    EndDate? endDate,
+    bool? isFixed,
+    bool? isValid,
+    bool? isPlanned,
+  }) : super(
+          status: status ?? FormzSubmissionStatus.initial,
+          amount: amount ?? const Amount.pure(),
+          date: date ?? const Date.pure(),
+          isEnding: isEnding ?? false,
+          endDate: endDate ?? const EndDate.pure(),
+          isFixed: isFixed ?? false,
+          isValid: isValid ?? false,
+          isPlanned: isPlanned ?? false,
+        );
 
   final List<Category?> categories;
   final List<Frequency?> frequencies;
 
   @override
-  List<Object> get props => [categories, frequencies];
+  List<Object> get props => [categories, frequencies, ...super.props];
+}
+
+final class PlannedIncomesFetchedState extends AddIncomeState {
+  const PlannedIncomesFetchedState({
+    required this.plannedIncomes,
+    FormzSubmissionStatus? status,
+    Amount? amount,
+    Date? date,
+    CategoryForm? category,
+    FrequencyForm? frequency,
+    bool? isEnding,
+    EndDate? endDate,
+    bool? isFixed,
+    bool? isValid,
+    bool? isPlanned,
+  }) : super(
+          status: status ?? FormzSubmissionStatus.initial,
+          amount: amount ?? const Amount.pure(),
+          date: date ?? const Date.pure(),
+          category: category ?? const CategoryForm.pure(),
+          frequency: frequency ?? const FrequencyForm.pure(),
+          isEnding: isEnding ?? false,
+          endDate: endDate ?? const EndDate.pure(),
+          isFixed: isFixed ?? false,
+          isValid: isValid ?? false,
+          isPlanned: isPlanned ?? true,
+        );
+
+  final List<Income?> plannedIncomes;
+
+  @override
+  List<Object> get props => [plannedIncomes, ...super.props];
 }

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:budgetpals_client/add_income/models/models.dart';
+import 'package:common_models/common_models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:incomes_repository/incomes_repository.dart';
@@ -15,6 +16,7 @@ class AddIncomeBloc extends Bloc<AddIncomeEvent, AddIncomeState> {
     on<FetchCategoriesAndFrequenciesEvent>(
       _onFetchCategoriesAndFrequenciesEvent,
     );
+    on<AddIncomeTypeSelected>(_onAddIncomeTypeSelected);
     on<AddIncomeAmountChanged>(_onAmountChanged);
     on<AddIncomeDateChanged>(_onDateChanged);
     on<AddIncomeCategoryChanged>(_onCategoryChanged);
@@ -23,9 +25,22 @@ class AddIncomeBloc extends Bloc<AddIncomeEvent, AddIncomeState> {
     on<AddIncomeIsEndingChanged>(_onIsEndingChanged);
     on<AddIncomeEndDateChanged>(_onEndDateChanged);
     on<AddIncomeSubmitted>(_onAddIncomeSubmitted);
+    on<FetchPlannedIncomesEvent>(_onFetchPlannedIncomesEvent);
+    on<PlannedIncomeSelected>(_onPlannedIncomeSelected);
   }
 
   final IncomesRepository _incomesRepository;
+
+  void _onAddIncomeTypeSelected(
+    AddIncomeTypeSelected event,
+    Emitter<AddIncomeState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        isPlanned: event.isPlanned,
+      ),
+    );
+  }
 
   void _onAmountChanged(
     AddIncomeAmountChanged event,
@@ -142,6 +157,57 @@ class AddIncomeBloc extends Bloc<AddIncomeEvent, AddIncomeState> {
         isEnding: event.isEnding,
       ),
     );
+  }
+
+  Future<void> _onFetchPlannedIncomesEvent(
+    FetchPlannedIncomesEvent event,
+    Emitter<AddIncomeState> emit,
+  ) async {
+    try {
+      final incomes = await _incomesRepository.getIncomes(event.token);
+      if (incomes.isEmpty) return;
+
+      final plannedIncomes =
+          incomes.where((income) => income!.isPlanned).toList();
+
+      // \todo: get items in this period only
+      emit(PlannedIncomesFetchedState(plannedIncomes: plannedIncomes));
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _onPlannedIncomeSelected(
+    PlannedIncomeSelected event,
+    Emitter<AddIncomeState> emit,
+  ) async {
+    try {
+      final income = await _incomesRepository.getIncomeById(
+        event.token,
+        event.plannedIncomeId,
+      );
+      if (income == null) return;
+
+      emit(
+        state.copyWith(
+          amount: Amount.dirty(income.amount),
+          date: Date.dirty(income.date),
+          category: CategoryForm.dirty(income.category),
+          frequency: FrequencyForm.dirty(income.frequency),
+          endDate: EndDate.dirty(income.endDate),
+          isFixed: income.isFixed,
+          isValid: Formz.validate([
+            Amount.dirty(income.amount),
+            Date.dirty(income.date),
+            CategoryForm.dirty(income.category),
+            FrequencyForm.dirty(income.frequency),
+            EndDate.dirty(income.endDate),
+          ]),
+        ),
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> _onFetchCategoriesAndFrequenciesEvent(

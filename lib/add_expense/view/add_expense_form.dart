@@ -183,7 +183,7 @@ class _SelectPlannedExpenseState extends State<_SelectPlannedExpense> {
   String? _selectedExpenseId = 'default';
 
   final List<Map<String, String>> _plannedExpenses = [
-    {'id': 'default', 'title': 'None Selected'},
+    {'id': 'default', 'title': 'None'},
   ];
 
   String showAmount(double? amount) => amount?.toStringAsFixed(2) ?? '';
@@ -212,7 +212,7 @@ class _SelectPlannedExpenseState extends State<_SelectPlannedExpense> {
             children: [
               Row(
                 children: [
-                  const Text('Select Expense: '),
+                  const Text('Selection: '),
                   const SizedBox(width: 16),
                   DropdownButton<String>(
                       items: _plannedExpenses

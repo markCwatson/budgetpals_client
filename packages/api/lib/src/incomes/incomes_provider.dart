@@ -27,6 +27,26 @@ class IncomesDataProvider {
     }
   }
 
+  Future<Map<String, dynamic>> getIncomeById(String token, String id) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/$id/incomes'),
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body);
+      if (decoded is Map) {
+        return Map<String, dynamic>.from(decoded);
+      } else {
+        throw Exception('Unexpected response format');
+      }
+    } else {
+      throw Exception('Failed to load income');
+    }
+  }
+
   Future<List<String>> getIncomeCategories(String token) async {
     final response = await http.get(
       Uri.parse('$baseUrl/api/incomes/categories'),

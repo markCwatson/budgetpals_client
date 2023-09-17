@@ -28,6 +28,17 @@ class IncomesRepository {
     }
   }
 
+  Future<Expense?> getIncomeById(String token, String id) async {
+    try {
+      final data = await dataProvider.getIncomeById(token, id);
+
+      return Expense.fromJson(data);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   Future<List<Category?>> getIncomeCategories(String token) async {
     try {
       final data = await dataProvider.getIncomeCategories(token);
