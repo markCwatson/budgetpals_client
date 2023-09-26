@@ -15,7 +15,7 @@
             "type": "dart",
             "flutterMode": "release",
             "args": [
-                "--dart-define=API_URL=https://update-me"
+                "--dart-define=API_URL=https://budgetpals-399823.nn.r.appspot.com"
               ]
         }
     ]
