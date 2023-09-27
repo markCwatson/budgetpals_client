@@ -2,6 +2,7 @@ import 'package:api/api.dart';
 import 'package:budgetpals_client/add_income/bloc/add_income_bloc.dart';
 import 'package:budgetpals_client/add_income/view/add_income_form.dart';
 import 'package:budgetpals_client/auth/bloc/auth_bloc.dart';
+import 'package:budgetpals_client/utilities/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:incomes_repository/incomes_repository.dart';
@@ -16,7 +17,7 @@ class AddIncomeModal extends StatelessWidget {
   final String title;
   final bool isPlanned;
 
-  static const url = String.fromEnvironment('API_URL');
+  static final url = Url.getUrl();
 
   final IncomesRepository _incomesRepository = IncomesRepository(
     dataProvider: IncomesDataProvider(baseUrl: url),

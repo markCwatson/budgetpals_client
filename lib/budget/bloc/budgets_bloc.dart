@@ -1,11 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:budgetpals_client/budget/bloc/utilities/utilities.dart';
 import 'package:budgets_repository/budgets_repository.dart';
 import 'package:common_models/common_models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:expenses_repository/expenses_repository.dart';
 import 'package:incomes_repository/incomes_repository.dart';
-
-import 'utilities/utilities.dart';
 
 part 'budgets_event.dart';
 part 'budgets_state.dart';

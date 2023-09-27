@@ -2,6 +2,7 @@ import 'package:api/api.dart';
 import 'package:budgetpals_client/add_expense/bloc/add_expense_bloc.dart';
 import 'package:budgetpals_client/add_expense/view/add_expense_form.dart';
 import 'package:budgetpals_client/auth/bloc/auth_bloc.dart';
+import 'package:budgetpals_client/utilities/utilities.dart';
 import 'package:expenses_repository/expenses_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +17,7 @@ class AddExpenseModal extends StatelessWidget {
   final String title;
   final bool isPlanned;
 
-  static const url = String.fromEnvironment('API_URL');
+  static final url = Url.getUrl();
 
   final ExpensesRepository _expensesRepository = ExpensesRepository(
     dataProvider: ExpensesDataProvider(baseUrl: url),

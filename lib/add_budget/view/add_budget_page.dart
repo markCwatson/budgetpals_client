@@ -2,6 +2,7 @@ import 'package:api/api.dart';
 import 'package:budgetpals_client/add_budget/bloc/add_budget_bloc.dart';
 import 'package:budgetpals_client/add_budget/view/configure_budget.dart';
 import 'package:budgetpals_client/auth/auth.dart';
+import 'package:budgetpals_client/utilities/utilities.dart';
 import 'package:budgets_repository/budgets_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AddBudgetPage extends StatelessWidget {
   AddBudgetPage({super.key});
 
-  static const url = String.fromEnvironment('API_URL');
+  static final url = Url.getUrl();
 
   final BudgetsRepository _budgetsRepository = BudgetsRepository(
     dataProvider: BudgetsDataProvider(baseUrl: url),

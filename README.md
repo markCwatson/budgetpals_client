@@ -8,6 +8,9 @@ Uses the [budgetpals API](https://github.com/markCwatson/budgetpals) (which is W
 
 This app is my first ever attempt at creating a mobile application, and my first time using Flutter/Dart. The state-management architecture is based on the BLoC pattern using `flutter_bloc` ^v8.1.1.
 
+# Internal testing: TestFlight
+This app is available from Apple for internal testing for registered testers using TestFlight.
+
 # Demo (Sept 17, 2023)
 
 Here is a demo of the app running in an iOS simulator connected to the [budgetpals backend](https://github.com/markCwatson/budgetpals). First, here is the basic account creation flow where the user enters an email, name, and password.
@@ -61,5 +64,5 @@ Chrome (web)           • chrome
 Finally, run the app on the `iPhone 14 Pro (mobile)` with a device ID of `9DB1D9E8-8F0A-4FC8-B8ED-9D944B7CDE09`, in my case.
 
 ```
-flutter run --dart-define=API_URL=http://localhost:3333 -d 9DB1D9E8-8F0A-4FC8-B8ED-9D944B7CDE09
+flutter run -d 9DB1D9E8-8F0A-4FC8-B8ED-9D944B7CDE09
 ```
