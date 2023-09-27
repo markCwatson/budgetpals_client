@@ -5,6 +5,7 @@ import 'package:budgetpals_client/auth/auth.dart';
 import 'package:budgetpals_client/login/login.dart';
 import 'package:budgetpals_client/splash/splash.dart';
 import 'package:budgetpals_client/theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_repository/user_repository.dart';
@@ -25,9 +26,11 @@ class _AppState extends State<App> {
 
   @override
   void initState() {
-    const url = String.fromEnvironment('API_URL');
-    if (url.isEmpty) {
-      throw Exception('API_URL environment variable is not set');
+    var url = '';
+    if (kReleaseMode) {
+      url = 'https://budgetpals-399823.nn.r.appspot.com';
+    } else {
+      url = 'http://localhost:3333';
     }
 
     super.initState();

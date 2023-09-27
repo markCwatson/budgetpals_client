@@ -1,6 +1,6 @@
 name: budgetpals_client
 description: A mobile client for the budgetpals API.
-version: 0.0.0+1
+version: 0.0.0+4
 publish_to: none
 
 environment:
