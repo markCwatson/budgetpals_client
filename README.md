@@ -1,4 +1,4 @@
-[![node CI](https://github.com/markCwatson/budgetpals_client/actions/workflows/dart.yml/badge.svg?branch=main)](https://github.com/markCwatson/budgetpals_client/actions/workflows/dart.yml)
+[![node CI](https://github.com/markCwatson/budgetpals_client/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/markCwatson/budgetpals_client/actions/workflows/tests.yml)
 
 # budgetpals_client (WIP)
 
