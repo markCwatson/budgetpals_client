@@ -1,14 +1,15 @@
-import 'package:api/api.dart';
-import 'package:auth_repository/auth_repository.dart';
-import 'package:budgetpals_client/add_budget/view/add_budget_page.dart';
-import 'package:budgetpals_client/auth/auth.dart';
-import 'package:budgetpals_client/login/login.dart';
-import 'package:budgetpals_client/splash/splash.dart';
+import 'package:budgetpals_client/data/api/src/auth/auth_provider.dart';
+import 'package:budgetpals_client/data/api/src/users/users_provider.dart';
+import 'package:budgetpals_client/data/auth_repository/auth_repository.dart';
+import 'package:budgetpals_client/data/user_repository/user_repository.dart';
+import 'package:budgetpals_client/screens/add_budget/view/add_budget_page.dart';
+import 'package:budgetpals_client/screens/auth/auth.dart';
+import 'package:budgetpals_client/screens/login/login.dart';
+import 'package:budgetpals_client/screens/splash/splash.dart';
 import 'package:budgetpals_client/theme.dart';
 import 'package:budgetpals_client/utilities/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:user_repository/user_repository.dart';
 
 class App extends StatefulWidget {
   const App({super.key});

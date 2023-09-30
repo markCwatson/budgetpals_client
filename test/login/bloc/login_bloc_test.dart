@@ -1,6 +1,6 @@
-import 'package:auth_repository/auth_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:budgetpals_client/login/login.dart';
+import 'package:budgetpals_client/data/auth_repository/auth_repository.dart';
+import 'package:budgetpals_client/screens/login/login.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:formz/formz.dart';
 import 'package:mocktail/mocktail.dart';

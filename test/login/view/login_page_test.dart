@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:auth_repository/auth_repository.dart';
-import 'package:budgetpals_client/login/login.dart';
+import 'package:budgetpals_client/data/auth_repository/auth_repository.dart';
+import 'package:budgetpals_client/screens/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';

@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:budgetpals_client/auth/auth.dart';
+import 'package:budgetpals_client/data/user_repository/models/user.dart';
+import 'package:budgetpals_client/screens/auth/auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:user_repository/user_repository.dart';
 
 class MockUser extends Mock implements User {}
 
