@@ -17,21 +17,42 @@ class ExpenseBoxAdapter extends TypeAdapter<ExpenseBox> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ExpenseBox()
-      ..url = fields[0] as String
-      ..response = fields[1] as String
-      ..timestamp = fields[2] as int;
+      ..id = fields[0] as String
+      ..frequency = fields[1] as String
+      ..isEnding = fields[2] as bool
+      ..endDate = fields[3] as String
+      ..isFixed = fields[4] as bool
+      ..userId = fields[5] as String
+      ..isPlanned = fields[6] as bool
+      ..amount = fields[7] as double
+      ..date = fields[8] as String
+      ..category = fields[9] as String;
   }
 
   @override
   void write(BinaryWriter writer, ExpenseBox obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(10)
       ..writeByte(0)
-      ..write(obj.url)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.response)
+      ..write(obj.frequency)
       ..writeByte(2)
-      ..write(obj.timestamp);
+      ..write(obj.isEnding)
+      ..writeByte(3)
+      ..write(obj.endDate)
+      ..writeByte(4)
+      ..write(obj.isFixed)
+      ..writeByte(5)
+      ..write(obj.userId)
+      ..writeByte(6)
+      ..write(obj.isPlanned)
+      ..writeByte(7)
+      ..write(obj.amount)
+      ..writeByte(8)
+      ..write(obj.date)
+      ..writeByte(9)
+      ..write(obj.category);
   }
 
   @override

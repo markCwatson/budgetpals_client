@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:budgetpals_client/data/providers/expenses/expenses_provider.dart';
 import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
 import 'package:budgetpals_client/data/repositories/expenses/models/category.dart';
+import 'package:budgetpals_client/data/repositories/expenses/models/expense_box.dart';
 import 'package:budgetpals_client/data/repositories/expenses/models/frequency.dart';
 import 'package:budgetpals_client/data/repositories/irepository.dart';
 
@@ -14,14 +15,14 @@ class ExpensesRepository implements IRepository<Expense> {
 
   final ExpensesDataProvider dataProvider;
 
-  final IRepository<Expense> cache;
+  final IRepository<ExpenseBox> cache;
 
   @override
   Future<List<Expense?>> get({required String token}) async {
     final cachedExpenses = await cache.get(token: token);
 
     if (cachedExpenses.isNotEmpty) {
-      return cachedExpenses;
+      return cachedExpenses as List<Expense?>;
     }
 
     try {
@@ -38,11 +39,13 @@ class ExpensesRepository implements IRepository<Expense> {
       ).toList();
 
       for (final expense in expenses) {
+        print(expense);
         await cache.add(object: expense, token: token);
       }
 
       return expenses;
     } catch (e) {
+      print(e);
       throw Exception('Error fetching expenses');
     }
   }

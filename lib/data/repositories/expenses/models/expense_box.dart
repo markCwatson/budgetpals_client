@@ -2,14 +2,35 @@ import 'package:hive/hive.dart';
 
 part 'expense_box.g.dart';
 
-@HiveType(typeId: 0) //declare unique for every class
+@HiveType(typeId: 0)
 class ExpenseBox extends HiveObject {
-  @HiveField(0) //unique index of the field
-  late String url;
+  @HiveField(0)
+  late String id;
 
   @HiveField(1)
-  late String response;
+  late String frequency;
 
   @HiveField(2)
-  late int timestamp;
+  late bool isEnding;
+
+  @HiveField(3)
+  late String endDate;
+
+  @HiveField(4)
+  late bool isFixed;
+
+  @HiveField(5)
+  late String userId;
+
+  @HiveField(6)
+  late bool isPlanned;
+
+  @HiveField(7)
+  late double amount;
+
+  @HiveField(8)
+  late String date;
+
+  @HiveField(9)
+  late String category;
 }

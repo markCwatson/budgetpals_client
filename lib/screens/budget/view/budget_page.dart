@@ -2,7 +2,10 @@ import 'package:budgetpals_client/data/providers/budgets/budgets_provider.dart';
 import 'package:budgetpals_client/data/providers/expenses/expenses_provider.dart';
 import 'package:budgetpals_client/data/providers/incomes/incomes_provider.dart';
 import 'package:budgetpals_client/data/repositories/budgets/budgets_repository.dart';
+import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
 import 'package:budgetpals_client/data/repositories/expenses/expenses_repository.dart';
+import 'package:budgetpals_client/data/repositories/expenses/models/expense_box.dart';
+import 'package:budgetpals_client/data/repositories/hive_repository.dart';
 import 'package:budgetpals_client/data/repositories/incomes/incomes_repository.dart';
 import 'package:budgetpals_client/screens/auth/auth.dart';
 import 'package:budgetpals_client/screens/budget/bloc/budgets_bloc.dart';
@@ -10,6 +13,7 @@ import 'package:budgetpals_client/screens/budget/view/budget_tabs.dart';
 import 'package:budgetpals_client/utilities/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 
 /// The BudgetPage widget serves as the main container for displaying budget-
 /// related information. It sets up the BlocProvider for the BudgetsBloc, which
@@ -30,6 +34,9 @@ class BudgetPage extends StatelessWidget {
 
   final ExpensesRepository _expensesRepository = ExpensesRepository(
     dataProvider: ExpensesDataProvider(baseUrl: url),
+    cache: HiveRepository<ExpenseBox>(
+      Hive.box('expenses'),
+    ),
   );
 
   final IncomesRepository _incomesRepository = IncomesRepository(
