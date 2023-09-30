@@ -11,8 +11,13 @@ class ApiCacheHelper {
     String route,
     String token,
   ) async {
+    if (!Hive.isAdapterRegistered(ApiResponseBox.getType)) {
+      // Register the adapter if not registered
+      Hive.registerAdapter(ApiResponseBoxAdapter());
+    }
+
     final box = Hive.box<ApiResponseBox?>('apiResponses');
-    //returns first element according to the condition or empty object
+    // returns first element according to the condition or empty object
     final cachedResponse = box.values.firstWhere(
       (response) => response?.url == route,
       orElse: () => null,
