@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:api/src/api_cache_helper/api_cache_helper.dart';
 import 'package:http/http.dart' as http;
 
 class ExpensesDataProvider {
@@ -8,22 +9,15 @@ class ExpensesDataProvider {
   final String baseUrl;
 
   Future<List<Map<String, dynamic>>> getExpenses(String token) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/api/expenses'),
-      headers: {
-        HttpHeaders.authorizationHeader: 'Bearer $token',
-      },
+    final response = await ApiCacheHelper.getJsonResponse(
+      '$baseUrl/api/expenses',
+      token,
     );
 
-    if (response.statusCode == 200) {
-      final decoded = jsonDecode(response.body);
-      if (decoded is List) {
-        return List<Map<String, dynamic>>.from(decoded);
-      } else {
-        throw Exception('Expected a list but got ${decoded.runtimeType}');
-      }
+    if (response is List) {
+      return List<Map<String, dynamic>>.from(response);
     } else {
-      throw Exception('Failed to load expenses');
+      throw Exception('Expected a list but got ${response.runtimeType}');
     }
   }
 
