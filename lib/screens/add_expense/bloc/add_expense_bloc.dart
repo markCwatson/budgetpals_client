@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:budgetpals_client/data/common_models/expense.dart';
-import 'package:budgetpals_client/data/expenses_repository/expenses_repository.dart';
-import 'package:budgetpals_client/data/expenses_repository/models/category.dart';
-import 'package:budgetpals_client/data/expenses_repository/models/frequency.dart';
+import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
+import 'package:budgetpals_client/data/repositories/expenses/expenses_repository.dart';
+import 'package:budgetpals_client/data/repositories/expenses/models/category.dart';
+import 'package:budgetpals_client/data/repositories/expenses/models/frequency.dart';
 import 'package:budgetpals_client/screens/add_expense/models/amount.dart';
 import 'package:budgetpals_client/screens/add_expense/models/category_form.dart';
 import 'package:budgetpals_client/screens/add_expense/models/date.dart';
@@ -170,7 +170,7 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
     Emitter<AddExpenseState> emit,
   ) async {
     try {
-      final expenses = await _expensesRepository.getExpenses(event.token);
+      final expenses = await _expensesRepository.get(token: event.token);
       if (expenses.isEmpty) return;
 
       final plannedExpenses =
@@ -188,10 +188,11 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
     Emitter<AddExpenseState> emit,
   ) async {
     try {
-      final expense = await _expensesRepository.getExpenseById(
-        event.token,
-        event.plannedExpenseId,
+      final expense = await _expensesRepository.getById(
+        token: event.token,
+        id: event.plannedExpenseId,
       );
+
       if (expense == null) return;
 
       emit(
@@ -244,16 +245,18 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
     if (state.isValid) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
-        await _expensesRepository.addExpense(
+        await _expensesRepository.add(
           token: event.token,
-          amount: state.amount.value,
-          date: state.date.value,
-          category: state.category.value,
-          frequency: state.frequency.value,
-          isEnding: state.isEnding,
-          endDate: state.endDate.value,
-          isFixed: state.isFixed,
-          isPlanned: event.isPlanned,
+          object: Expense(
+            amount: state.amount.value,
+            date: state.date.value,
+            category: state.category.value,
+            frequency: state.frequency.value,
+            isEnding: state.isEnding,
+            endDate: state.endDate.value,
+            isFixed: state.isFixed,
+            isPlanned: event.isPlanned,
+          ),
         );
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (e) {

@@ -1,7 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:budgetpals_client/data/auth_repository/auth_repository.dart';
-import 'package:budgetpals_client/data/user_repository/models/user.dart';
-import 'package:budgetpals_client/data/user_repository/user_repository.dart';
+import 'package:budgetpals_client/data/repositories/auth/auth_repository.dart';
+import 'package:budgetpals_client/data/repositories/user/models/user.dart';
+import 'package:budgetpals_client/data/repositories/user/user_repository.dart';
 import 'package:budgetpals_client/screens/auth/auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

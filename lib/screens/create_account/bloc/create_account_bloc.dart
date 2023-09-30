@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:budgetpals_client/data/user_repository/user_repository.dart';
+import 'package:budgetpals_client/data/repositories/user/user_repository.dart';
 import 'package:budgetpals_client/screens/create_account/models/name.dart';
 import 'package:budgetpals_client/screens/create_account/models/password.dart';
 import 'package:budgetpals_client/screens/create_account/models/username.dart';

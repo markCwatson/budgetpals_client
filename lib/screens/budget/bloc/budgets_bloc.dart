@@ -1,11 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:budgetpals_client/data/budgets_repository/budgets_repository.dart';
-import 'package:budgetpals_client/data/budgets_repository/models/budget.dart';
-import 'package:budgetpals_client/data/common_models/expense.dart';
-import 'package:budgetpals_client/data/common_models/generic.dart';
-import 'package:budgetpals_client/data/common_models/income.dart';
-import 'package:budgetpals_client/data/expenses_repository/expenses_repository.dart';
-import 'package:budgetpals_client/data/incomes_repository/incomes_repository.dart';
+import 'package:budgetpals_client/data/repositories/budgets/budgets_repository.dart';
+import 'package:budgetpals_client/data/repositories/budgets/models/budget.dart';
+import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
+import 'package:budgetpals_client/data/repositories/common_models/generic.dart';
+import 'package:budgetpals_client/data/repositories/common_models/income.dart';
+import 'package:budgetpals_client/data/repositories/expenses/expenses_repository.dart';
+import 'package:budgetpals_client/data/repositories/incomes/incomes_repository.dart';
 import 'package:budgetpals_client/screens/budget/bloc/utilities/utilities.dart';
 import 'package:equatable/equatable.dart';
 
@@ -50,7 +50,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     Emitter<BudgetsState> emit,
   ) async {
     try {
-      await _expensesRepository.deleteExpense(
+      await _expensesRepository.delete(
         token: event.token,
         id: event.id,
       );
@@ -89,7 +89,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
   ) async {
     try {
       // \todo: consider using token on event instead of state??
-      final expenses = await _expensesRepository.getExpenses(event.token);
+      final expenses = await _expensesRepository.get(token: event.token);
       emit(BudgetsState.expensesLoaded(expenses));
     } catch (e) {
       print(e);
@@ -120,11 +120,11 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     Emitter<BudgetsState> emit,
   ) async {
     try {
-      await _expensesRepository.deleteExpense(
+      await _expensesRepository.delete(
         token: event.token,
         id: event.id,
       );
-      final expenses = await _expensesRepository.getExpenses(event.token);
+      final expenses = await _expensesRepository.get(token: event.token);
       emit(BudgetsState.expensesLoaded(expenses));
     } catch (e) {
       print(e);

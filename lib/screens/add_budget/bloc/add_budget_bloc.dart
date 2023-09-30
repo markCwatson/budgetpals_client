@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:budgetpals_client/data/budgets_repository/budgets_repository.dart';
+import 'package:budgetpals_client/data/repositories/budgets/budgets_repository.dart';
 import 'package:budgetpals_client/screens/add_budget/models/amount.dart';
 import 'package:budgetpals_client/screens/add_budget/models/date.dart';
 import 'package:budgetpals_client/screens/add_budget/models/period.dart';

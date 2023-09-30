@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:budgetpals_client/data/auth_repository/auth_repository.dart';
+import 'package:budgetpals_client/data/repositories/auth/auth_repository.dart';
 import 'package:budgetpals_client/screens/login/models/password.dart';
 import 'package:budgetpals_client/screens/login/models/username.dart';
 import 'package:equatable/equatable.dart';

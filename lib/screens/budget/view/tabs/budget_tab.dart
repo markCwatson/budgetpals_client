@@ -1,7 +1,7 @@
-import 'package:budgetpals_client/data/budgets_repository/models/budget.dart';
-import 'package:budgetpals_client/data/common_models/expense.dart';
-import 'package:budgetpals_client/data/common_models/generic.dart';
-import 'package:budgetpals_client/data/common_models/income.dart';
+import 'package:budgetpals_client/data/repositories/budgets/models/budget.dart';
+import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
+import 'package:budgetpals_client/data/repositories/common_models/generic.dart';
+import 'package:budgetpals_client/data/repositories/common_models/income.dart';
 import 'package:budgetpals_client/screens/add_expense/view/view.dart';
 import 'package:budgetpals_client/screens/add_income/view/view.dart';
 import 'package:budgetpals_client/screens/auth/auth.dart';

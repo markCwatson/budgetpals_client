@@ -1,18 +1,19 @@
 import 'dart:async';
 
-import 'package:budgetpals_client/data/api/src/expenses/expenses_provider.dart';
-import 'package:budgetpals_client/data/common_models/expense.dart';
-import 'package:budgetpals_client/data/expenses_repository/models/category.dart';
-import 'package:budgetpals_client/data/expenses_repository/models/frequency.dart';
+import 'package:budgetpals_client/data/providers/incomes/incomes_provider.dart';
+import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
+import 'package:budgetpals_client/data/repositories/common_models/income.dart';
+import 'package:budgetpals_client/data/repositories/incomes/models/category.dart';
+import 'package:budgetpals_client/data/repositories/incomes/models/frequency.dart';
 
-class ExpensesRepository {
-  ExpensesRepository({required this.dataProvider});
+class IncomesRepository {
+  IncomesRepository({required this.dataProvider});
 
-  final ExpensesDataProvider dataProvider;
+  final IncomesDataProvider dataProvider;
 
-  Future<List<Expense?>> getExpenses(String token) async {
+  Future<List<Income?>> getIncomes(String token) async {
     try {
-      final data = await dataProvider.getExpenses(token);
+      final data = await dataProvider.getIncomes(token);
 
       return data.map(
         (e) {
@@ -20,7 +21,7 @@ class ExpensesRepository {
           // \todo: come up with a different approach for this
           e['endDate'] ??= '';
 
-          return Expense.fromJson(e);
+          return Income.fromJson(e);
         },
       ).toList();
     } catch (e) {
@@ -29,9 +30,9 @@ class ExpensesRepository {
     }
   }
 
-  Future<Expense?> getExpenseById(String token, String id) async {
+  Future<Expense?> getIncomeById(String token, String id) async {
     try {
-      final data = await dataProvider.getExpenseById(token, id);
+      final data = await dataProvider.getIncomeById(token, id);
 
       return Expense.fromJson(data);
     } catch (e) {
@@ -40,9 +41,9 @@ class ExpensesRepository {
     }
   }
 
-  Future<List<Category?>> getExpenseCategories(String token) async {
+  Future<List<Category?>> getIncomeCategories(String token) async {
     try {
-      final data = await dataProvider.getExpenseCategories(token);
+      final data = await dataProvider.getIncomeCategories(token);
 
       // ignore: unnecessary_lambdas
       return data.map((str) => Category(str)).toList();
@@ -52,9 +53,9 @@ class ExpensesRepository {
     }
   }
 
-  Future<List<Frequency?>> getExpenseFrequencies(String token) async {
+  Future<List<Frequency?>> getIncomeFrequencies(String token) async {
     try {
-      final data = await dataProvider.getExpenseFrequencies(token);
+      final data = await dataProvider.getIncomeFrequencies(token);
       // ignore: unnecessary_lambdas
       return data.map((str) => Frequency(str)).toList();
     } catch (e) {
@@ -63,7 +64,7 @@ class ExpensesRepository {
     }
   }
 
-  Future<void> addExpense({
+  Future<void> addIncome({
     required String token,
     required double amount,
     required String date,
@@ -75,7 +76,7 @@ class ExpensesRepository {
     required bool isPlanned,
   }) async {
     try {
-      await dataProvider.addExpense(
+      await dataProvider.addIncome(
         token: token,
         amount: amount,
         date: date,
@@ -91,12 +92,12 @@ class ExpensesRepository {
     }
   }
 
-  Future<void> deleteExpense({
+  Future<void> deleteIncome({
     required String token,
     required String id,
   }) async {
     try {
-      await dataProvider.deleteExpense(
+      await dataProvider.deleteIncome(
         token: token,
         id: id,
       );

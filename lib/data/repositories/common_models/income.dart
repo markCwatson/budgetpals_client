@@ -1,4 +1,4 @@
-import 'package:budgetpals_client/data/common_models/generic.dart';
+import 'package:budgetpals_client/data/repositories/common_models/generic.dart';
 import 'package:equatable/equatable.dart';
 
 class Income extends Equatable implements FinanceEntry {

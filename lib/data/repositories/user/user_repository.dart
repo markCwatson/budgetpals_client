@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:budgetpals_client/data/api/src/users/users_provider.dart';
-import 'package:budgetpals_client/data/user_repository/models/user.dart';
+import 'package:budgetpals_client/data/providers/users/users_provider.dart';
+import 'package:budgetpals_client/data/repositories/user/models/user.dart';
 
 class UserRepository {
   UserRepository({required this.dataProvider});

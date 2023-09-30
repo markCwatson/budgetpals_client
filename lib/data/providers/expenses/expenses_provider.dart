@@ -121,6 +121,43 @@ class ExpensesDataProvider {
     }
   }
 
+  // placeholder: untested
+  // \todo: test
+  Future<void> updateExpense({
+    required String token,
+    required String id,
+    required double amount,
+    required String date,
+    required String category,
+    required String frequency,
+    required bool isEnding,
+    required String endDate,
+    required bool isFixed,
+    required bool isPlanned,
+  }) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/expenses/$id'),
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<dynamic, dynamic>{
+        'amount': amount,
+        'date': date,
+        'category': category,
+        'frequency': frequency,
+        'isEnding': isEnding,
+        'endDate': endDate,
+        'isFixed': isFixed,
+        'isPlanned': isPlanned,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update expense');
+    }
+  }
+
   Future<void> deleteExpense({
     required String token,
     required String id,

@@ -1,7 +1,7 @@
-import 'package:budgetpals_client/data/api/src/auth/auth_provider.dart';
-import 'package:budgetpals_client/data/api/src/users/users_provider.dart';
-import 'package:budgetpals_client/data/auth_repository/auth_repository.dart';
-import 'package:budgetpals_client/data/user_repository/user_repository.dart';
+import 'package:budgetpals_client/data/providers/auth/auth_provider.dart';
+import 'package:budgetpals_client/data/providers/users/users_provider.dart';
+import 'package:budgetpals_client/data/repositories/auth/auth_repository.dart';
+import 'package:budgetpals_client/data/repositories/user/user_repository.dart';
 import 'package:budgetpals_client/screens/add_budget/view/add_budget_page.dart';
 import 'package:budgetpals_client/screens/auth/auth.dart';
 import 'package:budgetpals_client/screens/login/login.dart';

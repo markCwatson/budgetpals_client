@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:budgetpals_client/data/common_models/income.dart';
-import 'package:budgetpals_client/data/incomes_repository/incomes_repository.dart';
-import 'package:budgetpals_client/data/incomes_repository/models/category.dart';
-import 'package:budgetpals_client/data/incomes_repository/models/frequency.dart';
+import 'package:budgetpals_client/data/repositories/common_models/income.dart';
+import 'package:budgetpals_client/data/repositories/incomes/incomes_repository.dart';
+import 'package:budgetpals_client/data/repositories/incomes/models/category.dart';
+import 'package:budgetpals_client/data/repositories/incomes/models/frequency.dart';
 import 'package:budgetpals_client/screens/add_income/models/amount.dart';
 import 'package:budgetpals_client/screens/add_income/models/category_form.dart';
 import 'package:budgetpals_client/screens/add_income/models/date.dart';

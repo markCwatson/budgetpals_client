@@ -1,9 +1,9 @@
-import 'package:budgetpals_client/data/api/src/budgets/budgets_provider.dart';
-import 'package:budgetpals_client/data/api/src/expenses/expenses_provider.dart';
-import 'package:budgetpals_client/data/api/src/incomes/incomes_provider.dart';
-import 'package:budgetpals_client/data/budgets_repository/budgets_repository.dart';
-import 'package:budgetpals_client/data/expenses_repository/expenses_repository.dart';
-import 'package:budgetpals_client/data/incomes_repository/incomes_repository.dart';
+import 'package:budgetpals_client/data/providers/budgets/budgets_provider.dart';
+import 'package:budgetpals_client/data/providers/expenses/expenses_provider.dart';
+import 'package:budgetpals_client/data/providers/incomes/incomes_provider.dart';
+import 'package:budgetpals_client/data/repositories/budgets/budgets_repository.dart';
+import 'package:budgetpals_client/data/repositories/expenses/expenses_repository.dart';
+import 'package:budgetpals_client/data/repositories/incomes/incomes_repository.dart';
 import 'package:budgetpals_client/screens/auth/auth.dart';
 import 'package:budgetpals_client/screens/budget/bloc/budgets_bloc.dart';
 import 'package:budgetpals_client/screens/budget/view/budget_tabs.dart';

@@ -1,5 +1,5 @@
-import 'package:budgetpals_client/data/api/src/budgets/budgets_provider.dart';
-import 'package:budgetpals_client/data/budgets_repository/budgets_repository.dart';
+import 'package:budgetpals_client/data/providers/budgets/budgets_provider.dart';
+import 'package:budgetpals_client/data/repositories/budgets/budgets_repository.dart';
 import 'package:budgetpals_client/screens/add_budget/bloc/add_budget_bloc.dart';
 import 'package:budgetpals_client/screens/add_budget/view/configure_budget.dart';
 import 'package:budgetpals_client/screens/auth/auth.dart';

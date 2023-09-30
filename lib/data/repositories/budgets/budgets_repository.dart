@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:budgetpals_client/data/api/src/budgets/budgets_provider.dart';
-import 'package:budgetpals_client/data/budgets_repository/models/budget.dart';
-import 'package:budgetpals_client/data/common_models/expense.dart';
-import 'package:budgetpals_client/data/common_models/income.dart';
+import 'package:budgetpals_client/data/providers/budgets/budgets_provider.dart';
+import 'package:budgetpals_client/data/repositories/budgets/models/budget.dart';
+import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
+import 'package:budgetpals_client/data/repositories/common_models/income.dart';
 
 class BudgetsRepository {
   BudgetsRepository({required this.dataProvider});

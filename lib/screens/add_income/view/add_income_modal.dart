@@ -1,5 +1,5 @@
-import 'package:budgetpals_client/data/api/src/incomes/incomes_provider.dart';
-import 'package:budgetpals_client/data/incomes_repository/incomes_repository.dart';
+import 'package:budgetpals_client/data/providers/incomes/incomes_provider.dart';
+import 'package:budgetpals_client/data/repositories/incomes/incomes_repository.dart';
 import 'package:budgetpals_client/screens/add_income/bloc/add_income_bloc.dart';
 import 'package:budgetpals_client/screens/add_income/view/add_income_form.dart';
 import 'package:budgetpals_client/screens/auth/bloc/auth_bloc.dart';

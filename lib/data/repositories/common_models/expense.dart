@@ -1,12 +1,12 @@
-import 'package:budgetpals_client/data/common_models/generic.dart';
+import 'package:budgetpals_client/data/repositories/common_models/generic.dart';
 import 'package:equatable/equatable.dart';
 
 class Expense extends Equatable implements FinanceEntry {
   const Expense({
-    required this.id,
     required this.amount,
     required this.date,
     required this.category,
+    this.id = '',
     this.frequency = '',
     this.isEnding = false,
     this.endDate = '',
@@ -56,5 +56,5 @@ class Expense extends Equatable implements FinanceEntry {
         isPlanned,
       ];
 
-  static const empty = Expense(id: '', amount: 0, date: '', category: '');
+  static const empty = Expense(amount: 0, date: '', category: '');
 }

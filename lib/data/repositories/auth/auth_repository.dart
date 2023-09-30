@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:budgetpals_client/data/api/src/auth/auth_provider.dart';
+import 'package:budgetpals_client/data/providers/auth/auth_provider.dart';
 
 class AuthToken {
   AuthToken({required this.token});

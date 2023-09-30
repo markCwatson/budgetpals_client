@@ -1,4 +1,4 @@
-import 'package:budgetpals_client/data/user_repository/user_repository.dart';
+import 'package:budgetpals_client/data/repositories/user/user_repository.dart';
 import 'package:budgetpals_client/screens/create_account/bloc/create_account_bloc.dart';
 import 'package:budgetpals_client/screens/create_account/view/create_account_form.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
-import 'package:budgetpals_client/data/common_models/expense.dart';
-import 'package:budgetpals_client/data/common_models/income.dart';
+import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
+import 'package:budgetpals_client/data/repositories/common_models/income.dart';
 import 'package:equatable/equatable.dart';
 
 class Budget extends Equatable {
