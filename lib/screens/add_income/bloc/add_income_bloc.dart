@@ -3,7 +3,11 @@ import 'package:budgetpals_client/data/common_models/income.dart';
 import 'package:budgetpals_client/data/incomes_repository/incomes_repository.dart';
 import 'package:budgetpals_client/data/incomes_repository/models/category.dart';
 import 'package:budgetpals_client/data/incomes_repository/models/frequency.dart';
-import 'package:budgetpals_client/screens/add_income/models/models.dart';
+import 'package:budgetpals_client/screens/add_income/models/amount.dart';
+import 'package:budgetpals_client/screens/add_income/models/category_form.dart';
+import 'package:budgetpals_client/screens/add_income/models/date.dart';
+import 'package:budgetpals_client/screens/add_income/models/end_date.dart';
+import 'package:budgetpals_client/screens/add_income/models/frequency_form.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 
