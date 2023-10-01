@@ -43,7 +43,6 @@ class ExpensesRepository implements IRepository<Expense> {
       ).toList();
 
       for (final expense in expenses) {
-        print(expense);
         await cache.add(object: expense.toExpenseBox(), token: token);
       }
 
