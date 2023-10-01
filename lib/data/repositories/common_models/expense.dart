@@ -1,5 +1,5 @@
 import 'package:budgetpals_client/data/repositories/common_models/generic.dart';
-import 'package:budgetpals_client/data/repositories/expenses/models/expense_box.dart';
+import 'package:budgetpals_client/data/repositories/expenses/boxes/expense_box.dart';
 import 'package:equatable/equatable.dart';
 
 class Expense extends Equatable implements FinanceEntry {

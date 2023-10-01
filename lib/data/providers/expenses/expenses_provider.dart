@@ -87,7 +87,7 @@ class ExpensesDataProvider {
     }
   }
 
-  Future<void> addExpense({
+  Future<bool> addExpense({
     required String token,
     required double amount,
     required String date,
@@ -119,11 +119,13 @@ class ExpensesDataProvider {
     if (response.statusCode != 201) {
       throw Exception('Failed to add expense');
     }
+
+    return true;
   }
 
   // placeholder: untested
   // \todo: test
-  Future<void> updateExpense({
+  Future<bool> updateExpense({
     required String token,
     required String id,
     required double amount,
@@ -156,9 +158,11 @@ class ExpensesDataProvider {
     if (response.statusCode != 200) {
       throw Exception('Failed to update expense');
     }
+
+    return true;
   }
 
-  Future<void> deleteExpense({
+  Future<bool> deleteExpense({
     required String token,
     required String id,
   }) async {
@@ -172,5 +176,7 @@ class ExpensesDataProvider {
     if (response.statusCode != 200) {
       throw Exception('Failed to delete expense');
     }
+
+    return true;
   }
 }
