@@ -1,9 +1,12 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:budgetpals_client/create_account/create_account.dart';
+import 'package:budgetpals_client/data/repositories/user/user_repository.dart';
+import 'package:budgetpals_client/screens/create_account/create_account.dart';
+import 'package:budgetpals_client/screens/create_account/models/name.dart';
+import 'package:budgetpals_client/screens/create_account/models/password.dart';
+import 'package:budgetpals_client/screens/create_account/models/username.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:formz/formz.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:user_repository/user_repository.dart';
 
 class MockUserRepository extends Mock implements UserRepository {}
 
