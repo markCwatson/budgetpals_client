@@ -22,7 +22,11 @@ class ExpensesRepository implements IRepository<Expense> {
     final cachedExpenses = await cache.get(token: token);
 
     if (cachedExpenses.isNotEmpty) {
-      return cachedExpenses as List<Expense?>;
+      final items = <Expense>[];
+      for (final cachedExpense in cachedExpenses) {
+        items.add(cachedExpense!.toExpense());
+      }
+      return items;
     }
 
     try {
@@ -40,7 +44,7 @@ class ExpensesRepository implements IRepository<Expense> {
 
       for (final expense in expenses) {
         print(expense);
-        await cache.add(object: expense, token: token);
+        await cache.add(object: expense.toExpenseBox(), token: token);
       }
 
       return expenses;

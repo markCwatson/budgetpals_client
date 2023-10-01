@@ -1,3 +1,4 @@
+import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
 import 'package:hive/hive.dart';
 
 part 'expense_box.g.dart';
@@ -33,4 +34,19 @@ class ExpenseBox extends HiveObject {
 
   @HiveField(9)
   late String category;
+
+  Expense toExpense() {
+    return Expense(
+      id: id,
+      amount: amount,
+      date: date,
+      category: category,
+      frequency: frequency,
+      isEnding: isEnding,
+      endDate: endDate,
+      isFixed: isFixed,
+      userId: userId,
+      isPlanned: isPlanned,
+    );
+  }
 }
