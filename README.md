@@ -6,7 +6,7 @@ A mobile client for budgetpals.
 
 Uses the [budgetpals API](https://github.com/markCwatson/budgetpals) (which is WIP).
 
-This app is my first ever attempt at creating a mobile application, and my first time using Flutter/Dart. The state-management architecture is based on the BLoC pattern using `flutter_bloc` ^v8.1.1.
+This app is my first ever attempt at creating a mobile application, and my first time using Flutter/Dart. The state-management architecture is based on the BLoC pattern. Hive is used for caching API data reducing the number of network requests.
 
 # Internal testing: TestFlight
 This app is available from Apple for internal testing for registered testers using TestFlight.
