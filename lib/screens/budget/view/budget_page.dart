@@ -2,7 +2,6 @@ import 'package:budgetpals_client/data/providers/budgets/budgets_provider.dart';
 import 'package:budgetpals_client/data/providers/expenses/expenses_provider.dart';
 import 'package:budgetpals_client/data/providers/incomes/incomes_provider.dart';
 import 'package:budgetpals_client/data/repositories/budgets/budgets_repository.dart';
-import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
 import 'package:budgetpals_client/data/repositories/expenses/expenses_repository.dart';
 import 'package:budgetpals_client/data/repositories/expenses/models/expense_box.dart';
 import 'package:budgetpals_client/data/repositories/hive_repository.dart';
