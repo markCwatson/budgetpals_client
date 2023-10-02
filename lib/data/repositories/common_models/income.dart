@@ -1,19 +1,20 @@
 import 'package:budgetpals_client/data/repositories/common_models/generic.dart';
+import 'package:budgetpals_client/data/repositories/incomes/boxes/income_box.dart';
 import 'package:equatable/equatable.dart';
 
 class Income extends Equatable implements FinanceEntry {
-  const Income(
-    this.id,
-    this.amount,
-    this.date,
-    this.category,
-    this.frequency,
-    this.isEnding,
-    this.endDate,
-    this.isFixed,
-    this.userId,
-    this.isPlanned,
-  );
+  const Income({
+    required this.amount,
+    required this.date,
+    required this.category,
+    this.id = '',
+    this.frequency = '',
+    this.isEnding = false,
+    this.endDate = '',
+    this.isFixed = false,
+    this.userId = '',
+    this.isPlanned = false,
+  });
 
   Income.fromJson(Map<String, dynamic> json)
       : id = (json['_id'] ?? '') as String,
@@ -55,5 +56,20 @@ class Income extends Equatable implements FinanceEntry {
         isPlanned,
       ];
 
-  static const empty = Income('', 0, '', '', '', false, '', false, '', false);
+  static const empty = Income(amount: 0, date: '', category: '');
+
+  IncomeBox toIncomeBox() {
+    final expenseBox = IncomeBox()
+      ..id = id
+      ..amount = amount
+      ..date = date
+      ..category = category
+      ..frequency = frequency
+      ..isEnding = isEnding
+      ..endDate = endDate
+      ..isFixed = isFixed
+      ..userId = userId
+      ..isPlanned = isPlanned;
+    return expenseBox;
+  }
 }

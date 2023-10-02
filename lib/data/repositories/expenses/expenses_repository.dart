@@ -30,11 +30,16 @@ class ExpensesRepository implements IRepository<Expense> {
   late HiveRepository<CategoryBox> _categoryCache;
   late HiveRepository<FrequencyBox> _frequencyCache;
 
+  /// box names
+  static const String _expenseBoxName = 'expenses';
+  static const String _categoryBoxName = 'expenseCategories';
+  static const String _frequencyBoxName = 'expenseFreq';
+
   /// Initializes the Hive boxes for caching.
   void _initializeBoxes() {
-    _expenseCache = HiveRepository<ExpenseBox>(Hive.box('expenses'));
-    _categoryCache = HiveRepository<CategoryBox>(Hive.box('expenseCategories'));
-    _frequencyCache = HiveRepository<FrequencyBox>(Hive.box('expenseFreq'));
+    _expenseCache = HiveRepository<ExpenseBox>(Hive.box(_expenseBoxName));
+    _categoryCache = HiveRepository<CategoryBox>(Hive.box(_categoryBoxName));
+    _frequencyCache = HiveRepository<FrequencyBox>(Hive.box(_frequencyBoxName));
   }
 
   /// Fetches a list of expenses either from the cache or the API.
@@ -171,7 +176,8 @@ class ExpensesRepository implements IRepository<Expense> {
   }
 
   /// Fetches a list of expense categories either from the cache or the API.
-  Future<List<Category?>> getExpenseCategories(String token) async {
+  @override
+  Future<List<Category?>> getCategories(String token) async {
     final cachedCategories = await _categoryCache.get();
 
     if (cachedCategories.isNotEmpty) {
@@ -185,7 +191,7 @@ class ExpensesRepository implements IRepository<Expense> {
     }
 
     try {
-      final data = await dataProvider.getExpenseCategories(token);
+      final data = await dataProvider.getCategories(token);
 
       // ignore: unnecessary_lambdas
       final categories = data.map((str) => Category(str)).toList();
@@ -202,7 +208,8 @@ class ExpensesRepository implements IRepository<Expense> {
   }
 
   /// Fetches a list of expense frequencies either from the cache or the API.
-  Future<List<Frequency?>> getExpenseFrequencies(String token) async {
+  @override
+  Future<List<Frequency?>> getFrequencies(String token) async {
     final cachedFrequencies = await _frequencyCache.get();
 
     if (cachedFrequencies.isNotEmpty) {
@@ -216,7 +223,7 @@ class ExpensesRepository implements IRepository<Expense> {
     }
 
     try {
-      final data = await dataProvider.getExpenseFrequencies(token);
+      final data = await dataProvider.getFrequencies(token);
 
       // ignore: unnecessary_lambdas
       final frequencies = data.map((str) => Frequency(str)).toList();
@@ -234,13 +241,17 @@ class ExpensesRepository implements IRepository<Expense> {
 
   /// Static method to initialize Hive boxes before using them.
   static Future<void> initializeBoxes() async {
-    Hive.registerAdapter<ExpenseBox>(ExpenseBoxAdapter());
-    await Hive.openBox<ExpenseBox>('expenses');
-
-    Hive.registerAdapter<CategoryBox>(CategoryBoxAdapter());
-    await Hive.openBox<CategoryBox>('expenseCategories');
-
-    Hive.registerAdapter<FrequencyBox>(FrequencyBoxAdapter());
-    await Hive.openBox<FrequencyBox>('expenseFreq');
+    await IRepository.initBox<ExpenseBox>(
+      _expenseBoxName,
+      ExpenseBoxAdapter(),
+    );
+    await IRepository.initBox<CategoryBox>(
+      _categoryBoxName,
+      CategoryBoxAdapter(),
+    );
+    await IRepository.initBox<FrequencyBox>(
+      _frequencyBoxName,
+      FrequencyBoxAdapter(),
+    );
   }
 }

@@ -47,7 +47,7 @@ class ExpensesDataProvider {
     }
   }
 
-  Future<List<String>> getExpenseCategories(String token) async {
+  Future<List<String>> getCategories(String token) async {
     final response = await http.get(
       Uri.parse('$baseUrl/api/expenses/categories'),
       headers: {
@@ -67,7 +67,7 @@ class ExpensesDataProvider {
     }
   }
 
-  Future<List<String>> getExpenseFrequencies(String token) async {
+  Future<List<String>> getFrequencies(String token) async {
     final response = await http.get(
       Uri.parse('$baseUrl/api/expenses/frequencies'),
       headers: {
@@ -123,8 +123,6 @@ class ExpensesDataProvider {
     return true;
   }
 
-  // placeholder: untested
-  // \todo: test
   Future<bool> updateExpense({
     required String token,
     required String id,

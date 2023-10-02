@@ -222,10 +222,8 @@ class AddExpenseBloc extends Bloc<AddExpenseEvent, AddExpenseState> {
     Emitter<AddExpenseState> emit,
   ) async {
     try {
-      final categories =
-          await _expensesRepository.getExpenseCategories(event.token);
-      final frequencies =
-          await _expensesRepository.getExpenseFrequencies(event.token);
+      final categories = await _expensesRepository.getCategories(event.token);
+      final frequencies = await _expensesRepository.getFrequencies(event.token);
 
       emit(
         CategoriesAndFrequenciesFetchedState(

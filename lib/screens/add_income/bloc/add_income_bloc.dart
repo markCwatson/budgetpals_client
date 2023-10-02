@@ -170,7 +170,7 @@ class AddIncomeBloc extends Bloc<AddIncomeEvent, AddIncomeState> {
     Emitter<AddIncomeState> emit,
   ) async {
     try {
-      final incomes = await _incomesRepository.getIncomes(event.token);
+      final incomes = await _incomesRepository.get(token: event.token);
       if (incomes.isEmpty) return;
 
       final plannedIncomes =
@@ -188,9 +188,9 @@ class AddIncomeBloc extends Bloc<AddIncomeEvent, AddIncomeState> {
     Emitter<AddIncomeState> emit,
   ) async {
     try {
-      final income = await _incomesRepository.getIncomeById(
-        event.token,
-        event.plannedIncomeId,
+      final income = await _incomesRepository.getById(
+        token: event.token,
+        id: event.plannedIncomeId,
       );
       if (income == null) return;
 
@@ -221,10 +221,8 @@ class AddIncomeBloc extends Bloc<AddIncomeEvent, AddIncomeState> {
     Emitter<AddIncomeState> emit,
   ) async {
     try {
-      final categories =
-          await _incomesRepository.getIncomeCategories(event.token);
-      final frequencies =
-          await _incomesRepository.getIncomeFrequencies(event.token);
+      final categories = await _incomesRepository.getCategories(event.token);
+      final frequencies = await _incomesRepository.getFrequencies(event.token);
 
       emit(
         CategoriesAndFrequenciesFetchedState(
@@ -244,16 +242,18 @@ class AddIncomeBloc extends Bloc<AddIncomeEvent, AddIncomeState> {
     if (state.isValid) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
-        await _incomesRepository.addIncome(
+        await _incomesRepository.add(
           token: event.token,
-          amount: state.amount.value,
-          date: state.date.value,
-          category: state.category.value,
-          frequency: state.frequency.value,
-          isEnding: state.isEnding,
-          endDate: state.endDate.value,
-          isFixed: state.isFixed,
-          isPlanned: event.isPlanned,
+          object: Income(
+            amount: state.amount.value,
+            date: state.date.value,
+            category: state.category.value,
+            frequency: state.frequency.value,
+            isEnding: state.isEnding,
+            endDate: state.endDate.value,
+            isFixed: state.isFixed,
+            isPlanned: event.isPlanned,
+          ),
         );
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (e) {

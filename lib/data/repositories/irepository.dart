@@ -1,10 +1,10 @@
+import 'package:hive_flutter/hive_flutter.dart';
+
 /// An abstract repository interface for generic data operations.
 ///
 /// This interface defines the basic CRUD operations that any repository
 /// should support. It is generic, meaning it can be implemented for
 /// any type [T].
-///
-/// The [token] parameter is required for all methods to handle authentication.
 abstract class IRepository<T> {
   /// Fetches a list of objects of type [T].
   ///
@@ -50,4 +50,32 @@ abstract class IRepository<T> {
   ///
   /// Returns a [Future] that completes when the object has been deleted.
   Future<void> delete({required String token, required String id});
+
+  /// Fetches a list of categories.
+  ///
+  /// [token] is the authentication token.
+  ///
+  /// Returns a [Future] containing a list of categories.
+  Future<List<dynamic>> getCategories(String token);
+
+  /// Fetches a list of frequencies.
+  ///
+  /// [token] is the authentication token.
+  ///
+  /// Returns a [Future] containing a list of frequencies.
+  Future<List<dynamic>> getFrequencies(String token);
+
+  /// Initializes a box in Hive.
+  ///
+  /// [key] is the name of the box.
+  /// [boxAdapter] is the adapter for the box.
+  ///
+  /// Returns a [Future] that completes when the box has been initialized.
+  static Future<void> initBox<B>(
+    String key,
+    TypeAdapter<B> boxAdapter,
+  ) async {
+    Hive.registerAdapter<B>(boxAdapter);
+    await Hive.openBox<B>(key);
+  }
 }

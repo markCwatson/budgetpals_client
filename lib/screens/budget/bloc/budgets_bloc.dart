@@ -69,7 +69,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     Emitter<BudgetsState> emit,
   ) async {
     try {
-      await _incomesRepository.deleteIncome(
+      await _incomesRepository.delete(
         token: event.token,
         id: event.id,
       );
@@ -101,7 +101,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     Emitter<BudgetsState> emit,
   ) async {
     try {
-      final incomes = await _incomesRepository.getIncomes(event.token);
+      final incomes = await _incomesRepository.get(token: event.token);
       emit(BudgetsState.incomesLoaded(incomes));
     } catch (e) {
       print(e);
@@ -136,11 +136,11 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     Emitter<BudgetsState> emit,
   ) async {
     try {
-      await _incomesRepository.deleteIncome(
+      await _incomesRepository.delete(
         token: event.token,
         id: event.id,
       );
-      final incomes = await _incomesRepository.getIncomes(event.token);
+      final incomes = await _incomesRepository.get(token: event.token);
       emit(BudgetsState.incomesLoaded(incomes));
     } catch (e) {
       print(e);

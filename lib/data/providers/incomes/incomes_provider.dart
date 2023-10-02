@@ -47,7 +47,7 @@ class IncomesDataProvider {
     }
   }
 
-  Future<List<String>> getIncomeCategories(String token) async {
+  Future<List<String>> getCategories(String token) async {
     final response = await http.get(
       Uri.parse('$baseUrl/api/incomes/categories'),
       headers: {
@@ -67,7 +67,7 @@ class IncomesDataProvider {
     }
   }
 
-  Future<List<String>> getIncomeFrequencies(String token) async {
+  Future<List<String>> getFrequencies(String token) async {
     final response = await http.get(
       Uri.parse('$baseUrl/api/incomes/frequencies'),
       headers: {
@@ -87,7 +87,7 @@ class IncomesDataProvider {
     }
   }
 
-  Future<void> addIncome({
+  Future<bool> addIncome({
     required String token,
     required double amount,
     required String date,
@@ -119,9 +119,48 @@ class IncomesDataProvider {
     if (response.statusCode != 201) {
       throw Exception('Failed to add income');
     }
+
+    return true;
   }
 
-  Future<void> deleteIncome({
+  Future<bool> updateIncome({
+    required String token,
+    required String id,
+    required double amount,
+    required String date,
+    required String category,
+    required String frequency,
+    required bool isEnding,
+    required String endDate,
+    required bool isFixed,
+    required bool isPlanned,
+  }) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/incomes/$id'),
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<dynamic, dynamic>{
+        'amount': amount,
+        'date': date,
+        'category': category,
+        'frequency': frequency,
+        'isEnding': isEnding,
+        'endDate': endDate,
+        'isFixed': isFixed,
+        'isPlanned': isPlanned,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update income');
+    }
+
+    return true;
+  }
+
+  Future<bool> deleteIncome({
     required String token,
     required String id,
   }) async {
@@ -135,5 +174,7 @@ class IncomesDataProvider {
     if (response.statusCode != 200) {
       throw Exception('Failed to delete income');
     }
+
+    return true;
   }
 }
