@@ -1,4 +1,4 @@
-import 'package:budgetpals_client/data/repositories/budgets/models/budget.dart';
+import 'package:budgetpals_client/data/repositories/budgets/models/configuration.dart';
 import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
 import 'package:budgetpals_client/data/repositories/common_models/generic.dart';
 import 'package:budgetpals_client/data/repositories/common_models/income.dart';
@@ -387,6 +387,9 @@ class _BudgetedListState<T extends FinanceEntry>
                         ),
                       ).then(
                         (value) {
+                          context.read<BudgetsBloc>().add(
+                                const CacheResetEvent(),
+                              );
                           // Refresh the data on return
                           // \todo: use caching or something to avoid api call
                           context.read<BudgetsBloc>().add(
@@ -407,6 +410,9 @@ class _BudgetedListState<T extends FinanceEntry>
                         ),
                       ).then(
                         (value) {
+                          context.read<BudgetsBloc>().add(
+                                const CacheResetEvent(),
+                              );
                           // Refresh the data on return
                           // \todo: use caching or something to avoid api call
                           context.read<BudgetsBloc>().add(

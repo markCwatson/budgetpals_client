@@ -1,5 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:budgetpals_client/data/repositories/budgets/budgets_repository.dart';
+import 'package:budgetpals_client/data/repositories/budgets/models/budget.dart';
+import 'package:budgetpals_client/data/repositories/budgets/models/configuration.dart';
+import 'package:budgetpals_client/data/repositories/budgets/models/frequency.dart';
 import 'package:budgetpals_client/screens/add_budget/models/amount.dart';
 import 'package:budgetpals_client/screens/add_budget/models/date.dart';
 import 'package:budgetpals_client/screens/add_budget/models/period.dart';
@@ -27,20 +30,30 @@ class AddBudgetBloc extends Bloc<AddBudgetEvent, AddBudgetState> {
     AddBudgetConfigEvent event,
     Emitter<AddBudgetState> emit,
   ) async {
-    final result = await _budgetsRepository.addBudget(
-      token: event.token,
-      start: state.startDate.value,
-      period: state.period.value,
-      accountBalance: state.startAccountBalance.value,
-    );
-    if (result) {
+    try {
+      // \todo: refactor no take named parameters
+      await _budgetsRepository.add(
+        token: event.token,
+        object: Budget(
+          '', // userId
+          Configuration(
+            state.startDate.value,
+            state.period.value,
+            state.startAccountBalance.value,
+            state.startAccountBalance.value, // runningBalance
+          ),
+          const [], // plannedExpenses
+          const [], // plannedIncomes
+          const [], // unplannedExpenses
+          const [], // unplannedIncomes
+        ),
+      );
       state.copyWith(status: FormzSubmissionStatus.success);
       emit(AddBudgetSuccess());
-      return;
+    } catch (e) {
+      state.copyWith(status: FormzSubmissionStatus.failure);
+      emit(AddBudgetFailed());
     }
-
-    state.copyWith(status: FormzSubmissionStatus.failure);
-    emit(AddBudgetFailed());
   }
 
   Future<void> _onEvaluateBudgetsEvent(
@@ -48,14 +61,14 @@ class AddBudgetBloc extends Bloc<AddBudgetEvent, AddBudgetState> {
     Emitter<AddBudgetState> emit,
   ) async {
     // first check if this user has a budget
-    final budget = await _budgetsRepository.getBudget(event.token);
-    if (budget != null) {
+    final budget = await _budgetsRepository.get(token: event.token);
+    if (budget.isNotEmpty) {
       emit(BudgetExists());
       return;
     }
 
     // no budget exists so get periods and continue configuration
-    final periods = await _budgetsRepository.getPeriods(event.token);
+    final periods = await _budgetsRepository.getFrequencies(event.token);
     emit(GetBudgetPeriodsSuccess(periods: periods));
   }
 

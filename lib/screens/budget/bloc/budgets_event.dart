@@ -51,6 +51,10 @@ class SetTokenEvent extends BudgetsEvent {
   List<Object> get props => [token];
 }
 
+class CacheResetEvent extends BudgetsEvent {
+  const CacheResetEvent();
+}
+
 class AddExpenseRequestEvent extends BudgetsEvent {
   const AddExpenseRequestEvent();
 }

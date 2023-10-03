@@ -40,6 +40,10 @@ class IncomesRepository implements IRepository<Income> {
     _incomeCache = HiveRepository<IncomeBox>(Hive.box(_incomeBoxName));
     _categoryCache = HiveRepository<CategoryBox>(Hive.box(_categoryBoxName));
     _frequencyCache = HiveRepository<FrequencyBox>(Hive.box(_frequencyBoxName));
+
+    _incomeCache.clear();
+    _categoryCache.clear();
+    _frequencyCache.clear();
   }
 
   /// Fetches a list of incomes either from the cache or the API.
@@ -127,6 +131,7 @@ class IncomesRepository implements IRepository<Income> {
       if (isSuccess) await _incomeCache.clear();
     } catch (e) {
       print(e);
+      throw Exception('Error adding income');
     }
   }
 
@@ -172,6 +177,7 @@ class IncomesRepository implements IRepository<Income> {
       if (isSuccess) await _incomeCache.clear();
     } catch (e) {
       print(e);
+      throw Exception('Error deleting income');
     }
   }
 
@@ -234,8 +240,7 @@ class IncomesRepository implements IRepository<Income> {
 
       return frequencies;
     } catch (e) {
-      print(e);
-      return List.empty();
+      throw Exception('Error fetching frequencies');
     }
   }
 

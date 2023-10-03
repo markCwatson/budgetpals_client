@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:budgetpals_client/data/repositories/budgets/budgets_repository.dart';
 import 'package:budgetpals_client/data/repositories/budgets/models/budget.dart';
+import 'package:budgetpals_client/data/repositories/budgets/models/configuration.dart';
 import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
 import 'package:budgetpals_client/data/repositories/common_models/generic.dart';
 import 'package:budgetpals_client/data/repositories/common_models/income.dart';
@@ -29,6 +30,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     on<DeleteIncomeRequestEvent>(_onDeleteIncomeEvent);
     on<DeletePlannedExpenseRequestEvent>(_onDeletePlannedExpenseEvent);
     on<DeletePlannedIncomeRequestEvent>(_onDeletePlannedIncomeEvent);
+    on<CacheResetEvent>(_onCacheResetEvent);
   }
 
   final ExpensesRepository _expensesRepository;
@@ -39,10 +41,17 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     GetBudgetEvent event,
     Emitter<BudgetsState> emit,
   ) async {
-    final budget = await _budgetsRepository.getBudget(event.token);
-    if (budget == null) return;
+    final budget = await _budgetsRepository.get(token: event.token);
+    if (budget.isEmpty) return;
 
-    _recalculateAndEmit(budget, emit);
+    _recalculateAndEmit(budget[0]!, emit);
+  }
+
+  Future<void> _onCacheResetEvent(
+    CacheResetEvent event,
+    Emitter<BudgetsState> emit,
+  ) async {
+    await _budgetsRepository.clearCache();
   }
 
   Future<void> _onDeletePlannedExpenseEvent(
@@ -55,10 +64,10 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
         id: event.id,
       );
 
-      final budget = await _budgetsRepository.getBudget(event.token);
-      if (budget == null) return;
+      final budget = await _budgetsRepository.get(token: event.token);
+      if (budget.isEmpty) return;
 
-      _recalculateAndEmit(budget, emit);
+      _recalculateAndEmit(budget[0]!, emit);
     } catch (e) {
       print(e);
     }
@@ -74,10 +83,10 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
         id: event.id,
       );
 
-      final budget = await _budgetsRepository.getBudget(event.token);
-      if (budget == null) return;
+      final budget = await _budgetsRepository.get(token: event.token);
+      if (budget.isEmpty) return;
 
-      _recalculateAndEmit(budget, emit);
+      _recalculateAndEmit(budget[0]!, emit);
     } catch (e) {
       print(e);
     }

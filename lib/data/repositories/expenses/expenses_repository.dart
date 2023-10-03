@@ -40,6 +40,10 @@ class ExpensesRepository implements IRepository<Expense> {
     _expenseCache = HiveRepository<ExpenseBox>(Hive.box(_expenseBoxName));
     _categoryCache = HiveRepository<CategoryBox>(Hive.box(_categoryBoxName));
     _frequencyCache = HiveRepository<FrequencyBox>(Hive.box(_frequencyBoxName));
+
+    _expenseCache.clear();
+    _categoryCache.clear();
+    _frequencyCache.clear();
   }
 
   /// Fetches a list of expenses either from the cache or the API.

@@ -54,7 +54,7 @@ final class GetBudgetPeriodsSuccess extends AddBudgetState {
     required this.periods,
   });
 
-  final List<String> periods;
+  final List<Frequency?> periods;
 
   @override
   List<Object> get props => [

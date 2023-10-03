@@ -246,7 +246,7 @@ class _PeriodState extends State<_Period> {
                 if (state is GetBudgetPeriodsSuccess && _periods.length == 1) {
                   state.periods
                       .map(
-                        (e) => _periods.add(e),
+                        (e) => _periods.add(e?.name ?? 'None found'),
                       )
                       .toList();
                 }

@@ -1,3 +1,5 @@
+import 'package:budgetpals_client/data/repositories/budgets/boxes/budget_box.dart';
+import 'package:budgetpals_client/data/repositories/budgets/models/configuration.dart';
 import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
 import 'package:budgetpals_client/data/repositories/common_models/income.dart';
 import 'package:equatable/equatable.dart';
@@ -37,26 +39,17 @@ class Budget extends Equatable {
     [],
     [],
   );
-}
 
-class Configuration {
-  const Configuration(
-    this.startDate,
-    this.period,
-    this.startAccountBalance,
-    this.runningBalance,
-  );
-
-  Configuration.fromJson(Map<String, dynamic> json)
-      : startDate = json['startDate'] as String,
-        period = json['period'] as String,
-        startAccountBalance = json['startAccountBalance'] as double,
-        runningBalance = json['runningBalance'] as double;
-
-  final String startDate;
-  final String period;
-  final double startAccountBalance;
-  final double runningBalance;
-
-  static const empty = Configuration('', '', 0, 0);
+  BudgetBox toBudgetBox() {
+    final budgetBox = BudgetBox()
+      ..userId = userId
+      ..configuration = configuration.toConfigurationBox()
+      ..plannedExpenses = plannedExpenses.map((e) => e.toExpenseBox()).toList()
+      ..plannedIncomes = plannedIncomes.map((e) => e.toIncomeBox()).toList()
+      ..unplannedExpenses =
+          unplannedExpenses.map((e) => e.toExpenseBox()).toList()
+      ..unplannedIncomes =
+          unplannedIncomes.map((e) => e.toIncomeBox()).toList();
+    return budgetBox;
+  }
 }
