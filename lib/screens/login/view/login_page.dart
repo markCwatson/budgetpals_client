@@ -1,5 +1,6 @@
 import 'package:budgetpals_client/data/repositories/auth/auth_repository.dart';
-import 'package:budgetpals_client/screens/login/login.dart';
+import 'package:budgetpals_client/screens/login/bloc/login_bloc.dart';
+import 'package:budgetpals_client/screens/login/view/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

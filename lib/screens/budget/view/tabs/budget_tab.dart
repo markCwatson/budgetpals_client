@@ -2,9 +2,9 @@ import 'package:budgetpals_client/data/repositories/budgets/models/configuration
 import 'package:budgetpals_client/data/repositories/common_models/expense.dart';
 import 'package:budgetpals_client/data/repositories/common_models/generic.dart';
 import 'package:budgetpals_client/data/repositories/common_models/income.dart';
-import 'package:budgetpals_client/screens/add_expense/view/view.dart';
-import 'package:budgetpals_client/screens/add_income/view/view.dart';
-import 'package:budgetpals_client/screens/auth/auth.dart';
+import 'package:budgetpals_client/screens/add_expense/view/add_expense_modal.dart';
+import 'package:budgetpals_client/screens/add_income/view/add_income_modal.dart';
+import 'package:budgetpals_client/utilities/auth/bloc/auth_bloc.dart';
 import 'package:budgetpals_client/screens/budget/bloc/budgets_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -4,7 +4,7 @@ import 'package:budgetpals_client/data/providers/incomes/incomes_provider.dart';
 import 'package:budgetpals_client/data/repositories/budgets/budgets_repository.dart';
 import 'package:budgetpals_client/data/repositories/expenses/expenses_repository.dart';
 import 'package:budgetpals_client/data/repositories/incomes/incomes_repository.dart';
-import 'package:budgetpals_client/screens/auth/auth.dart';
+import 'package:budgetpals_client/utilities/auth/bloc/auth_bloc.dart';
 import 'package:budgetpals_client/screens/budget/bloc/budgets_bloc.dart';
 import 'package:budgetpals_client/screens/budget/view/budget_tabs.dart';
 import 'package:budgetpals_client/utilities/utilities.dart';

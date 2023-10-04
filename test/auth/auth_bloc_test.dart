@@ -2,7 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:budgetpals_client/data/repositories/auth/auth_repository.dart';
 import 'package:budgetpals_client/data/repositories/user/models/user.dart';
 import 'package:budgetpals_client/data/repositories/user/user_repository.dart';
-import 'package:budgetpals_client/screens/auth/auth.dart';
+import 'package:budgetpals_client/utilities/auth/bloc/auth_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

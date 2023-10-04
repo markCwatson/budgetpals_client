@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:budgetpals_client/data/repositories/user/models/user.dart';
-import 'package:budgetpals_client/screens/auth/auth.dart';
+import 'package:budgetpals_client/utilities/auth/bloc/auth_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

@@ -1,5 +1,5 @@
 import 'package:budgetpals_client/screens/add_expense/bloc/add_expense_bloc.dart';
-import 'package:budgetpals_client/screens/auth/bloc/auth_bloc.dart';
+import 'package:budgetpals_client/utilities/auth/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';

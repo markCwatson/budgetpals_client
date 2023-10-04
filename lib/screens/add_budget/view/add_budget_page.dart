@@ -2,7 +2,7 @@ import 'package:budgetpals_client/data/providers/budgets/budgets_provider.dart';
 import 'package:budgetpals_client/data/repositories/budgets/budgets_repository.dart';
 import 'package:budgetpals_client/screens/add_budget/bloc/add_budget_bloc.dart';
 import 'package:budgetpals_client/screens/add_budget/view/configure_budget.dart';
-import 'package:budgetpals_client/screens/auth/auth.dart';
+import 'package:budgetpals_client/utilities/auth/bloc/auth_bloc.dart';
 import 'package:budgetpals_client/utilities/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

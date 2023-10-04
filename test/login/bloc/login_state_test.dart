@@ -1,5 +1,5 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:budgetpals_client/screens/login/login.dart';
+import 'package:budgetpals_client/screens/login/bloc/login_bloc.dart';
 import 'package:budgetpals_client/screens/login/models/password.dart';
 import 'package:budgetpals_client/screens/login/models/username.dart';
 import 'package:flutter_test/flutter_test.dart';

@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:budgetpals_client/screens/create_account/create_account.dart';
+import 'package:budgetpals_client/screens/create_account/bloc/create_account_bloc.dart';
+import 'package:budgetpals_client/screens/create_account/view/create_account_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
