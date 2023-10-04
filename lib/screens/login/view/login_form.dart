@@ -36,8 +36,7 @@ class LoginForm extends StatelessWidget {
                     children: [
                       _UsernameInput(),
                       _PasswordInput(),
-                      _LoginButton(),
-                      _CreateAccountButton(),
+                      _Buttons(),
                     ],
                   ),
                 ),
@@ -103,25 +102,44 @@ class _PasswordInput extends StatelessWidget {
   }
 }
 
-class _LoginButton extends StatelessWidget {
+class _Buttons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return state.status.isInProgress
-            ? const CircularProgressIndicator()
-            : Padding(
-                padding: const EdgeInsets.all(8),
-                child: ElevatedButton(
-                  key: const Key('loginForm_continue_raisedButton'),
-                  onPressed: state.isValid
-                      ? () {
-                          context.read<LoginBloc>().add(const LoginSubmitted());
-                        }
-                      : null,
-                  child: const Text('Login'),
-                ),
+            ? const Padding(
+                padding: EdgeInsets.all(16),
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  _LoginButton(),
+                  _CreateAccountButton(),
+                ],
               );
+      },
+    );
+  }
+}
+
+class _LoginButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.all(8),
+          child: ElevatedButton(
+            key: const Key('loginForm_continue_raisedButton'),
+            onPressed: state.isValid
+                ? () {
+                    context.read<LoginBloc>().add(const LoginSubmitted());
+                  }
+                : null,
+            child: const Text('Login'),
+          ),
+        );
       },
     );
   }
@@ -135,19 +153,15 @@ class _CreateAccountButton extends StatelessWidget {
         if (state.goToCreateAccount) {
           context.read<LoginBloc>().add(const LoginResetGoToCreateAccount());
         }
-        return state.status.isInProgress
-            ? const CircularProgressIndicator()
-            : Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: TextButton(
-                  key:
-                      const Key('loginCreateAccountForm_continue_raisedButton'),
-                  onPressed: () => context
-                      .read<LoginBloc>()
-                      .add(const LoginGoToCreateAccount()),
-                  child: const Text('Create an account'),
-                ),
-              );
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: TextButton(
+            key: const Key('loginCreateAccountForm_continue_raisedButton'),
+            onPressed: () =>
+                context.read<LoginBloc>().add(const LoginGoToCreateAccount()),
+            child: const Text('Create an account'),
+          ),
+        );
       },
     );
   }
