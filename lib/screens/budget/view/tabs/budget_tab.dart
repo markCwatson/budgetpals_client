@@ -391,7 +391,6 @@ class _BudgetedListState<T extends FinanceEntry>
                                 const CacheResetEvent(),
                               );
                           // Refresh the data on return
-                          // \todo: use caching or something to avoid api call
                           context.read<BudgetsBloc>().add(
                                 GetBudgetEvent(
                                   token: context.read<AuthBloc>().state.token,
@@ -414,7 +413,6 @@ class _BudgetedListState<T extends FinanceEntry>
                                 const CacheResetEvent(),
                               );
                           // Refresh the data on return
-                          // \todo: use caching or something to avoid api call
                           context.read<BudgetsBloc>().add(
                                 GetBudgetEvent(
                                   token: context.read<AuthBloc>().state.token,

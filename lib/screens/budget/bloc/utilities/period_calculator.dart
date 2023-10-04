@@ -54,7 +54,7 @@ class PeriodCalculator {
     if (periodType == 'Weekly') {
       final weeksSinceCreation = (timeSinceCreation.inDays / 7).floor();
       startOfCurrentPeriod = createdAt.add(
-        Duration(days: weeksSinceCreation * 7),
+        Duration(days: weeksSinceCreation * 7 - 1),
       );
       endOfCurrentPeriod = startOfCurrentPeriod.add(
         const Duration(days: 6),
@@ -62,7 +62,7 @@ class PeriodCalculator {
     } else if (periodType == 'Bi-weekly') {
       final biWeeksSinceCreation = (timeSinceCreation.inDays / 14).floor();
       startOfCurrentPeriod =
-          createdAt.add(Duration(days: biWeeksSinceCreation * 14));
+          createdAt.add(Duration(days: biWeeksSinceCreation * 14 - 1));
       endOfCurrentPeriod = startOfCurrentPeriod.add(
         const Duration(days: 13),
       );

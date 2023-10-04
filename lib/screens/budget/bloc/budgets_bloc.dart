@@ -99,7 +99,14 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     try {
       // \todo: consider using token on event instead of state??
       final expenses = await _expensesRepository.get(token: event.token);
-      emit(BudgetsState.expensesLoaded(expenses));
+
+      // filter by expenses in this period
+      final expensesInThisPeriod = _getItemsInThisPeriod(
+        expenses as List<FinanceEntry>,
+        state.configuration,
+      ) as List<Expense>;
+
+      emit(BudgetsState.expensesLoaded(expensesInThisPeriod));
     } catch (e) {
       print(e);
     }
@@ -111,7 +118,14 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
   ) async {
     try {
       final incomes = await _incomesRepository.get(token: event.token);
-      emit(BudgetsState.incomesLoaded(incomes));
+
+      // filter by incomes in this period
+      final incomesInThisPeriod = _getItemsInThisPeriod(
+        incomes as List<FinanceEntry>,
+        state.configuration,
+      ) as List<Income>;
+
+      emit(BudgetsState.incomesLoaded(incomesInThisPeriod));
     } catch (e) {
       print(e);
     }
@@ -160,24 +174,15 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     Budget budget,
     Emitter<BudgetsState> emit,
   ) {
-    // Compute the start and end of the current period
-    final createdAt = DateTime.parse(budget.configuration.startDate);
-    final today = DateTime.now().toUtc();
-    final currentPeriod = const PeriodCalculator().calculateCurrentPeriod(
-      createdAt,
-      budget.configuration.period,
-      today,
-    );
-
     // Compute the total planned expenses and incomes for the current period
     final totalPlannedExpenses = _computeTotalItems(
       items: budget.plannedExpenses,
-      currentPeriod: currentPeriod,
+      configuration: budget.configuration,
     );
 
     final totalPlannedIncomes = _computeTotalItems(
       items: budget.plannedIncomes,
-      currentPeriod: currentPeriod,
+      configuration: budget.configuration,
     );
 
     final endAccountBalance = budget.configuration.startAccountBalance +
@@ -187,12 +192,12 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     // compute the actual expenses and incomes for the current period
     final totalUnplannedExpenses = _computeTotalItems(
       items: budget.unplannedExpenses,
-      currentPeriod: currentPeriod,
+      configuration: budget.configuration,
     );
 
     final totalUnplannedIncomes = _computeTotalItems(
       items: budget.unplannedIncomes,
-      currentPeriod: currentPeriod,
+      configuration: budget.configuration,
     );
 
     final adjustedEndAccountBalance = endAccountBalance +
@@ -204,12 +209,12 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     // limit income/expense to current period
     final plannedIncomes = _getItemsInThisPeriod(
       budget.plannedIncomes,
-      currentPeriod,
+      budget.configuration,
     ) as List<Income>;
 
     final plannedExpenses = _getItemsInThisPeriod(
       budget.plannedExpenses,
-      currentPeriod,
+      budget.configuration,
     ) as List<Expense>;
 
     emit(
@@ -218,7 +223,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
         budget.configuration,
         plannedExpenses,
         plannedIncomes,
-        currentPeriod,
+        _getCurrentPeriod(budget.configuration),
         totalPlannedExpenses,
         totalPlannedIncomes,
         totalUnplannedExpenses,
@@ -230,8 +235,9 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
 
   List<FinanceEntry> _getItemsInThisPeriod(
     List<FinanceEntry> items,
-    BudgetPeriod currentPeriod,
+    Configuration configuration,
   ) {
+    final currentPeriod = _getCurrentPeriod(configuration);
     final later = currentPeriod.end!.add(const Duration(days: 1));
     final itemsInThisPeriod = items.where((element) {
       return DateTime.parse(element.date).isBefore(later) &&
@@ -240,10 +246,29 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     return itemsInThisPeriod;
   }
 
+  BudgetPeriod _getCurrentPeriod(Configuration configuration) {
+    final createdAt = DateTime.parse(configuration.startDate);
+    final today = DateTime.now().toUtc();
+    final currentPeriod = const PeriodCalculator().calculateCurrentPeriod(
+      createdAt,
+      configuration.period,
+      today,
+    );
+    return currentPeriod;
+  }
+
   double _computeTotalItems({
     required List<FinanceEntry> items,
-    required BudgetPeriod currentPeriod,
+    required Configuration configuration,
   }) {
+    final createdAt = DateTime.parse(configuration.startDate);
+    final today = DateTime.now().toUtc();
+    final currentPeriod = const PeriodCalculator().calculateCurrentPeriod(
+      createdAt,
+      configuration.period,
+      today,
+    );
+
     final later = currentPeriod.end!.add(const Duration(days: 1));
     return items.fold<double>(
       0,

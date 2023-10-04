@@ -52,7 +52,6 @@ class IncomeTab extends StatelessWidget {
           ).then(
             (value) {
               // Refresh the data when return to the Expenses page
-              // \todo: use caching or something to avoid api call
               context.read<BudgetsBloc>().add(
                     GetIncomesEvent(
                       token: context.read<AuthBloc>().state.token,
