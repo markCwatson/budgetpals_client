@@ -29,6 +29,11 @@ class AuthRepository {
       password: password,
     );
 
+    if (data.isEmpty || !data.containsKey('access_token')) {
+      _controller.add(AuthToken(token: ''));
+      return;
+    }
+
     final authToken = AuthToken(token: data['access_token'] as String);
     _controller.add(authToken);
   }

@@ -244,6 +244,10 @@ class IncomesRepository implements IRepository<Income> {
     }
   }
 
+  Future<void> clearCache() async {
+    await _incomeCache.clear();
+  }
+
   /// Static method to initialize Hive boxes before using them.
   static Future<void> initializeBoxes() async {
     await IRepository.initBox<IncomeBox>(

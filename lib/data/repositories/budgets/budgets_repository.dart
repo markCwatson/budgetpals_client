@@ -53,6 +53,7 @@ class BudgetsRepository implements IRepository<Budget> {
 
     try {
       final data = await dataProvider.getBudget(token);
+      if (data.isEmpty) return [];
 
       final userId = data['userId'] as String;
 
@@ -91,7 +92,7 @@ class BudgetsRepository implements IRepository<Budget> {
 
       return [budget];
     } catch (e) {
-      throw Exception('Error fetching budget');
+      throw Exception('Error fetching budget: $e');
     }
   }
 

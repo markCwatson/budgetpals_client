@@ -243,6 +243,10 @@ class ExpensesRepository implements IRepository<Expense> {
     }
   }
 
+  Future<void> clearCache() async {
+    await _expenseCache.clear();
+  }
+
   /// Static method to initialize Hive boxes before using them.
   static Future<void> initializeBoxes() async {
     await IRepository.initBox<ExpenseBox>(

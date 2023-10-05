@@ -17,7 +17,10 @@ class BudgetsDataProvider {
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body) as Map<String, dynamic>;
+      if (response.body.isNotEmpty) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      }
+      return {};
     } else {
       throw Exception('Failed to load budget');
     }
